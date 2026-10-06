@@ -100,14 +100,14 @@
 
                 <!-- Dropdown: การจัดการพนักงาน -->
                 <div class="pt-1">
-                    <button onclick="toggleMenu('employees-menu')" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center justify-between transition">
+                    <button onclick="toggleMenu('employees')" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center justify-between transition">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-users w-4 text-center text-blue-400"></i>
                             <span class="font-bold">การจัดการพนักงาน</span>
                         </div>
-                        <i id="employees-menu-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
+                        <i id="employees-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
                     </button>
-                    <div id="employees-menu-submenu" class="pl-4 pt-1 space-y-1 hidden">
+                    <div id="employees-submenu" class="pl-4 pt-1 space-y-1 hidden">
                         <button onclick="switchTab('employees'); switchEmpSubTab('directory');" id="nav-employees-dir" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-user-group text-blue-400 text-[10px] w-4 text-center"></i>
                             <span>รายชื่อพนักงานทั้งหมด</span>
@@ -893,7 +893,7 @@
             return 'Normal';
         }
 
-        // ฟังก์ชันเปิด-ปิดเมนูดรอปดาวน์ Sidebar แบบสมบูรณ์
+        // ฟังก์ชันเปิด-ปิดเมนูดรอปดาวน์ Sidebar ที่เชื่อมต่อ ID ถูกต้องครบถ้วน
         function toggleMenu(menuId) {
             const submenu = document.getElementById(`${menuId}-submenu`);
             const chevron = document.getElementById(`${menuId}-chevron`);
