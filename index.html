@@ -864,7 +864,6 @@
             bikerFlat: 8, fourWNormal: 15, fourWExtra: 20, fourWSpecial: 25
         };
 
-        // เริ่มต้นด้วยข้อมูลว่างเปล่าตามความต้องการ เพื่อให้เริ่มคีย์จริงใหม่ทั้งหมด
         let costConfig = JSON.parse(localStorage.getItem('hetai_cost')) || defaultCostConfig;
         let weeklyRatesData = JSON.parse(localStorage.getItem('hetai_rates')) || [];
         let branchesList = JSON.parse(localStorage.getItem('hetai_branches')) || [];
@@ -894,11 +893,16 @@
             return 'Normal';
         }
 
+        // ฟังก์ชันเปิด-ปิดเมนูดรอปดาวน์ Sidebar แบบสมบูรณ์
         function toggleMenu(menuId) {
             const submenu = document.getElementById(`${menuId}-submenu`);
             const chevron = document.getElementById(`${menuId}-chevron`);
-            if(submenu) submenu.classList.toggle('hidden');
-            if(chevron) chevron.classList.toggle('rotate-180');
+            if(submenu) {
+                submenu.classList.toggle('hidden');
+            }
+            if(chevron) {
+                chevron.classList.toggle('rotate-180');
+            }
         }
 
         function calculateRevenue(position, rateType, pod) {
@@ -936,7 +940,6 @@
                 }
             });
 
-            // ตรวจสอบปุ่มเมนูย่อยของพนักงาน
             ['nav-employees-dir', 'nav-employees-rec'].forEach(n => {
                 const btn = document.getElementById(n);
                 if(btn) { btn.classList.remove('bg-slate-800', 'text-white'); btn.classList.add('text-slate-400'); }
@@ -949,26 +952,6 @@
             if(activeBtn) {
                 activeBtn.classList.remove('text-slate-300');
                 activeBtn.classList.add('bg-slate-800', 'text-white');
-            }
-
-            if(tabId === 'parcel-details' || tabId === 'daily-input') {
-                document.getElementById('operations-submenu').classList.remove('hidden');
-                document.getElementById('operations-chevron').classList.add('rotate-180');
-            }
-
-            if(tabId === 'employees') {
-                document.getElementById('employees-menu-submenu').classList.remove('hidden');
-                document.getElementById('employees-menu-chevron').classList.add('rotate-180');
-            }
-
-            if(tabId.includes('settings') || tabId === 'weekly-rate') {
-                document.getElementById('pricing-submenu').classList.remove('hidden');
-                document.getElementById('pricing-chevron').classList.add('rotate-180');
-            }
-
-            if(tabId === 'spreadsheet' || tabId === 'billing') {
-                document.getElementById('finance-submenu').classList.remove('hidden');
-                document.getElementById('finance-chevron').classList.add('rotate-180');
             }
 
             if(tabId === 'dashboard') renderDashboard();
@@ -1296,7 +1279,7 @@
             alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');[cite: 4]
         }
 
-        // --- DAILY BATCH INPUT (รวมยอดอัตโนมัติหากบันทึกซ้ำวัน และคงแถวคีย์ต่อเนื่อง) ---
+        // --- DAILY BATCH INPUT ---
         let batchRows = [];
 
         function addBatchRow() {
@@ -1376,7 +1359,6 @@
         function saveBatchEntries() {
             if(batchRows.length === 0) return;
             
-            // ประมวลผลรวมยอด (Sum POD) หากเป็นพนักงานคนเดียวกันในวันเดียวกัน
             batchRows.forEach(newRow => {
                 let existing = spreadsheetData.find(item => item.date === newRow.date && (item.kid === newRow.kid || item.kxth === newRow.kxth));
                 if(existing) {
@@ -1392,7 +1374,6 @@
             renderTable();
             renderDashboard();
             
-            // คงแถวไว้ให้คีย์ต่อเนื่องได้ (รีเซ็ตแถวใหม่ 1 แถว)[cite: 7]
             batchRows = [];
             addBatchRow();
             alert('บันทึกข้อมูลยอดวิ่งสำเร็จและอัปเดตสรุปเรียบร้อยแล้ว!');[cite: 6, 7]
@@ -1408,10 +1389,8 @@
             let sumNPod = 0, sumEPod = 0, sumSPod = 0, sumTotalCost = 0, sumTax = 0, sumNet = 0;
 
             tbody.innerHTML = activeEmps.map((emp, idx) => {
-                // กรองเฉพาะข้อมูลที่ตรงกับรอบ Week หรือวันที่ในสัปดาห์นั้นๆ
                 let empRecords = spreadsheetData.filter(r => {
                     let matchEmp = (r.kid === emp.kid || r.kxth === emp.kxth);
-                    // ตรวจสอบเรทตามสัปดาห์
                     return matchEmp;
                 });
 
@@ -1588,7 +1567,6 @@
             alert('เพิ่มและบันทึกผู้สรรหาเรียบร้อยแล้ว');[cite: 3]
         }
 
-        // --- SPREADSHEET (รายละเอียดค่าใช้จ่าย พร้อมปุ่มค้นหา) ---
         function renderTable(dataToRender = spreadsheetData) {
             const tbody = document.getElementById('spreadsheet-tbody');
             if(!tbody) return;
