@@ -34,7 +34,6 @@
         ::-webkit-scrollbar-track { background: #f3f4f6; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         
-        /* Professional Invoice Print Layout (Landscape A4 Fit) */
         @media print {
             @page { size: A4 landscape; margin: 10mm; }
             body { background: white !important; color: #000 !important; font-size: 11px !important; }
@@ -54,7 +53,7 @@
     <header class="w-full bg-[#111827] border-b border-gray-800 h-14 px-4 flex items-center justify-between sticky top-0 z-50 text-white shadow-md">
         <div class="flex items-center space-x-3">
             <div class="w-8 h-8 rounded-full overflow-hidden bg-white shrink-0 border border-amber-500/50 flex items-center justify-center p-0.5">
-                <img src="screenshot-20260907-171334.png" alt="Hetai Network Logo" class="w-full h-full object-cover">
+                <i class="fa-solid fa-network-wired text-amber-500 text-sm"></i>
             </div>
             <div class="text-xs">
                 <div class="font-bold text-white tracking-wide">Hetai Network.</div>
@@ -172,7 +171,7 @@
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="font-bold text-slate-800 text-sm">ภาพรวมระบบปฏิบัติการ</h3>
                     <button onclick="resetAllLocalStorage()" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded border border-red-200 transition">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> รีเซ็ตข้อมูลทั้งหมดกลับค่าเริ่มต้น
+                        <i class="fa-solid fa-rotate-right mr-1"></i> ล้างข้อมูลทั้งหมด (Clear Data)
                     </button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-2">
@@ -353,6 +352,10 @@
                             <button onclick="openAddEmployeeModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition whitespace-nowrap shadow-sm">
                                 <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มพนักงานใหม่
                             </button>
+                            <!-- ปุ่มบันทึกข้อมูลพนักงาน -->
+                            <button onclick="saveEmployeeDirectoryChanges()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูลพนักงาน
+                            </button>
                         </div>
                     </div>
 
@@ -414,13 +417,17 @@
                             </h2>
                             <p class="text-[11px] text-slate-500 mt-0.5">จัดการข้อมูลสาขา คลังสินค้า (DC) และพื้นที่ปฏิบัติงาน พร้อมรองรับการอัปโหลดไฟล์ข้อมูลสาขา</p>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <label class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded cursor-pointer transition shadow-sm flex items-center gap-1.5">
                                 <i class="fa-solid fa-file-excel"></i> นำเข้าข้อมูลสาขา (Excel)
                                 <input type="file" id="excel-branch-input" accept=".xlsx, .xls, .csv" onchange="importBranchExcel(event)" class="hidden">
                             </label>
                             <button onclick="openAddBranchModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-plus mr-1"></i> เพิ่มสาขาใหม่
+                            </button>
+                            <!-- ปุ่มบันทึกสาขา -->
+                            <button onclick="saveBranchChanges()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูลสาขา
                             </button>
                         </div>
                     </div>
@@ -463,7 +470,7 @@
                                 <input type="file" id="excel-rate-input" accept=".xlsx, .xls, .csv" onchange="importRateExcel(event)" class="hidden">
                             </label>
                             <button onclick="saveWeeklyRates()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
-                                <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึก
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกเรทสัปดาห์
                             </button>
                         </div>
                     </div>
@@ -561,7 +568,7 @@
                             <p class="text-[11px] text-slate-500 mt-0.5">กำหนดเรทรายรับบริษัท (Biker ขั้นบันได และ 4W)</p>
                         </div>
                         <button onclick="saveRevenueSettings()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded transition shadow-sm">
-                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึก
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกรายรับบริษัท
                         </button>
                     </div>
 
@@ -614,7 +621,7 @@
                             <p class="text-[11px] text-slate-500 mt-0.5">กำหนดโครงสร้างค่าจ้างและต้นทุนพนักงาน</p>
                         </div>
                         <button onclick="saveCostSettings()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded transition shadow-sm">
-                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึก
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกต้นทุนพนักงาน
                         </button>
                     </div>
 
@@ -784,49 +791,19 @@
             document.getElementById('global-last-updated').innerText = `อัปเดตล่าสุด: ${lastUpdatedTime}`;
         }
 
-        // --- LOCALSTORAGE DATA MANAGEMENT ---
         const defaultCostConfig = {
             rev2WT1: 9, rev2WT2: 10, rev2WT3: 11,
             rev4WNormal: 15, rev4WExtra: 20, rev4WSpecial: 25,
             bikerFlat: 8, fourWNormal: 15, fourWExtra: 20, fourWSpecial: 25
         };
 
-        const defaultWeeklyRates = [
-            { region: "BKKC1", area: "BKKC101", dc: "HLP", mon: "Extra", tue: "Extra", wed: "Extra", thu: "Extra", fri: "Extra", sat: "Extra", sun: "Extra" },
-            { region: "BKKC1", area: "BKKC101", dc: "RCD", mon: "Extra", tue: "Extra", wed: "Extra", thu: "Extra", fri: "Extra", sat: "Extra", sun: "Extra" },
-            { region: "BKKC2", area: "BKKC201", dc: "SKV", mon: "Normal", tue: "Normal", wed: "Normal", thu: "Normal", fri: "Extra", sat: "Extra", sun: "Extra" },
-            { region: "BKKE1", area: "BKKE101", dc: "BGO", mon: "Special", tue: "Special", wed: "Special", thu: "Special", fri: "Special", sat: "Special", sun: "Special" },
-            { region: "BKKE1", area: "BKKE101", dc: "BGP", mon: "Extra", tue: "Extra", wed: "Extra", thu: "Extra", fri: "Extra", sat: "Extra", sun: "Extra" },
-            { region: "BKKE1", area: "BKKE102", dc: "BAY", mon: "Extra", tue: "Extra", wed: "Extra", thu: "Extra", fri: "Extra", sat: "Extra", sun: "Extra" }
-        ];
-
-        const defaultBranches = [
-            { region: "BKKE1", area: "BKKE101", dc: "BGO", name: "คลังหลักใหญ่" },
-            { region: "BKKE1", area: "BKKE101", dc: "BGP", name: "คลังบางปะกง" },
-            { region: "BKKC1", area: "BKKC101", dc: "HK2", name: "คลังดินแดง" },
-            { region: "BKKC2", area: "BKKC201", dc: "SKV", name: "คลังสุขุมวิท" }
-        ];
-
-        const defaultRecruiters = ["Mung", "Zhang Cui Xiang", "Sticker", "San"];
-
-        const defaultEmployees = [
-            { region: "BKKE1", dc: "BGO", dcThai: "คลังหลักใหญ่", kid: "10021401", kxth: "70000002", name: "ธีรภัทร วังคะฮาด", mobile: "083-949-3327", position: "Driver_4W", empType: "พนักงานประจำ", bank: "Kasikorn", accNo: "2363268210", recruiter: "Zhang Cui Xiang", status: "ทำงานอยู่" },
-            { region: "BKKE1", dc: "BGO", dcThai: "คลังหลักใหญ่", kid: "10021513", kxth: "70000003", name: "มนุญ หมัดแสง", mobile: "088-657-9820", position: "Driver_4W", empType: "พนักงานชั่วคราว", bank: "SCB", accNo: "3462706787", recruiter: "Mung", status: "ทำงานอยู่" },
-            { region: "BKKC1", dc: "HK2", dcThai: "คลังดินแดง", kid: "10023906", kxth: "70000011", name: "ตะวัน หลงอารีย์", mobile: "099-194-7091", position: "Biker_2W", empType: "พนักงานประจำ", bank: "Kasikorn", accNo: "1383815811", recruiter: "Sticker", status: "ทำงานอยู่" }
-        ];
-
-        const defaultSpreadsheetData = [
-            { date: "28/9/26", region: "BKKE1", dc: "BGO", dcThai: "คลังหลักใหญ่", kid: "10021401", kxth: "70000002", name: "ธีรภัทร วังคะฮาด", position: "Driver_4W", recruiter: "Zhang Cui Xiang", rateType: "Special", pod: 63 },
-            { date: "28/9/26", region: "BKKC1", dc: "HK2", dcThai: "คลังดินแดง", kid: "10023906", kxth: "70000011", name: "ตะวัน หลงอารีย์", position: "Biker_2W", recruiter: "Sticker", rateType: "Extra", pod: 45 }
-        ];
-
-        // Loaders & Savers with LocalStorage
+        // ล้างค่าข้อมูลตัวเดิมออกให้เป็นค่าว่าง เพื่อให้เริ่มคีย์ใหม่ได้ทันที
         let costConfig = JSON.parse(localStorage.getItem('hetai_cost')) || defaultCostConfig;
-        let weeklyRatesData = JSON.parse(localStorage.getItem('hetai_rates')) || defaultWeeklyRates;
-        let branchesList = JSON.parse(localStorage.getItem('hetai_branches')) || defaultBranches;
-        let recruitersList = JSON.parse(localStorage.getItem('hetai_recruiters')) || defaultRecruiters;
-        let employees = JSON.parse(localStorage.getItem('hetai_employees')) || defaultEmployees;
-        let spreadsheetData = JSON.parse(localStorage.getItem('hetai_spreadsheet')) || defaultSpreadsheetData;
+        let weeklyRatesData = JSON.parse(localStorage.getItem('hetai_rates')) || [];
+        let branchesList = JSON.parse(localStorage.getItem('hetai_branches')) || [];
+        let recruitersList = JSON.parse(localStorage.getItem('hetai_recruiters')) || ["Mung", "Zhang Cui Xiang", "Sticker", "San"];
+        let employees = JSON.parse(localStorage.getItem('hetai_employees')) || [];
+        let spreadsheetData = JSON.parse(localStorage.getItem('hetai_spreadsheet')) || [];
 
         function saveData() {
             localStorage.setItem('hetai_cost', JSON.stringify(costConfig));
@@ -838,7 +815,7 @@
         }
 
         function resetAllLocalStorage() {
-            if(confirm('ต้องการรีเซ็ตข้อมูลทั้งหมดกลับเป็นค่าเริ่มต้นใช่หรือไม่?')) {
+            if(confirm('ต้องการล้างข้อมูลทั้งหมดในระบบเพื่อเริ่มคีย์ใหม่ใช่หรือไม่?')) {
                 localStorage.clear();
                 location.reload();
             }
@@ -858,7 +835,7 @@
         }
 
         function calculateRevenue(position, rateType, pod) {
-            if (position.includes('Biker') || position === '2W') {
+            if (position.includes('Biker') || position === '2W' || position.toLowerCase().includes('2w')) {
                 if (pod <= 39) return costConfig.rev2WT1 * pod;
                 if (pod <= 60) return costConfig.rev2WT2 * pod;
                 return costConfig.rev2WT3 * pod;
@@ -871,7 +848,7 @@
         }
 
         function calculateCost(position, rateType, pod) {
-            if (position.includes('Biker') || position === '2W') {
+            if (position.includes('Biker') || position === '2W' || position.toLowerCase().includes('2w')) {
                 return costConfig.bikerFlat * pod;
             } else {
                 let rate = costConfig.fourWNormal;
@@ -946,7 +923,6 @@
             if(tabId === 'daily-input' && batchRows.length === 0) addBatchRow();
         }
 
-        // --- SUB-TAB SWITCHING IN EMPLOYEES ---
         function switchEmpSubTab(subTab) {
             const btnDir = document.getElementById('subtab-btn-directory');
             const btnRec = document.getElementById('subtab-btn-recruiters');
@@ -1015,10 +991,8 @@
             });
             saveData();
             updateTimestamp();
-            renderDashboard();
         }
 
-        // --- DASHBOARD RENDER ENGINE ---
         let analyticsChartInstance = null;
 
         function renderDashboard() {
@@ -1045,7 +1019,7 @@
                     <tr class="hover:bg-gray-50 font-mono">
                         <td class="p-2 border-r border-gray-200 text-slate-500">${r.date}</td>
                         <td class="p-2 border-r border-gray-200 text-blue-600 font-bold">${displayCode}</td>
-                        <td class="p-2 border-r border-gray-200">${emp.recruiter || 'Zhang Cui Xiang'}</td>
+                        <td class="p-2 border-r border-gray-200">${emp.recruiter || '-'}</td>
                         <td class="p-2 border-r border-gray-200">${r.region}</td>
                         <td class="p-2 border-r border-gray-200">${r.dc}</td>
                         <td class="p-2 border-r border-gray-200">${r.position}</td>
@@ -1098,7 +1072,6 @@
             });
         }
 
-        // --- EXCEL IMPORT / EXPORT FUNCTIONS ---
         function renderParcelDetailsTable() {
             let tbody = document.getElementById('parcel-details-tbody');
             tbody.innerHTML = spreadsheetData.map(r => {
@@ -1139,7 +1112,7 @@
                     if(json && json.length > 0) {
                         json.forEach(row => {
                             let kid = String(row['Emp_ID'] || row['KID'] || row['รหัสพนักงาน'] || '').trim();
-                            let emp = employees.find(x => x.kid === kid || x.kxth === kid) || employees[0];
+                            let emp = employees.find(x => x.kid === kid || x.kxth === kid) || employees[0] || {};
                             let pod = parseFloat(row['POD'] || row['จำนวน POD'] || 50) || 50;
                             let date = String(row['Date'] || row['วันที่'] || '28/9/26');
                             let dc = emp.dc || 'BGO';
@@ -1148,10 +1121,10 @@
                                 date: date,
                                 region: emp.region || 'BKKE1',
                                 dc: dc,
-                                kid: emp.kid,
-                                kxth: emp.kxth,
-                                name: emp.name,
-                                position: emp.position,
+                                kid: emp.kid || '',
+                                kxth: emp.kxth || '',
+                                name: emp.name || 'พนักงาน',
+                                position: emp.position || 'Driver_4W',
                                 rateType: getAutoRateType(dc),
                                 pod: pod
                             });
@@ -1235,19 +1208,33 @@
             event.target.value = '';
         }
 
-        // --- BRANCH MANAGEMENT FUNCTIONS ---
+        // --- BRANCH MANAGEMENT ---
         function renderBranchDirectory() {
             const tbody = document.getElementById('branch-directory-tbody');
             if(!tbody) return;
             tbody.innerHTML = branchesList.map((b, idx) => `
                 <tr class="hover:bg-gray-50 transition font-mono">
-                    <td class="p-2.5 border-r border-gray-200 font-bold">${b.region}</td>
-                    <td class="p-2.5 border-r border-gray-200 text-slate-500">${b.area}</td>
-                    <td class="p-2.5 border-r border-gray-200 text-cyan-600 font-bold">${b.dc}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-sans font-medium text-slate-900">${b.name}</td>
+                    <td class="p-2.5 border-r border-gray-200 font-bold">
+                        <input type="text" value="${b.region}" onchange="branchesList[${idx}].region=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 text-slate-500">
+                        <input type="text" value="${b.area}" onchange="branchesList[${idx}].area=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 text-cyan-600 font-bold">
+                        <input type="text" value="${b.dc}" onchange="branchesList[${idx}].dc=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-sans font-medium text-slate-900">
+                        <input type="text" value="${b.name}" onchange="branchesList[${idx}].name=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
                     <td class="p-2.5 text-center"><button onclick="branchesList.splice(${idx},1); saveData(); renderBranchDirectory(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
             `).join('');
+        }
+
+        function saveBranchChanges() {
+            saveData();
+            updateTimestamp();
+            alert('บันทึกข้อมูลสาขาเรียบร้อยแล้ว!');
         }
 
         function openAddBranchModal() { document.getElementById('branch-modal').classList.remove('hidden'); }
@@ -1264,7 +1251,7 @@
             closeBranchModal();
             renderBranchDirectory();
             updateTimestamp();
-            alert('เพิ่มสาขาใหม่เรียบร้อยแล้ว!');
+            alert('เพิ่มและบันทึกสาขาใหม่เรียบร้อยแล้ว!');
         }
 
         // --- DAILY BATCH INPUT ---
@@ -1274,7 +1261,7 @@
             const activeEmps = employees.filter(e => e.status === 'ทำงานอยู่');
             const emp = activeEmps[0] || employees[0] || {};
             const initialDate = "28/9/26";
-            const autoRate = getAutoRateType(emp.dc);
+            const autoRate = getAutoRateType(emp.dc || 'BGO');
 
             batchRows.push({
                 date: initialDate,
@@ -1282,7 +1269,7 @@
                 dc: emp.dc || "BGO",
                 kid: emp.kid || "",
                 kxth: emp.kxth || "",
-                name: emp.name || "",
+                name: emp.name || "ระบุพนักงาน",
                 position: emp.position || "Driver_4W",
                 rateType: autoRate,
                 pod: 50
@@ -1350,7 +1337,6 @@
             switchTab('dashboard');
         }
 
-        // --- WEEKLY RATE & BILLING & EMPLOYEE DIRECTORY ---
         function renderWeeklyRateTable() {
             const tbody = document.getElementById('weekly-rate-tbody');
             if(!tbody) return;
@@ -1386,7 +1372,7 @@
 
             tbody.innerHTML = activeEmps.map((emp, idx) => {
                 let empRecords = spreadsheetData.filter(r => r.kid === emp.kid || r.kxth === emp.kxth);
-                let nPod = 0, nRate = 8, nVal = 0, ePod = 0, eVal = 0, sPod = 0, sVal = 0;
+                let nPod = 0, nRate = costConfig.bikerFlat || 8, nVal = 0, ePod = 0, eVal = 0, sPod = 0, sVal = 0;
 
                 empRecords.forEach(r => {
                     let cost = calculateCost(r.position, r.rateType, r.pod);
@@ -1395,7 +1381,7 @@
                     else if(r.rateType === 'Special') { sPod += r.pod; sVal += cost; }
                 });
 
-                if(empRecords.length === 0) { nPod = 50; nVal = nPod * nRate; }
+                if(empRecords.length === 0) { nPod = 0; nVal = 0; }
 
                 let totalCost = nVal + eVal + sVal;
                 let tax1Pct = totalCost * 0.01;
@@ -1454,18 +1440,47 @@
 
             tbody.innerHTML = filtered.map((e, idx) => `
                 <tr class="hover:bg-gray-50 transition">
-                    <td class="p-2.5 border-r border-gray-200 font-mono">${e.region} / ${e.dc}</td>
-                    <td class="p-2.5 border-r border-gray-200">${e.dcThai}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-mono text-blue-600 font-bold">${e.kid || '-'}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-mono text-cyan-600 font-bold">${e.kxth || '-'}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-semibold text-slate-900">${e.name}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-mono text-slate-500">${e.mobile || '-'}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-mono">${e.position}</td>
-                    <td class="p-2.5 border-r border-gray-200 font-medium text-amber-600">${e.recruiter}</td>
-                    <td class="p-2.5 border-r border-gray-200 text-center">${e.status}</td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono">
+                        <input type="text" value="${e.region}" onchange="employees[${idx}].region=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 focus:outline-none focus:border-amber-500"> / 
+                        <input type="text" value="${e.dc}" onchange="employees[${idx}].dc=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-12 focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200">
+                        <input type="text" value="${e.dcThai}" onchange="employees[${idx}].dcThai=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-blue-600 font-bold">
+                        <input type="text" value="${e.kid || ''}" onchange="employees[${idx}].kid=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-cyan-600 font-bold">
+                        <input type="text" value="${e.kxth || ''}" onchange="employees[${idx}].kxth=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-semibold text-slate-900">
+                        <input type="text" value="${e.name}" onchange="employees[${idx}].name=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-slate-500">
+                        <input type="text" value="${e.mobile || ''}" onchange="employees[${idx}].mobile=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono">
+                        <input type="text" value="${e.position}" onchange="employees[${idx}].position=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-medium text-amber-600">
+                        <input type="text" value="${e.recruiter}" onchange="employees[${idx}].recruiter=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 text-center">
+                        <select onchange="employees[${idx}].status=this.value" class="bg-white border border-gray-300 rounded p-1 text-xs">
+                            <option value="ทำงานอยู่" ${e.status==='ทำงานอยู่'?'selected':''}>ทำงานอยู่</option>
+                            <option value="ลาออก" ${e.status==='ลาออก'?'selected':''}>ลาออก</option>
+                            <option value="รอเริ่มงาน" ${e.status==='รอเริ่มงาน'?'selected':''}>รอเริ่มงาน</option>
+                        </select>
+                    </td>
                     <td class="p-2.5 text-center"><button onclick="employees.splice(${idx},1); saveData(); renderEmployeeDirectory(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
             `).join('');
+        }
+
+        function saveEmployeeDirectoryChanges() {
+            saveData();
+            updateTimestamp();
+            alert('บันทึกข้อมูลพนักงานเรียบร้อยแล้ว!');
         }
 
         function openAddEmployeeModal() { document.getElementById('emp-modal').classList.remove('hidden'); }
@@ -1492,6 +1507,7 @@
             renderEmployeeDirectory();
             renderDashboard();
             updateTimestamp();
+            alert('เพิ่มและบันทึกข้อมูลพนักงานใหม่เรียบร้อยแล้ว!');
         }
 
         function openAddRecruiterModal() { document.getElementById('rec-modal').classList.remove('hidden'); }
@@ -1508,7 +1524,7 @@
             document.getElementById('new-rec-name').value = "";
             renderRecruiterManagerTable();
             updateTimestamp();
-            alert('เพิ่มผู้สรรหาเรียบร้อยแล้ว');
+            alert('เพิ่มและบันทึกผู้สรรหาเรียบร้อยแล้ว');
         }
 
         function renderTable() {
