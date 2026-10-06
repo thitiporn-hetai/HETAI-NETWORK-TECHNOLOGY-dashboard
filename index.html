@@ -86,7 +86,7 @@
                         </div>
                         <i id="operations-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
                     </button>
-                    <div id="operations-submenu" class="pl-4 pt-1 space-y-1 hidden">
+                    <div id="operations-submenu" style="display: none;" class="pl-4 pt-1 space-y-1">
                         <button onclick="switchTab('parcel-details')" id="nav-parcel-details" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-box-open text-yellow-400 text-[10px] w-4 text-center"></i>
                             <span>รายละเอียดการนำจ่ายพัสดุ</span>
@@ -107,7 +107,7 @@
                         </div>
                         <i id="employees-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
                     </button>
-                    <div id="employees-submenu" class="pl-4 pt-1 space-y-1 hidden">
+                    <div id="employees-submenu" style="display: none;" class="pl-4 pt-1 space-y-1">
                         <button onclick="switchTab('employees'); switchEmpSubTab('directory');" id="nav-employees-dir" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-user-group text-blue-400 text-[10px] w-4 text-center"></i>
                             <span>รายชื่อพนักงานทั้งหมด</span>
@@ -133,7 +133,7 @@
                         </div>
                         <i id="pricing-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
                     </button>
-                    <div id="pricing-submenu" class="pl-4 pt-1 space-y-1 hidden">
+                    <div id="pricing-submenu" style="display: none;" class="pl-4 pt-1 space-y-1">
                         <button onclick="switchTab('settings-revenue')" id="nav-settings-revenue" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-sack-dollar text-yellow-400 text-[10px] w-4 text-center"></i>
                             <span>รายรับบริษัท</span>
@@ -158,7 +158,7 @@
                         </div>
                         <i id="finance-chevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
                     </button>
-                    <div id="finance-submenu" class="pl-4 pt-1 space-y-1 hidden">
+                    <div id="finance-submenu" style="display: none;" class="pl-4 pt-1 space-y-1">
                         <button onclick="switchTab('spreadsheet')" id="nav-spreadsheet" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-table text-[10px] w-4 text-center"></i>
                             <span>รายละเอียดค่าใช้จ่าย</span>
@@ -893,12 +893,16 @@
             return 'Normal';
         }
 
-        // ฟังก์ชันเปิด-ปิดเมนูดรอปดาวน์ Sidebar ที่เชื่อมต่อ ID ถูกต้องครบถ้วน
+        // ฟังก์ชันเปิด-ปิดเมนูดรอปดาวน์แบบควบคุมผ่าน Inline Style (แม่นยำ ไม่ติด Tailwind Conflict)
         function toggleMenu(menuId) {
             const submenu = document.getElementById(`${menuId}-submenu`);
             const chevron = document.getElementById(`${menuId}-chevron`);
             if(submenu) {
-                submenu.classList.toggle('hidden');
+                if (submenu.style.display === 'none' || submenu.style.display === '') {
+                    submenu.style.display = 'block';
+                } else {
+                    submenu.style.display = 'none';
+                }
             }
             if(chevron) {
                 chevron.classList.toggle('rotate-180');
