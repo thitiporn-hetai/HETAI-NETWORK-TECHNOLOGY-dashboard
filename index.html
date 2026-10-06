@@ -170,8 +170,8 @@
             <div id="tab-dashboard" class="space-y-4">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="font-bold text-slate-800 text-sm">ภาพรวมระบบปฏิบัติการ</h3>
-                    <button onclick="resetAllLocalStorage()" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1 rounded border border-red-200 transition">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> ล้างข้อมูลทั้งหมด (Clear Data)
+                    <button onclick="refreshDashboardData()" class="text-[11px] bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1 rounded border border-blue-200 transition">
+                        <i class="fa-solid fa-rotate mr-1"></i> รีเฟรช (Refresh)
                     </button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-2">
@@ -352,7 +352,6 @@
                             <button onclick="openAddEmployeeModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition whitespace-nowrap shadow-sm">
                                 <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มพนักงานใหม่
                             </button>
-                            <!-- ปุ่มบันทึกข้อมูลพนักงาน -->
                             <button onclick="saveEmployeeDirectoryChanges()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูลพนักงาน
                             </button>
@@ -384,9 +383,15 @@
                     <div id="subtab-content-recruiters" class="hidden space-y-3">
                         <div class="flex justify-between items-center">
                             <p class="text-[11px] text-slate-500">จัดการรายชื่อผู้สรรหา (คลิกที่ชื่อเพื่อแก้ไขได้) และดูภาพรวมพนักงาน Active / ลาออก</p>
-                            <button onclick="openAddRecruiterModal()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded transition shadow-sm">
-                                <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มผู้สรรหาใหม่
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openAddRecruiterModal()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded transition shadow-sm">
+                                    <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มผู้สรรหาใหม่
+                                </button>
+                                <!-- เพิ่มปุ่มบันทึกผู้สรรหา -->
+                                <button onclick="saveRecruiterChanges()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
+                                    <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูลผู้สรรหา
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs border-collapse">
@@ -415,17 +420,12 @@
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-code-branch text-emerald-600"></i> การจัดการสาขา / สถานี (Branch & Station Management)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">จัดการข้อมูลสาขา คลังสินค้า (DC) และพื้นที่ปฏิบัติงาน พร้อมรองรับการอัปโหลดไฟล์ข้อมูลสาขา</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">จัดการข้อมูลสาขา คลังสินค้า (DC) ผู้ดูแล และพื้นที่ปฏิบัติงาน</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <label class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded cursor-pointer transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-excel"></i> นำเข้าข้อมูลสาขา (Excel)
-                                <input type="file" id="excel-branch-input" accept=".xlsx, .xls, .csv" onchange="importBranchExcel(event)" class="hidden">
-                            </label>
                             <button onclick="openAddBranchModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-plus mr-1"></i> เพิ่มสาขาใหม่
                             </button>
-                            <!-- ปุ่มบันทึกสาขา -->
                             <button onclick="saveBranchChanges()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูลสาขา
                             </button>
@@ -440,6 +440,8 @@
                                     <th class="p-2.5 border-r border-gray-200">Area Code</th>
                                     <th class="p-2.5 border-r border-gray-200 text-cyan-600 font-bold">DC Code</th>
                                     <th class="p-2.5 border-r border-gray-200">ชื่อคลัง / สถานี (DC ไทย)</th>
+                                    <th class="p-2.5 border-r border-gray-200 text-blue-600">เจ้าหน้าที่สรรหา</th>
+                                    <th class="p-2.5 border-r border-gray-200 text-purple-600">ผู้จัดการสรรหา</th>
                                     <th class="p-2.5 text-center">จัดการ</th>
                                 </tr>
                             </thead>
@@ -449,15 +451,15 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 4: WEEKLY RATE MANAGER & EXCEL UPLOAD ==================== -->
+            <!-- ==================== TAB 4: WEEKLY RATE MANAGER & MANUAL ADD ==================== -->
             <div id="tab-weekly-rate" class="hidden space-y-4">
-                <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
+                <div class="bg-white border border-gray-200 rounded p-5 space-y-4 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
                         <div>
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-calendar-week text-cyan-600"></i> จัดการเรทรายสัปดาห์ (Weekly Rate Manager)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">รองรับการอัปโหลดไฟล์ Excel เพื่ออัปเดตเรทรายสัปดาห์อัตโนมัติ</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">เลือกสัปดาห์และเพิ่มเรทรายสาขาได้เองทีละรายการ (ป้องกันข้อมูลเพี้ยน)</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <select id="week-selector" onchange="renderWeeklyRateTable()" class="bg-white border border-gray-300 rounded px-2.5 py-1.5 text-xs text-cyan-700 font-bold">
@@ -465,10 +467,9 @@
                                 <option value="28 Sep - 04 Oct 2026">Rate 28 Sep - 04 Oct 2026</option>
                                 <option value="21 Sep - 27 Sep 2026">Rate 21 Sep - 27 Sep 2026</option>
                             </select>
-                            <label class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded cursor-pointer transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-excel"></i> นำเข้าเรท Excel
-                                <input type="file" id="excel-rate-input" accept=".xlsx, .xls, .csv" onchange="importRateExcel(event)" class="hidden">
-                            </label>
+                            <button onclick="openAddRateModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
+                                <i class="fa-solid fa-plus mr-1"></i> เพิ่มเรทสาขา
+                            </button>
                             <button onclick="saveWeeklyRates()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกเรทสัปดาห์
                             </button>
@@ -479,8 +480,8 @@
                         <table class="w-full text-left text-xs border-collapse border border-gray-200">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[9px] text-center">
+                                    <th class="p-2 border-r border-gray-200">รอบ Week</th>
                                     <th class="p-2 border-r border-gray-200">Region</th>
-                                    <th class="p-2 border-r border-gray-200">Area</th>
                                     <th class="p-2 border-r border-gray-200">DC Code</th>
                                     <th class="p-2 border-r border-gray-200 bg-gray-100 text-slate-800">Mon</th>
                                     <th class="p-2 border-r border-gray-200 bg-gray-100 text-slate-800">Tue</th>
@@ -488,7 +489,8 @@
                                     <th class="p-2 border-r border-gray-200 bg-gray-100 text-slate-800">Thu</th>
                                     <th class="p-2 border-r border-gray-200 bg-gray-100 text-slate-800">Fri</th>
                                     <th class="p-2 border-r border-gray-200 bg-gray-100 text-slate-800">Sat</th>
-                                    <th class="p-2 bg-gray-100 text-slate-800">Sun</th>
+                                    <th class="p-2 border-r border-gray-200 bg-gray-100 text-slate-800">Sun</th>
+                                    <th class="p-2 bg-gray-100 text-slate-800">จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody id="weekly-rate-tbody" class="divide-y divide-gray-200"></tbody>
@@ -766,17 +768,58 @@
 
     <!-- Modals: Add Branch -->
     <div id="branch-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white border border-gray-200 rounded-lg max-w-sm w-full p-5 space-y-3 shadow-xl text-xs">
+        <div class="bg-white border border-gray-200 rounded-lg max-w-md w-full p-5 space-y-3 shadow-xl text-xs">
             <h3 class="text-sm font-bold text-slate-900">เพิ่มสาขา / สถานีใหม่</h3>
             <div class="space-y-2">
                 <div><label class="block text-[11px] text-slate-500 mb-1">Region</label><input type="text" id="new-branch-region" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" value="BKKE1"></div>
                 <div><label class="block text-[11px] text-slate-500 mb-1">Area Code</label><input type="text" id="new-branch-area" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" value="BKKE101"></div>
                 <div><label class="block text-[11px] text-slate-500 mb-1">DC Code</label><input type="text" id="new-branch-dc" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" placeholder="BGO"></div>
                 <div><label class="block text-[11px] text-slate-500 mb-1">ชื่อคลัง / สถานี (DC ไทย)</label><input type="text" id="new-branch-name" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" placeholder="คลังหลักใหญ่"></div>
+                <div><label class="block text-[11px] text-blue-600 mb-1 font-semibold">เจ้าหน้าที่สรรหา</label><input type="text" id="new-branch-officer" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" placeholder="ชื่อเจ้าหน้าที่สรรหา"></div>
+                <div><label class="block text-[11px] text-purple-600 mb-1 font-semibold">ผู้จัดการสรรหา</label><input type="text" id="new-branch-manager" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" placeholder="ชื่อผู้จัดการสรรหา"></div>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeBranchModal()" class="px-3 py-1.5 bg-gray-200 text-slate-800 rounded border border-gray-300 hover:bg-gray-300">ยกเลิก</button>
                 <button onclick="saveNewBranch()" class="px-3 py-1.5 bg-emerald-600 text-white rounded font-bold hover:bg-emerald-700">บันทึก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals: Add Weekly Rate -->
+    <div id="rate-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white border border-gray-200 rounded-lg max-w-sm w-full p-5 space-y-3 shadow-xl text-xs">
+            <h3 class="text-sm font-bold text-slate-900">เพิ่มเรทรายสัปดาห์ (ทีละสาขา)</h3>
+            <div class="space-y-2">
+                <div>
+                    <label class="block text-[11px] text-slate-500 mb-1">รอบ Week</label>
+                    <select id="new-rate-week" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs">
+                        <option value="05 Oct - 11 Oct 2026">05 Oct - 11 Oct 2026</option>
+                        <option value="28 Sep - 04 Oct 2026">28 Sep - 04 Oct 2026</option>
+                        <option value="21 Sep - 27 Sep 2026">21 Sep - 27 Sep 2026</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="block text-[11px] text-slate-500 mb-1">Region</label><input type="text" id="new-rate-region" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" value="BKKE1"></div>
+                    <div><label class="block text-[11px] text-slate-500 mb-1">DC Code</label><input type="text" id="new-rate-dc" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" placeholder="BGO"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div><label class="block text-[9px] text-slate-500 mb-1">Mon</label><select id="new-rate-mon" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
+                    <div><label class="block text-[9px] text-slate-500 mb-1">Tue</label><select id="new-rate-tue" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
+                    <div><label class="block text-[9px] text-slate-500 mb-1">Wed</label><select id="new-rate-wed" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div><label class="block text-[9px] text-slate-500 mb-1">Thu</label><select id="new-rate-thu" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
+                    <div><label class="block text-[9px] text-slate-500 mb-1">Fri</label><select id="new-rate-fri" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
+                    <div><label class="block text-[9px] text-slate-500 mb-1">Sat</label><select id="new-rate-sat" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
+                </div>
+                <div>
+                    <label class="block text-[9px] text-slate-500 mb-1">Sun</label>
+                    <select id="new-rate-sun" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeRateModal()" class="px-3 py-1.5 bg-gray-200 text-slate-800 rounded border border-gray-300 hover:bg-gray-300">ยกเลิก</button>
+                <button onclick="saveNewRate()" class="px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold hover:bg-amber-600">บันทึกเรท</button>
             </div>
         </div>
     </div>
@@ -797,7 +840,6 @@
             bikerFlat: 8, fourWNormal: 15, fourWExtra: 20, fourWSpecial: 25
         };
 
-        // ล้างค่าข้อมูลตัวเดิมออกให้เป็นค่าว่าง เพื่อให้เริ่มคีย์ใหม่ได้ทันที
         let costConfig = JSON.parse(localStorage.getItem('hetai_cost')) || defaultCostConfig;
         let weeklyRatesData = JSON.parse(localStorage.getItem('hetai_rates')) || [];
         let branchesList = JSON.parse(localStorage.getItem('hetai_branches')) || [];
@@ -814,15 +856,15 @@
             localStorage.setItem('hetai_spreadsheet', JSON.stringify(spreadsheetData));
         }
 
-        function resetAllLocalStorage() {
-            if(confirm('ต้องการล้างข้อมูลทั้งหมดในระบบเพื่อเริ่มคีย์ใหม่ใช่หรือไม่?')) {
-                localStorage.clear();
-                location.reload();
-            }
+        function refreshDashboardData() {
+            updateTimestamp();
+            renderDashboard();
+            alert('รีเฟรชข้อมูล Dashboard เรียบร้อยแล้ว!');
         }
 
         function getAutoRateType(dcCode) {
-            let found = weeklyRatesData.find(r => r.dc === dcCode);
+            let selectedWeek = document.getElementById('week-selector') ? document.getElementById('week-selector').value : "05 Oct - 11 Oct 2026";
+            let found = weeklyRatesData.find(r => r.dc === dcCode && r.week === selectedWeek);
             if(found) return found.mon || 'Normal';
             return 'Normal';
         }
@@ -989,8 +1031,12 @@
             employees.forEach(e => {
                 if(e.recruiter === oldName) e.recruiter = newName;
             });
+        }
+
+        function saveRecruiterChanges() {
             saveData();
             updateTimestamp();
+            alert('บันทึกข้อมูลผู้สรรหาเรียบร้อยแล้ว!');
         }
 
         let analyticsChartInstance = null;
@@ -1140,74 +1186,6 @@
             event.target.value = '';
         }
 
-        function importRateExcel(event) {
-            let file = event.target.files[0];
-            if(!file) return;
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    let data = new Uint8Array(e.target.result);
-                    let workbook = XLSX.read(data, {type: 'array'});
-                    let firstSheet = workbook.SheetNames[0];
-                    let worksheet = workbook.Sheets[firstSheet];
-                    let json = XLSX.utils.sheet_to_json(worksheet);
-                    if(json && json.length > 0) {
-                        weeklyRatesData = json.map(r => ({
-                            region: r['Region'] || r['region'] || 'BKKE1',
-                            area: r['Area'] || r['area'] || 'BKKE101',
-                            dc: r['DC'] || r['dc'] || r['DC Code'] || 'BGO',
-                            mon: r['Mon'] || 'Normal',
-                            tue: r['Tue'] || 'Normal',
-                            wed: r['Wed'] || 'Normal',
-                            thu: r['Thu'] || 'Normal',
-                            fri: r['Fri'] || 'Normal',
-                            sat: r['Sat'] || 'Normal',
-                            sun: r['Sun'] || 'Normal'
-                        }));
-                        saveData();
-                        renderWeeklyRateTable();
-                        alert(`นำเข้าเรทรายสัปดาห์สำเร็จ ${json.length} รายการ!`);
-                    }
-                } catch(err) {
-                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์เรทรายสัปดาห์');
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            event.target.value = '';
-        }
-
-        function importBranchExcel(event) {
-            let file = event.target.files[0];
-            if(!file) return;
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    let data = new Uint8Array(e.target.result);
-                    let workbook = XLSX.read(data, {type: 'array'});
-                    let firstSheet = workbook.SheetNames[0];
-                    let worksheet = workbook.Sheets[firstSheet];
-                    let json = XLSX.utils.sheet_to_json(worksheet);
-                    if(json && json.length > 0) {
-                        json.forEach(r => {
-                            branchesList.push({
-                                region: r['Region'] || r['region'] || 'BKKE1',
-                                area: r['Area'] || r['area'] || 'BKKE101',
-                                dc: r['DC'] || r['dc'] || r['DC Code'] || 'BGO',
-                                name: r['Name'] || r['ชื่อคลัง'] || r['สถานี'] || 'คลัง'
-                            });
-                        });
-                        saveData();
-                        renderBranchDirectory();
-                        alert(`นำเข้าข้อมูลสาขาสำเร็จ ${json.length} รายการ!`);
-                    }
-                } catch(err) {
-                    alert('เกิดข้อผิดพลาดในการอ่านไฟล์สาขา');
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            event.target.value = '';
-        }
-
         // --- BRANCH MANAGEMENT ---
         function renderBranchDirectory() {
             const tbody = document.getElementById('branch-directory-tbody');
@@ -1225,6 +1203,12 @@
                     </td>
                     <td class="p-2.5 border-r border-gray-200 font-sans font-medium text-slate-900">
                         <input type="text" value="${b.name}" onchange="branchesList[${idx}].name=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 text-blue-600 font-medium">
+                        <input type="text" value="${b.officer || ''}" onchange="branchesList[${idx}].officer=this.value" placeholder="ระบุเจ้าหน้าที่" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 text-purple-600 font-medium">
+                        <input type="text" value="${b.manager || ''}" onchange="branchesList[${idx}].manager=this.value" placeholder="ระบุผู้จัดการ" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
                     </td>
                     <td class="p-2.5 text-center"><button onclick="branchesList.splice(${idx},1); saveData(); renderBranchDirectory(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
@@ -1245,13 +1229,74 @@
                 region: document.getElementById('new-branch-region').value,
                 area: document.getElementById('new-branch-area').value,
                 dc: document.getElementById('new-branch-dc').value,
-                name: document.getElementById('new-branch-name').value
+                name: document.getElementById('new-branch-name').value,
+                officer: document.getElementById('new-branch-officer').value,
+                manager: document.getElementById('new-branch-manager').value
             });
             saveData();
             closeBranchModal();
             renderBranchDirectory();
             updateTimestamp();
             alert('เพิ่มและบันทึกสาขาใหม่เรียบร้อยแล้ว!');
+        }
+
+        // --- WEEKLY RATE MANUAL MANAGER ---
+        function renderWeeklyRateTable() {
+            const tbody = document.getElementById('weekly-rate-tbody');
+            const currentWeek = document.getElementById('week-selector').value;
+            if(!tbody) return;
+
+            let filteredRates = weeklyRatesData.filter(r => r.week === currentWeek);
+
+            tbody.innerHTML = filteredRates.map((row) => {
+                let actualIndex = weeklyRatesData.findIndex(r => r === row);
+                return `
+                    <tr class="hover:bg-gray-50 transition text-center font-mono">
+                        <td class="p-2 border-r border-gray-200 text-xs font-sans text-cyan-700 font-bold">${row.week}</td>
+                        <td class="p-2 border-r border-gray-200 font-bold text-slate-900">${row.region}</td>
+                        <td class="p-2 border-r border-gray-200 text-cyan-600 font-bold">${row.dc}</td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.mon}</span></td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.tue}</span></td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.wed}</span></td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.thu}</span></td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.fri}</span></td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.sat}</span></td>
+                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.sun}</span></td>
+                        <td class="p-2 text-center">
+                            <button onclick="weeklyRatesData.splice(${actualIndex},1); saveData(); renderWeeklyRateTable(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openAddRateModal() { document.getElementById('rate-modal').classList.remove('hidden'); }
+        function closeRateModal() { document.getElementById('rate-modal').classList.add('hidden'); }
+
+        function saveNewRate() {
+            weeklyRatesData.push({
+                week: document.getElementById('new-rate-week').value,
+                region: document.getElementById('new-rate-region').value,
+                dc: document.getElementById('new-rate-dc').value.trim(),
+                mon: document.getElementById('new-rate-mon').value,
+                tue: document.getElementById('new-rate-tue').value,
+                wed: document.getElementById('new-rate-wed').value,
+                thu: document.getElementById('new-rate-thu').value,
+                fri: document.getElementById('new-rate-fri').value,
+                sat: document.getElementById('new-rate-sat').value,
+                sun: document.getElementById('new-rate-sun').value
+            });
+            saveData();
+            closeRateModal();
+            renderWeeklyRateTable();
+            updateTimestamp();
+            alert('เพิ่มเรทประจำสัปดาห์สำเร็จ!');
+        }
+
+        function saveWeeklyRates() {
+            saveData();
+            updateTimestamp();
+            alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');
         }
 
         // --- DAILY BATCH INPUT ---
@@ -1335,31 +1380,6 @@
             renderTable();
             renderDashboard();
             switchTab('dashboard');
-        }
-
-        function renderWeeklyRateTable() {
-            const tbody = document.getElementById('weekly-rate-tbody');
-            if(!tbody) return;
-            tbody.innerHTML = weeklyRatesData.map((row) => `
-                <tr class="hover:bg-gray-50 transition text-center font-mono">
-                    <td class="p-2 border-r border-gray-200 font-bold text-slate-900">${row.region}</td>
-                    <td class="p-2 border-r border-gray-200 text-slate-500">${row.area}</td>
-                    <td class="p-2 border-r border-gray-200 text-cyan-600 font-bold">${row.dc}</td>
-                    <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.mon}</span></td>
-                    <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.tue}</span></td>
-                    <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.wed}</span></td>
-                    <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.thu}</span></td>
-                    <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.fri}</span></td>
-                    <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.sat}</span></td>
-                    <td class="p-2"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.sun}</span></td>
-                </tr>
-            `).join('');
-        }
-
-        function saveWeeklyRates() {
-            saveData();
-            updateTimestamp();
-            alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');
         }
 
         function renderBillingTable() {
