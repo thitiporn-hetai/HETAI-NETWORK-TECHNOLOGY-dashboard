@@ -296,7 +296,7 @@
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-pen-to-square text-amber-600"></i> บันทึกและคีย์ยอดวิ่งงานรายวัน (Daily Entry)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">รองรับการอัปโหลดไฟล์ Excel/CSV ข้อมูล Daily_Staff เพื่อนำเข้าอัตโนมัติ</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">อนุญาตให้บันทึกพนักงานแต่ละคนได้เพียง 1 ครั้งต่อวัน และแสดงรายละเอียดด้านล่าง</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <label class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded cursor-pointer transition shadow-sm flex items-center gap-1.5">
@@ -312,6 +312,7 @@
                         </div>
                     </div>
 
+                    <!-- ส่วนฟอร์มสำหรับคีย์ข้อมูล -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
@@ -326,6 +327,29 @@
                                 </tr>
                             </thead>
                             <tbody id="batch-tbody" class="divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ตารางแสดงรายละเอียดที่บันทึกแล้ว (ด้านล่าง พร้อมไอคอนแก้ไขและถังขยะ) -->
+                <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
+                    <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
+                                    <th class="p-2.5 border-r border-gray-200">วันที่</th>
+                                    <th class="p-2.5 border-r border-gray-200">รหัส / ชื่อพนักงาน</th>
+                                    <th class="p-2.5 border-r border-gray-200">Region / DC</th>
+                                    <th class="p-2.5 border-r border-gray-200">ประเภทรถ</th>
+                                    <th class="p-2.5 border-r border-gray-200">Rate Type</th>
+                                    <th class="p-2.5 border-r border-gray-200 text-center font-bold">จำนวน POD</th>
+                                    <th class="p-2.5 text-center">จัดการ (แก้ไข / ลบ)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="daily-history-tbody" class="divide-y divide-gray-200"></tbody>
                         </table>
                     </div>
                 </div>
@@ -387,7 +411,6 @@
                                 <button onclick="openAddRecruiterModal()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded transition shadow-sm">
                                     <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มผู้สรรหาใหม่
                                 </button>
-                                <!-- เพิ่มปุ่มบันทึกผู้สรรหา -->
                                 <button onclick="saveRecruiterChanges()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
                                     <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกข้อมูลผู้สรรหา
                                 </button>
@@ -945,6 +968,10 @@
             if(tabId === 'branches') renderBranchDirectory();
             if(tabId === 'weekly-rate') renderWeeklyRateTable();
             if(tabId === 'billing') renderBillingTable();
+            if(tabId === 'daily-input') {
+                if(batchRows.length === 0) addBatchRow();
+                renderDailyHistoryTable();
+            }
             
             if(tabId === 'settings-revenue') {
                 document.getElementById('rev-2w-t1').value = costConfig.rev2WT1;
@@ -961,8 +988,6 @@
                 document.getElementById('cost-4w-extra').value = costConfig.fourWExtra;
                 document.getElementById('cost-4w-special').value = costConfig.fourWSpecial;
             }
-
-            if(tabId === 'daily-input' && batchRows.length === 0) addBatchRow();
         }
 
         function switchEmpSubTab(subTab) {
@@ -1163,19 +1188,27 @@
                             let date = String(row['Date'] || row['วันที่'] || '28/9/26');
                             let dc = emp.dc || 'BGO';
 
-                            batchRows.push({
-                                date: date,
-                                region: emp.region || 'BKKE1',
-                                dc: dc,
-                                kid: emp.kid || '',
-                                kxth: emp.kxth || '',
-                                name: emp.name || 'พนักงาน',
-                                position: emp.position || 'Driver_4W',
-                                rateType: getAutoRateType(dc),
-                                pod: pod
-                            });
+                            // เช็คไม่ให้ซ้ำคนเดิมในวันเดียวกัน
+                            let exists = spreadsheetData.some(item => item.date === date && (item.kid === emp.kid || item.kxth === emp.kxth));
+                            if (!exists) {
+                                spreadsheetData.unshift({
+                                    id: Date.now() + Math.random(),
+                                    date: date,
+                                    region: emp.region || 'BKKE1',
+                                    dc: dc,
+                                    kid: emp.kid || '',
+                                    kxth: emp.kxth || '',
+                                    name: emp.name || 'พนักงาน',
+                                    position: emp.position || 'Driver_4W',
+                                    rateType: getAutoRateType(dc),
+                                    pod: pod
+                                });
+                            }
                         });
-                        renderBatchTable();
+                        saveData();
+                        renderTable();
+                        renderDashboard();
+                        renderDailyHistoryTable();
                         alert(`นำเข้าข้อมูลยอดวิ่งสำเร็จ ${json.length} รายการ!`);
                     }
                 } catch(err) {
@@ -1299,7 +1332,7 @@
             alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');
         }
 
-        // --- DAILY BATCH INPUT ---
+        // --- DAILY BATCH INPUT WITH UNIQUE CHECK & EDIT/DELETE ---
         let batchRows = [];
 
         function addBatchRow() {
@@ -1309,6 +1342,7 @@
             const autoRate = getAutoRateType(emp.dc || 'BGO');
 
             batchRows.push({
+                id: Date.now() + Math.random(),
                 date: initialDate,
                 region: emp.region || "BKKE1",
                 dc: emp.dc || "BGO",
@@ -1372,14 +1406,95 @@
         }
 
         function saveBatchEntries() {
-            if(batchRows.length === 0) return;
-            spreadsheetData.unshift(...batchRows);
+            if(batchRows.length === 0) {
+                alert('กรุณาเพิ่มรายการข้อมูลก่อนบันทึก');
+                return;
+            }
+
+            let duplicateCount = 0;
+            let successCount = 0;
+
+            batchRows.forEach(row => {
+                // ตรวจสอบว่าพนักงานคนนี้มีประวัติในวัน (date) นี้หรือยัง
+                let existingIndex = spreadsheetData.findIndex(item => item.date === row.date && (item.kid === row.kid || item.kxth === row.kxth));
+                
+                if (existingIndex !== -1) {
+                    // ถ้ามีอยู่แล้ว อนุญาตให้อัปเดตข้อมูล POD แทน หรือแจ้งเตือน
+                    spreadsheetData[existingIndex].pod = row.pod;
+                    spreadsheetData[existingIndex].rateType = row.rateType;
+                    duplicateCount++;
+                } else {
+                    spreadsheetData.unshift({ ...row, id: Date.now() + Math.random() });
+                    successCount++;
+                }
+            });
+
             batchRows = [];
             saveData();
             updateTimestamp();
             renderTable();
             renderDashboard();
-            switchTab('dashboard');
+            renderDailyHistoryTable();
+            addBatchRow();
+
+            alert(`บันทึกสำเร็จ: เพิ่มใหม่ ${successCount} รายการ, อัปเดตซ้ำวันเดิม ${duplicateCount} รายการ`);
+        }
+
+        function renderDailyHistoryTable() {
+            const tbody = document.getElementById('daily-history-tbody');
+            if(!tbody) return;
+
+            if(spreadsheetData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400">ยังไม่มีประวัติการบันทึกข้อมูลรายวัน</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = spreadsheetData.map((row, idx) => {
+                let displayCode = `${row.kid || '-'} / ${row.kxth || '-'}`;
+                return `
+                    <tr class="hover:bg-gray-50 transition font-mono">
+                        <td class="p-2.5 border-r border-gray-200 text-slate-500">${row.date}</td>
+                        <td class="p-2.5 border-r border-gray-200"><span class="text-blue-600 font-bold">${displayCode}</span> - <span class="text-slate-900 font-sans font-medium">${row.name}</span></td>
+                        <td class="p-2.5 border-r border-gray-200">${row.region} / ${row.dc}</td>
+                        <td class="p-2.5 border-r border-gray-200">${row.position}</td>
+                        <td class="p-2.5 border-r border-gray-200"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${row.rateType}</span></td>
+                        <td class="p-2.5 border-r border-gray-200 text-center font-bold text-green-600">${row.pod}</td>
+                        <td class="p-2.5 text-center space-x-2">
+                            <button onclick="editDailyRecord(${idx})" class="text-amber-500 hover:text-amber-700 p-1" title="แก้ไข"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function editDailyRecord(index) {
+            let record = spreadsheetData[index];
+            let newPod = prompt(`แก้ไขจำนวน POD ของคุณ ${record.name} (${record.date}):`, record.pod);
+            if(newPod !== null) {
+                let parsed = parseInt(newPod);
+                if(!isNaN(parsed)) {
+                    spreadsheetData[index].pod = parsed;
+                    saveData();
+                    renderTable();
+                    renderDashboard();
+                    renderDailyHistoryTable();
+                    alert('อัปเดตข้อมูลสำเร็จ!');
+                } else {
+                    alert('กรุณากรอกตัวเลขที่ถูกต้อง');
+                }
+            }
+        }
+
+        function deleteDailyRecord(index) {
+            if(confirm('คุณต้องการลบรายการบันทึกนี้ใช่หรือไม่?')) {
+                spreadsheetData.splice(index, 1);
+                saveData();
+                renderTable();
+                renderDashboard();
+                renderDailyHistoryTable();
+                alert('ลบรายการเรียบร้อยแล้ว');
+            }
         }
 
         function renderBillingTable() {
@@ -1596,6 +1711,7 @@
             updateTimestamp();
             renderDashboard();
             renderBranchDirectory();
+            renderDailyHistoryTable();
         };
     </script>
 </body>
