@@ -859,7 +859,6 @@
             { id: 1, date: "2026-09-28", region: "BKKE1", dc: "BGP", kid: "10021401", kxth: "70000002", name: "ธีรภัทร วังคะฮาด", position: "Driver_4W", rateType: "Extra", pod: 50 }
         ];
 
-        // ตรวจสอบฟิลด์ใหม่ให้พนักงานเก่า
         employees.forEach(e => {
             if(!e.recruitedDate) e.recruitedDate = "2026-09-28";
             if(!e.startDate) e.startDate = "2026-09-28";
@@ -881,10 +880,8 @@
         }
 
         function getRateTypeForDate(dcCode, dateStr) {
-            // ค้นหาเรทตามสัปดาห์หรือวันนั้นๆ
             let found = weeklyRatesData.find(r => r.dc === dcCode);
             if(found) {
-                // คืนค่า Default หรือค่า Extra จากตารางเรทรายสัปดาห์
                 return found.mon || 'Normal';
             }
             return 'Normal';
@@ -922,7 +919,8 @@
         }
 
         function switchTab(tabId) {
-            ['dashboard', 'parcel-details', 'daily-input', 'employees', 'branches', 'weekly-rate', 'billing', 'settings-revenue', 'settings-cost', 'spreadsheet'].forEach(t => {
+            const tabs = ['dashboard', 'parcel-details', 'daily-input', 'employees', 'branches', 'weekly-rate', 'billing', 'settings-revenue', 'settings-cost', 'spreadsheet'];
+            tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add('hidden');
                 const btn = document.getElementById(`nav-${t}`);
@@ -942,18 +940,24 @@
             }
 
             if(tabId === 'parcel-details' || tabId === 'daily-input') {
-                document.getElementById('operations-submenu').classList.remove('hidden');
-                document.getElementById('operations-chevron').classList.add('rotate-180');
+                const sub = document.getElementById('operations-submenu');
+                const chev = document.getElementById('operations-chevron');
+                if(sub) sub.classList.remove('hidden');
+                if(chev) chev.classList.add('rotate-180');
             }
 
             if(tabId.includes('settings') || tabId === 'weekly-rate') {
-                document.getElementById('pricing-submenu').classList.remove('hidden');
-                document.getElementById('pricing-chevron').classList.add('rotate-180');
+                const sub = document.getElementById('pricing-submenu');
+                const chev = document.getElementById('pricing-chevron');
+                if(sub) sub.classList.remove('hidden');
+                if(chev) chev.classList.add('rotate-180');
             }
 
             if(tabId === 'spreadsheet' || tabId === 'billing') {
-                document.getElementById('finance-submenu').classList.remove('hidden');
-                document.getElementById('finance-chevron').classList.add('rotate-180');
+                const sub = document.getElementById('finance-submenu');
+                const chev = document.getElementById('finance-chevron');
+                if(sub) sub.classList.remove('hidden');
+                if(chev) chev.classList.add('rotate-180');
             }
 
             if(tabId === 'dashboard') renderDashboard();
@@ -996,18 +1000,18 @@
             const actionBar = document.getElementById('emp-action-bar');
 
             if(subTab === 'directory') {
-                btnDir.className = "px-3 py-1.5 rounded text-xs font-bold bg-amber-500 text-slate-950 transition";
-                btnRec.className = "px-3 py-1.5 rounded text-xs font-bold bg-gray-100 text-slate-700 hover:bg-gray-200 transition";
-                contentDir.classList.remove('hidden');
-                contentRec.classList.add('hidden');
-                actionBar.classList.remove('hidden');
+                if(btnDir) btnDir.className = "px-3 py-1.5 rounded text-xs font-bold bg-amber-500 text-slate-950 transition";
+                if(btnRec) btnRec.className = "px-3 py-1.5 rounded text-xs font-bold bg-gray-100 text-slate-700 hover:bg-gray-200 transition";
+                if(contentDir) contentDir.classList.remove('hidden');
+                if(contentRec) contentRec.classList.add('hidden');
+                if(actionBar) actionBar.classList.remove('hidden');
                 renderEmployeeDirectory();
             } else {
-                btnRec.className = "px-3 py-1.5 rounded text-xs font-bold bg-amber-500 text-slate-950 transition";
-                btnDir.className = "px-3 py-1.5 rounded text-xs font-bold bg-gray-100 text-slate-700 hover:bg-gray-200 transition";
-                contentRec.classList.remove('hidden');
-                contentDir.classList.add('hidden');
-                actionBar.classList.add('hidden');
+                if(btnRec) btnRec.className = "px-3 py-1.5 rounded text-xs font-bold bg-amber-500 text-slate-950 transition";
+                if(btnDir) btnDir.className = "px-3 py-1.5 rounded text-xs font-bold bg-gray-100 text-slate-700 hover:bg-gray-200 transition";
+                if(contentRec) contentRec.classList.remove('hidden');
+                if(contentDir) contentDir.classList.add('hidden');
+                if(actionBar) actionBar.classList.add('hidden');
                 renderRecruiterManagerTable();
             }
         }
@@ -1077,7 +1081,6 @@
             let startDate = document.getElementById('dash-start-date').value;
             let endDate = document.getElementById('dash-end-date').value;
 
-            // กรองข้อมูลตามช่วงวันที่เลือก
             let filteredSpreadsheet = spreadsheetData.filter(r => {
                 if(!startDate && !endDate) return true;
                 if(startDate && endDate) return r.date >= startDate && r.date <= endDate;
@@ -1093,7 +1096,6 @@
             let pendingEmp = employees.filter(e => e.status === 'รอเริ่มงาน').length;
             let workingToday = filteredSpreadsheet.length;
 
-            // พนักงานที่เริ่มงานและสรรหาได้ในช่วงวันที่เลือก (ถ้าไม่ได้เลือกช่วง ให้ใช้วันปัจจุบัน)
             let startingPeriod = employees.filter(e => {
                 if(!startDate && !endDate) return e.startDate === "2026-09-28";
                 if(startDate && endDate) return e.startDate >= startDate && e.startDate <= endDate;
@@ -1116,66 +1118,73 @@
             document.getElementById('dash-recruited-period').innerText = `${recruitedPeriod} คน`;
 
             let workingTbody = document.getElementById('dashboard-working-tbody');
-            workingTbody.innerHTML = filteredSpreadsheet.map(r => {
-                let emp = employees.find(e => e.kid === r.kid || e.kxth === r.kxth) || {};
-                let displayCode = `${r.kid \vert{}\vert{} '-'} /${r.kxth || '-'}`;
-                return `
-                    <tr class="hover:bg-gray-50 font-mono">
-                        <td class="p-2 border-r border-gray-200 text-slate-500">${r.date}</td>
-                        <td class="p-2 border-r border-gray-200 text-blue-600 font-bold">${displayCode}</td>
-                        <td class="p-2 border-r border-gray-200">${emp.recruiter || '-'}</td>
-                        <td class="p-2 border-r border-gray-200">${r.region}</td>
-                        <td class="p-2 border-r border-gray-200">${r.dc}</td>
-                        <td class="p-2 border-r border-gray-200">${r.position}</td>
-                        <td class="p-2 border-r border-gray-200 font-sans font-semibold text-slate-900">${r.name}</td>
-                        <td class="p-2 border-r border-gray-200">${emp.recruiter || '-'}</td>
-                        <td class="p-2 border-r border-gray-200 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold text-[10px]">ทำงาน</span></td>
-                        <td class="p-2 text-center font-bold text-amber-600">${r.pod}</td>
-                    </tr>
-                `;
-            }).join('');
+            if(workingTbody) {
+                workingTbody.innerHTML = filteredSpreadsheet.map(r => {
+                    let emp = employees.find(e => e.kid === r.kid || e.kxth === r.kxth) || {};
+                    let displayCode = `${r.kid || '-'} / ${r.kxth || '-'}`;
+                    return `
+                        <tr class="hover:bg-gray-50 font-mono">
+                            <td class="p-2 border-r border-gray-200 text-slate-500">${r.date}</td>
+                            <td class="p-2 border-r border-gray-200 text-blue-600 font-bold">${displayCode}</td>
+                            <td class="p-2 border-r border-gray-200">${emp.recruiter || '-'}</td>
+                            <td class="p-2 border-r border-gray-200">${r.region}</td>
+                            <td class="p-2 border-r border-gray-200">${r.dc}</td>
+                            <td class="p-2 border-r border-gray-200">${r.position}</td>
+                            <td class="p-2 border-r border-gray-200 font-sans font-semibold text-slate-900">${r.name}</td>
+                            <td class="p-2 border-r border-gray-200">${emp.recruiter || '-'}</td>
+                            <td class="p-2 border-r border-gray-200 text-center"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold text-[10px]">ทำงาน</span></td>
+                            <td class="p-2 text-center font-bold text-amber-600">${r.pod}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
 
             let recCardsContainer = document.getElementById('recruiter-performance-cards');
-            recCardsContainer.innerHTML = recruitersList.map(rec => {
-                let recEmps = employees.filter(e => e.recruiter === rec);
-                let qualifiedCount = recEmps.filter(emp => {
-                    let totalEmpPods = filteredSpreadsheet
-                        .filter(r => r.kid === emp.kid || r.kxth === emp.kxth)
-                        .reduce((sum, r) => sum + r.pod, 0);
-                    return totalEmpPods >= 500;
-                }).length;
+            if(recCardsContainer) {
+                recCardsContainer.innerHTML = recruitersList.map(rec => {
+                    let recEmps = employees.filter(e => e.recruiter === rec);
+                    let qualifiedCount = recEmps.filter(emp => {
+                        let totalEmpPods = filteredSpreadsheet
+                            .filter(r => r.kid === emp.kid || r.kxth === emp.kxth)
+                            .reduce((sum, r) => sum + r.pod, 0);
+                        return totalEmpPods >= 500;
+                    }).length;
 
-                return `
-                    <div class="bg-gray-50 border border-gray-200 rounded p-3 space-y-1.5">
-                        <div class="font-bold text-slate-800 text-xs flex justify-between">
-                            <span>${rec}</span>
-                            <span class="text-[11px] text-amber-600 font-mono">ผ่านเป้า: ${qualifiedCount} คน</span>
+                    return `
+                        <div class="bg-gray-50 border border-gray-200 rounded p-3 space-y-1.5">
+                            <div class="font-bold text-slate-800 text-xs flex justify-between">
+                                <span>${rec}</span>
+                                <span class="text-[11px] text-amber-600 font-mono">ผ่านเป้า: ${qualifiedCount} คน</span>
+                            </div>
+                            <div class="text-[11px] text-slate-500 flex justify-between">
+                                <span>พนักงานในสังกัด: <b>${recEmps.length} คน</b></span>
+                                <span>Active: <b>${recEmps.filter(e=>e.status==='ทำงานอยู่').length} คน</b></span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1 overflow-hidden">
+                                <div class="bg-amber-500 h-1.5 rounded-full" style="width: ${Math.min((qualifiedCount/5)*100, 100)}%"></div>
+                            </div>
+                            <div class="text-[9px] text-slate-400 text-right">เงื่อนไข (POD ≥ 500 ต่อคน): ${qualifiedCount > 0 ? '✅ ผ่าน' : '⏳ กำลังสะสม'}</div>
                         </div>
-                        <div class="text-[11px] text-slate-500 flex justify-between">
-                            <span>พนักงานในสังกัด: <b>${recEmps.length} คน</b></span>
-                            <span>Active: <b>${recEmps.filter(e=>e.status==='ทำงานอยู่').length} คน</b></span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1 overflow-hidden">
-                            <div class="bg-amber-500 h-1.5 rounded-full" style="width: ${Math.min((qualifiedCount/5)*100, 100)}%"></div>
-                        </div>
-                        <div class="text-[9px] text-slate-400 text-right">เงื่อนไข (POD ≥ 500 ต่อคน): ${qualifiedCount > 0 ? '✅ ผ่าน' : '⏳ กำลังสะสม'}</div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
 
-            const ctxA = document.getElementById('dailyAnalyticsChart').getContext('2d');
-            if(analyticsChartInstance) analyticsChartInstance.destroy();
-            analyticsChartInstance = new Chart(ctxA, {
-                type: 'bar',
-                data: {
-                    labels: filteredSpreadsheet.map(r => r.date),
-                    datasets: [
-                        { label: 'ยอด POD', data: filteredSpreadsheet.map(r => r.pod), backgroundColor: '#eab308', borderRadius: 4 },
-                        { label: 'พนักงานมาทำงาน', data: filteredSpreadsheet.map(() => 1), backgroundColor: '#ef4444', borderRadius: 4 }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
+            const chartCanvas = document.getElementById('dailyAnalyticsChart');
+            if(chartCanvas) {
+                const ctxA = chartCanvas.getContext('2d');
+                if(analyticsChartInstance) analyticsChartInstance.destroy();
+                analyticsChartInstance = new Chart(ctxA, {
+                    type: 'bar',
+                    data: {
+                        labels: filteredSpreadsheet.map(r => r.date),
+                        datasets: [
+                            { label: 'ยอด POD', data: filteredSpreadsheet.map(r => r.pod), backgroundColor: '#eab308', borderRadius: 4 },
+                            { label: 'พนักงานมาทำงาน', data: filteredSpreadsheet.map(() => 1), backgroundColor: '#ef4444', borderRadius: 4 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
         }
 
         function renderParcelDetailsTable() {
@@ -1189,11 +1198,11 @@
 
             tbody.innerHTML = spreadsheetData.map(r => {
                 let emp = employees.find(e => e.kid === r.kid || e.kxth === r.kxth) || {};
-                let displayCode = `${r.kid \vert{}\vert{} '-'} /${r.kxth || '-'}`;
+                let displayCode = `${r.kid || '-'} / ${r.kxth || '-'}`;
                 return `
                     <tr class="hover:bg-gray-50 font-mono">
                         <td class="p-2.5 border-r border-gray-200 text-slate-500">${r.date}</td>
-                        <td class="p-2.5 border-r border-gray-200">${r.region} /${r.dc}</td>
+                        <td class="p-2.5 border-r border-gray-200">${r.region} / ${r.dc}</td>
                         <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${displayCode}</td>
                         <td class="p-2.5 border-r border-gray-200 font-sans font-semibold text-slate-900">${r.name}</td>
                         <td class="p-2.5 border-r border-gray-200">${r.position}</td>
@@ -1263,7 +1272,6 @@
             event.target.value = '';
         }
 
-        // --- BRANCH MANAGEMENT ---
         function renderBranchDirectory() {
             const tbody = document.getElementById('branch-directory-tbody');
             if(!tbody) return;
@@ -1283,14 +1291,14 @@
                     </td>
                     <td class="p-2.5 border-r border-gray-200 text-blue-600 font-medium">
                         <div class="flex gap-1">
-                            <input type="text" value="${b.lat \vert{}\vert{} ''}" onchange="branchesList[${idx}].lat=this.value" placeholder="Lat" class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
-                            <input type="text" value="${b.lng \vert{}\vert{} ''}" onchange="branchesList[${idx}].lng=this.value" placeholder="Lng" class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
+                            <input type="text" value="${b.lat || ''}" onchange="branchesList[${idx}].lat=this.value" placeholder="Lat" class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
+                            <input type="text" value="${b.lng || ''}" onchange="branchesList[${idx}].lng=this.value" placeholder="Lng" class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
                         </div>
                     </td>
                     <td class="p-2.5 border-r border-gray-200 text-purple-600 font-medium">
                         <div class="flex gap-1">
-                            <input type="text" value="${b.officer \vert{}\vert{} ''}" onchange="branchesList[${idx}].officer=this.value" placeholder="จนง." class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
-                            <input type="text" value="${b.manager \vert{}\vert{} ''}" onchange="branchesList[${idx}].manager=this.value" placeholder="ผจก." class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
+                            <input type="text" value="${b.officer || ''}" onchange="branchesList[${idx}].officer=this.value" placeholder="จนง." class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
+                            <input type="text" value="${b.manager || ''}" onchange="branchesList[${idx}].manager=this.value" placeholder="ผจก." class="bg-transparent border-b border-dashed border-gray-300 w-1/2 focus:outline-none focus:border-amber-500">
                         </div>
                     </td>
                     <td class="p-2.5 text-center"><button onclick="branchesList.splice(${idx},1); saveData(); renderBranchDirectory(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
@@ -1325,7 +1333,6 @@
             alert('เพิ่มและบันทึกสาขาใหม่เรียบร้อยแล้ว!');
         }
 
-        // --- WEEKLY RATE MANAGER (พร้อมสีเลทและแก้ไขชื่อสัปดาห์ได้) ---
         function getRateBadgeClass(rateType) {
             if(rateType === 'Normal') return 'bg-green-100 text-green-700 border border-green-300 font-bold';
             if(rateType === 'Extra') return 'bg-orange-100 text-orange-700 border border-orange-300 font-bold';
@@ -1385,7 +1392,6 @@
             alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');
         }
 
-        // --- DAILY BATCH INPUT ---
         let batchRows = [];
 
         function addBatchRow() {
@@ -1442,7 +1448,7 @@
                                 ${activeEmps.map(e => `<option value="${e.kid}" ${e.kid === r.kid ? 'selected' : ''}>${e.name} (${e.kid})</option>`).join('')}
                             </select>
                         </td>
-                        <td class="p-2 border-r border-gray-200 font-mono text-slate-500">${r.region} /${r.dc}</td>
+                        <td class="p-2 border-r border-gray-200 font-mono text-slate-500">${r.region} / ${r.dc}</td>
                         <td class="p-2 border-r border-gray-200 font-mono">${r.position}</td>
                         <td class="p-2 border-r border-gray-200">
                             <input type="text" value="${r.rateType}" disabled class="w-24 bg-gray-100 border border-gray-300 rounded px-2 py-1 text-xs font-bold text-center text-amber-700 cursor-not-allowed">
@@ -1502,15 +1508,321 @@
             }
 
             tbody.innerHTML = spreadsheetData.map((row, idx) => {
-                let displayCode = `${row.kid \vert{}\vert{} '-'} /${row.kxth || '-'}`;
+                let displayCode = `${row.kid || '-'} / ${row.kxth || '-'}`;
                 return `
                     <tr class="hover:bg-gray-50 transition font-mono">
                         <td class="p-2.5 border-r border-gray-200 text-slate-500">${row.date}</td>
                         <td class="p-2.5 border-r border-gray-200"><span class="text-blue-600 font-bold">${displayCode}</span> - <span class="text-slate-900 font-sans font-medium">${row.name}</span></td>
-                        <td class="p-2.5 border-r border-gray-200">${row.region} /${row.dc}</td>
+                        <td class="p-2.5 border-r border-gray-200">${row.region} / ${row.dc}</td>
                         <td class="p-2.5 border-r border-gray-200">${row.position}</td>
                         <td class="p-2.5 border-r border-gray-200"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${row.rateType}</span></td>
                         <td class="p-2.5 border-r border-gray-200 text-center font-bold text-green-600">${row.pod}</td>
                         <td class="p-2.5 text-center space-x-3">
                             <button onclick="editDailyRecord(${idx})" class="text-amber-600 hover:text-amber-800 p-1" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1
+                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function editDailyRecord(index) {
+            let record = spreadsheetData[index];
+            let newPod = prompt(`แก้ไขจำนวน POD ของคุณ ${record.name} (${record.date}):`, record.pod);
+            if(newPod !== null) {
+                let parsed = parseInt(newPod);
+                if(!isNaN(parsed)) {
+                    spreadsheetData[index].pod = parsed;
+                    saveData();
+                    renderTable();
+                    renderDashboard();
+                    renderDailyHistoryTable();
+                    alert('อัปเดตข้อมูลสำเร็จ!');
+                } else {
+                    alert('กรุณากรอกตัวเลขที่ถูกต้อง');
+                }
+            }
+        }
+
+        function deleteDailyRecord(index) {
+            if(confirm('คุณต้องการลบรายการบันทึกนี้ใช่หรือไม่?')) {
+                spreadsheetData.splice(index, 1);
+                saveData();
+                renderTable();
+                renderDashboard();
+                renderDailyHistoryTable();
+                alert('ลบรายการเรียบร้อยแล้ว');
+            }
+        }
+
+        function renderBillingTable() {
+            const tbody = document.getElementById('billing-tbody');
+            const tfoot = document.getElementById('billing-tfoot');
+            if(!tbody || !tfoot) return;
+
+            let selectedPeriod = document.getElementById('billing-period-selector').value;
+            let activeEmps = employees.filter(e => e.status === 'ทำงานอยู่');
+            let sumNPod = 0, sumEPod = 0, sumSPod = 0, sumTotalCost = 0, sumTax = 0, sumNet = 0;
+
+            tbody.innerHTML = activeEmps.map((emp, idx) => {
+                let empRecords = spreadsheetData.filter(r => {
+                    let matchEmp = (r.kid === emp.kid || r.kxth === emp.kxth);
+                    if (selectedPeriod === "28 Sep - 04 Oct 2026") {
+                        return matchEmp && r.date >= "2026-09-28" && r.date <= "2026-10-04";
+                    } else if (selectedPeriod === "05 Oct - 11 Oct 2026") {
+                        return matchEmp && r.date >= "2026-10-05" && r.date <= "2026-10-11";
+                    }
+                    return matchEmp;
+                });
+
+                let nPod = 0, nRate = emp.position.includes('Biker') || emp.position.includes('2W') ? costConfig.bikerFlat : costConfig.fourWNormal, nVal = 0;
+                let ePod = 0, eRate = costConfig.fourWExtra, eVal = 0;
+                let sPod = 0, sRate = costConfig.fourWSpecial, sVal = 0;
+
+                empRecords.forEach(r => {
+                    let cost = calculateCost(r.position, r.rateType, r.pod);
+                    if(r.rateType === 'Normal') { 
+                        nPod += r.pod; 
+                        nVal += cost; 
+                        nRate = emp.position.includes('4W') ? costConfig.fourWNormal : costConfig.bikerFlat;
+                    }
+                    else if(r.rateType === 'Extra') { 
+                        ePod += r.pod; 
+                        eVal += cost; 
+                        eRate = costConfig.fourWExtra;
+                    }
+                    else if(r.rateType === 'Special') { 
+                        sPod += r.pod; 
+                        sVal += cost; 
+                        sRate = costConfig.fourWSpecial;
+                    }
+                });
+
+                let totalCost = nVal + eVal + sVal;
+                let tax1Pct = totalCost * 0.01;
+                let netPaid = totalCost - tax1Pct;
+
+                sumNPod += nPod; sumEPod += ePod; sumSPod += sPod;
+                sumTotalCost += totalCost; sumTax += tax1Pct; sumNet += netPaid;
+                let displayCode = `${emp.kid || '-'} / ${emp.kxth || '-'}`;
+
+                return `
+                    <tr class="hover:bg-gray-50 transition text-center font-mono">
+                        <td class="p-1.5 border-r border-gray-300">${idx + 1}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold text-blue-700">${displayCode}</td>
+                        <td class="p-1.5 border-r border-gray-300">${emp.dc}</td>
+                        <td class="p-1.5 border-r border-gray-300 text-xs">${emp.position}</td>
+                        <td class="p-1.5 border-r border-gray-300 text-left font-sans text-slate-900 font-medium">${emp.name}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold text-indigo-700">${emp.bank || '-'}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold text-slate-800">${emp.accNo || '-'}</td>
+                        <td class="p-1.5 border-r border-gray-300">${empRecords.length}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold">${nPod || ''}</td>
+                        <td class="p-1.5 border-r border-gray-300 text-slate-600">${nPod ? nRate.toFixed(2) : ''}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold">${ePod || ''}</td>
+                        <td class="p-1.5 border-r border-gray-300 text-slate-600">${ePod ? eRate.toFixed(2) : ''}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold">${sPod || ''}</td>
+                        <td class="p-1.5 border-r border-gray-300 text-slate-600">${sPod ? sRate.toFixed(2) : ''}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold">฿${totalCost.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td class="p-1.5 border-r border-gray-300">฿${tax1Pct.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold text-green-700">฿${netPaid.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                        <td class="p-1.5 text-left font-sans text-xs text-slate-600">-</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tfoot.innerHTML = `
+                <tr class="text-center font-mono bg-gray-200">
+                    <td colspan="8" class="p-2 text-right uppercase tracking-wider font-bold">รวมทั้งสิ้น (Grand Total)</td>
+                    <td class="p-2 border-r border-gray-300 text-green-700">${sumNPod}</td>
+                    <td class="p-2 border-r border-gray-300"></td>
+                    <td class="p-2 border-r border-gray-300 text-amber-700">${sumEPod}</td>
+                    <td class="p-2 border-r border-gray-300"></td>
+                    <td class="p-2 border-r border-gray-300 text-red-700">${sumSPod}</td>
+                    <td class="p-2 border-r border-gray-300"></td>
+                    <td class="p-2 border-r border-gray-300">฿${sumTotalCost.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="p-2 border-r border-gray-300">฿${sumTax.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="p-2 border-r border-gray-300">฿${sumNet.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="p-2"></td>
+                </tr>
+            `;
+        }
+
+        function renderEmployeeDirectory() {
+            const tbody = document.getElementById('employee-directory-tbody');
+            if(!tbody) return;
+            const filterType = document.getElementById('emp-type-filter').value;
+            let filtered = employees.filter(e => filterType === 'all' || e.empType === filterType);
+
+            tbody.innerHTML = filtered.map((e, idx) => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="p-2.5 border-r border-gray-200 font-mono">
+                        <input type="text" value="${e.region}" onchange="employees[${idx}].region=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 focus:outline-none focus:border-amber-500"> / 
+                        <input type="text" value="${e.dc}" onchange="employees[${idx}].dc=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-12 focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-blue-600 font-bold">
+                        <input type="text" value="${e.kid || ''}" onchange="employees[${idx}].kid=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 focus:outline-none focus:border-amber-500"> /
+                        <input type="text" value="${e.kxth || ''}" onchange="employees[${idx}].kxth=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-semibold text-slate-900">
+                        <input type="text" value="${e.name}" onchange="employees[${idx}].name=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-indigo-700">
+                        <div class="flex gap-1">
+                            <input type="text" value="${e.bank || ''}" onchange="employees[${idx}].bank=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-1/3 focus:outline-none focus:border-amber-500" placeholder="ธนาคาร">
+                            <input type="text" value="${e.accNo || ''}" onchange="employees[${idx}].accNo=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-2/3 focus:outline-none focus:border-amber-500" placeholder="เลขบัญชี">
+                        </div>
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono">
+                        <input type="text" value="${e.position}" onchange="employees[${idx}].position=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-medium text-amber-600">
+                        <input type="text" value="${e.recruiter}" onchange="employees[${idx}].recruiter=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-center">
+                        <div class="flex gap-1">
+                            <input type="date" value="${e.recruitedDate || ''}" onchange="employees[${idx}].recruitedDate=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-1/2 text-[10px] focus:outline-none">
+                            <input type="date" value="${e.startDate || ''}" onchange="employees[${idx}].startDate=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-1/2 text-[10px] focus:outline-none">
+                        </div>
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 text-center">
+                        <select onchange="employees[${idx}].status=this.value" class="bg-white border border-gray-300 rounded p-1 text-xs">
+                            <option value="ทำงานอยู่" ${e.status==='ทำงานอยู่'?'selected':''}>ทำงานอยู่</option>
+                            <option value="ลาออก" ${e.status==='ลาออก'?'selected':''}>ลาออก</option>
+                            <option value="รอเริ่มงาน" ${e.status==='รอเริ่มงาน'?'selected':''}>รอเริ่มงาน</option>
+                        </select>
+                    </td>
+                    <td class="p-2.5 text-center"><button onclick="employees.splice(${idx},1); saveData(); renderEmployeeDirectory(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function saveEmployeeDirectoryChanges() {
+            saveData();
+            updateTimestamp();
+            alert('บันทึกข้อมูลพนักงานเรียบร้อยแล้ว!');
+        }
+
+        function openAddEmployeeModal() { document.getElementById('emp-modal').classList.remove('hidden'); }
+        function closeEmpModal() { document.getElementById('emp-modal').classList.add('hidden'); }
+
+        function saveNewEmployee() {
+            employees.push({
+                region: document.getElementById('new-emp-region').value,
+                dc: document.getElementById('new-emp-dc').value,
+                dcThai: document.getElementById('new-emp-dcthai').value,
+                kid: document.getElementById('new-emp-kid').value,
+                kxth: document.getElementById('new-emp-kxth').value,
+                name: document.getElementById('new-emp-name').value,
+                mobile: document.getElementById('new-emp-mobile').value,
+                position: document.getElementById('new-emp-position').value,
+                empType: document.getElementById('new-emp-type').value,
+                bank: document.getElementById('new-emp-bank').value,
+                accNo: document.getElementById('new-emp-acc').value,
+                recruitedDate: document.getElementById('new-emp-recdate').value || "2026-09-28",
+                startDate: document.getElementById('new-emp-startdate').value || "2026-09-28",
+                recruiter: document.getElementById('new-emp-recruiter').value,
+                status: document.getElementById('new-emp-status').value
+            });
+            saveData();
+            closeEmpModal();
+            renderEmployeeDirectory();
+            renderDashboard();
+            updateTimestamp();
+            alert('เพิ่มและบันทึกข้อมูลพนักงานใหม่เรียบร้อยแล้ว!');
+        }
+
+        function openAddRecruiterModal() { document.getElementById('rec-modal').classList.remove('hidden'); }
+        function closeRecModal() { document.getElementById('rec-modal').classList.add('hidden'); }
+
+        function saveNewRecruiter() {
+            let name = document.getElementById('new-rec-name').value.trim();
+            if(!name) { alert('กรุณากรอกชื่อผู้สรรหา'); return; }
+            if(!recruitersList.includes(name)) {
+                recruitersList.push(name);
+            }
+            saveData();
+            closeRecModal();
+            document.getElementById('new-rec-name').value = "";
+            renderRecruiterManagerTable();
+            updateTimestamp();
+            alert('เพิ่มและบันทึกผู้สรรหาเรียบร้อยแล้ว');
+        }
+
+        function renderTable(filterText = "") {
+            const tbody = document.getElementById('spreadsheet-tbody');
+            if(!tbody) return;
+
+            let filteredData = spreadsheetData;
+            if(filterText.trim() !== "") {
+                const keyword = filterText.toLowerCase();
+                filteredData = spreadsheetData.filter(row => {
+                    let emp = employees.find(e => e.kid === row.kid || e.kxth === row.kxth) || {};
+                    return (
+                        row.date.toLowerCase().includes(keyword) ||
+                        row.region.toLowerCase().includes(keyword) ||
+                        row.dc.toLowerCase().includes(keyword) ||
+                        row.name.toLowerCase().includes(keyword) ||
+                        (row.kid && row.kid.toLowerCase().includes(keyword)) ||
+                        (row.kxth && row.kxth.toLowerCase().includes(keyword)) ||
+                        (emp.recruiter && emp.recruiter.toLowerCase().includes(keyword))
+                    );
+                });
+            }
+
+            tbody.innerHTML = filteredData.map(row => {
+                const revenue = calculateRevenue(row.position, row.rateType, row.pod);
+                const cost = calculateCost(row.position, row.rateType, row.pod);
+                const profit = revenue - cost;
+                let displayCode = `${row.kid || '-'} / ${row.kxth || '-'}`;
+                return `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="p-2 border-r border-gray-200 text-slate-500">${row.date}</td>
+                        <td class="p-2 border-r border-gray-200 font-mono">${row.region} / ${row.dc}</td>
+                        <td class="p-2 border-r border-gray-200"><span class="text-blue-600 font-mono font-bold">${displayCode}</span> - <span class="text-slate-900">${row.name}</span></td>
+                        <td class="p-2 border-r border-gray-200 font-mono">${row.position} (${row.rateType})</td>
+                        <td class="p-2 border-r border-gray-200 font-mono text-center font-bold text-green-600">${row.pod}</td>
+                        <td class="p-2 border-r border-gray-200 font-mono text-amber-600">฿${revenue.toLocaleString()}</td>
+                        <td class="p-2 border-r border-gray-200 font-mono text-red-600">฿${cost.toLocaleString()}</td>
+                        <td class="p-2 font-mono text-green-600 font-bold">฿${profit.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterTable() {
+            const query = document.getElementById('table-search').value;
+            renderTable(query);
+        }
+
+        function saveRevenueSettings() {
+            costConfig.rev2WT1 = parseFloat(document.getElementById('rev-2w-t1').value) || 9;
+            costConfig.rev2WT2 = parseFloat(document.getElementById('rev-2w-t2').value) || 10;
+            costConfig.rev2WT3 = parseFloat(document.getElementById('rev-2w-t3').value) || 11;
+            costConfig.rev4WNormal = parseFloat(document.getElementById('rev-4w-normal').value) || 15;
+            costConfig.rev4WExtra = parseFloat(document.getElementById('rev-4w-extra').value) || 20;
+            costConfig.rev4WSpecial = parseFloat(document.getElementById('rev-4w-special').value) || 25;
+            saveData();
+            updateTimestamp();
+            alert('บันทึกเรทรายรับบริษัทเรียบร้อยแล้ว!');
+        }
+
+        function saveCostSettings() {
+            costConfig.bikerFlat = parseFloat(document.getElementById('cost-2w-flat').value) || 8;
+            costConfig.fourWNormal = parseFloat(document.getElementById('cost-4w-normal').value) || 13;
+            costConfig.fourWExtra = parseFloat(document.getElementById('cost-4w-extra').value) || 18;
+            costConfig.fourWSpecial = parseFloat(document.getElementById('cost-4w-special').value) || 22;
+            saveData();
+            updateTimestamp();
+            alert('บันทึกเรทต้นทุนพนักงานเรียบร้อยแล้ว!');
+        }
+
+        window.onload = function() {
+            updateTimestamp();
+            renderDashboard();
+            renderBranchDirectory();
+            renderDailyHistoryTable();
+            renderTable();
+        };
+    </script>
+</body>
+</html>
