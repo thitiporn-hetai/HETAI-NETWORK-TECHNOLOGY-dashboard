@@ -145,7 +145,7 @@
                     <div id="finance-submenu" class="pl-4 pt-1 space-y-1 hidden">
                         <button onclick="switchTab('spreadsheet')" id="nav-spreadsheet" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-table text-[10px] w-4 text-center"></i>
-                            <span>Spreadsheet</span>
+                            <span>รายละเอียดค่าขนส่ง</span>
                         </button>
                         <button onclick="switchTab('billing')" id="nav-billing" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
                             <i class="fa-solid fa-file-invoice-dollar text-cyan-400 text-[10px] w-4 text-center"></i>
@@ -208,8 +208,8 @@
                         <div class="text-lg font-bold text-indigo-600 font-mono mt-0.5">0 คน</div>
                     </div>
                     <div class="bg-white border border-gray-200 rounded p-2.5 shadow-sm">
-                        <div class="text-[9px] text-slate-500 uppercase font-semibold">พนักงานสรรหาได้</div>
-                        <div class="text-lg font-bold text-purple-600 font-mono mt-0.5" id="dash-recruited-count">0 คน</div>
+                        <div class="text-[9px] text-slate-500 uppercase font-semibold">สรรหาได้วันนี้</div>
+                        <div class="text-lg font-bold text-purple-600 font-mono mt-0.5" id="dash-recruited-today">0 คน</div>
                     </div>
                 </div>
 
@@ -248,12 +248,12 @@
 
                 <!-- RECRUITER PERFORMANCE SUMMARY -->
                 <div class="bg-white border border-gray-200 rounded p-4 shadow-sm space-y-3">
-                    <h3 class="font-semibold text-slate-800 text-xs"><i class="fa-solid fa-user-tie text-purple-500 mr-2"></i> รายงานผลงานผู้สรรหาและเงื่อนไข (POD ≥ 500)</h3>
+                    <h3 class="font-semibold text-slate-800 text-xs"><i class="fa-solid fa-user-tie text-purple-500 mr-2"></i> รายงานผลงานผู้สรรหาและเงื่อนไข (POD ≥ 500 ต่อคน)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="recruiter-performance-cards"></div>
                 </div>
             </div>
 
-            <!-- ==================== TAB 2.1: PARCEL DETAILS (ซ่อนคอลัมน์บัญชีแล้ว) ==================== -->
+            <!-- ==================== TAB 2.1: PARCEL DETAILS ==================== -->
             <div id="tab-parcel-details" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -288,7 +288,7 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 2.2: DAILY BATCH INPUT & EXCEL UPLOAD ==================== -->
+            <!-- ==================== TAB 2.2: DAILY BATCH INPUT ==================== -->
             <div id="tab-daily-input" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -312,7 +312,6 @@
                         </div>
                     </div>
 
-                    <!-- ส่วนฟอร์มสำหรับคีย์ข้อมูล -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
@@ -331,7 +330,6 @@
                     </div>
                 </div>
 
-                <!-- ตารางแสดงประวัติ (ซ่อนคอลัมน์บัญชีแล้ว พร้อมดินสอ/ถังขยะ) -->
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
                         <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
@@ -382,7 +380,6 @@
                         </div>
                     </div>
 
-                    <!-- Sub-Tab Content: Employee Directory (ยังแสดงธนาคารและเลขบัญชีที่หน้านี้ปกติ) -->
                     <div id="subtab-content-directory" class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
@@ -402,7 +399,6 @@
                         </table>
                     </div>
 
-                    <!-- Sub-Tab Content: Recruiter Management -->
                     <div id="subtab-content-recruiters" class="hidden space-y-3">
                         <div class="flex justify-between items-center">
                             <p class="text-[11px] text-slate-500">จัดการรายชื่อผู้สรรหา (คลิกที่ชื่อเพื่อแก้ไขได้) และดูภาพรวมพนักงาน Active / ลาออก</p>
@@ -423,8 +419,8 @@
                                         <th class="p-2.5 border-r border-gray-200 text-center">จำนวนพนักงานในสังกัด</th>
                                         <th class="p-2.5 border-r border-gray-200 text-center text-green-600">ปฏิบัติงานอยู่ (Active)</th>
                                         <th class="p-2.5 border-r border-gray-200 text-center text-red-600">ลาออก (Resigned)</th>
-                                        <th class="p-2.5 border-r border-gray-200 text-center">ยอด POD รวม</th>
-                                        <th class="p-2.5 text-center">สถานะเป้าหมาย (POD ≥ 500)</th>
+                                        <th class="p-2.5 border-r border-gray-200 text-center">พนักงานผ่านเป้า (POD ≥ 500)</th>
+                                        <th class="p-2.5 text-center">สถานะเป้าหมาย</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recruiter-manager-tbody" class="divide-y divide-gray-200"></tbody>
@@ -473,7 +469,7 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 4: WEEKLY RATE MANAGER & MANUAL ADD ==================== -->
+            <!-- ==================== TAB 4: WEEKLY RATE MANAGER (เพิ่มแถวบนตารางโดยตรง) ==================== -->
             <div id="tab-weekly-rate" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-4 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -481,7 +477,7 @@
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-calendar-week text-cyan-600"></i> จัดการเรทรายสัปดาห์ (Weekly Rate Manager)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">เลือกสัปดาห์และเพิ่มเรทรายสาขาได้เองทีละรายการ (ป้องกันข้อมูลเพี้ยน)</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">เลือกสัปดาห์และเพิ่มแถวเรทสาขาได้โดยตรงบนตาราง</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <select id="week-selector" onchange="renderWeeklyRateTable()" class="bg-white border border-gray-300 rounded px-2.5 py-1.5 text-xs text-cyan-700 font-bold">
@@ -489,8 +485,8 @@
                                 <option value="28 Sep - 04 Oct 2026">Rate 28 Sep - 04 Oct 2026</option>
                                 <option value="21 Sep - 27 Sep 2026">Rate 21 Sep - 27 Sep 2026</option>
                             </select>
-                            <button onclick="openAddRateModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
-                                <i class="fa-solid fa-plus mr-1"></i> เพิ่มเรทสาขา
+                            <button onclick="addWeeklyRateRow()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
+                                <i class="fa-solid fa-plus mr-1"></i> เพิ่มแถวเรทสาขา
                             </button>
                             <button onclick="saveWeeklyRates()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-floppy-disk mr-1"></i> บันทึกเรทสัปดาห์
@@ -521,7 +517,7 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 5: BILLING STATEMENT (แสดงธนาคารและเลขบัญชีปกติ) ==================== -->
+            <!-- ==================== TAB 5: BILLING STATEMENT ==================== -->
             <div id="tab-billing" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -679,12 +675,17 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 7: SPREADSHEET ==================== -->
+            <!-- ==================== TAB 7: รายละเอียดค่าขนส่ง (มีปุ่มค้นหา) ==================== -->
             <div id="tab-spreadsheet" class="hidden space-y-3">
                 <div class="bg-white border border-gray-200 rounded p-4 space-y-3 shadow-sm">
                     <div class="flex flex-col md:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
-                        <input type="text" id="table-search" oninput="filterTable()" placeholder="ค้นหารหัส, ชื่อพนักงาน, ผู้สรรหา, DC..." 
-                            class="w-full md:w-1/3 bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-slate-800">
+                        <div class="flex items-center gap-2 w-full md:w-1/2">
+                            <input type="text" id="table-search" placeholder="ค้นหารหัส, ชื่อพนักงาน, ผู้สรรหา, DC..." 
+                                class="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-slate-800">
+                            <button onclick="filterTable()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm whitespace-nowrap">
+                                <i class="fa-solid fa-search mr-1"></i> ค้นหา
+                            </button>
+                        </div>
                         <button onclick="switchTab('daily-input')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
                             <i class="fa-solid fa-pen-to-square mr-1"></i> ไปหน้าคีย์ยอดวิ่งรายวัน
                         </button>
@@ -807,45 +808,6 @@
         </div>
     </div>
 
-    <!-- Modals: Add Weekly Rate -->
-    <div id="rate-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white border border-gray-200 rounded-lg max-w-sm w-full p-5 space-y-3 shadow-xl text-xs">
-            <h3 class="text-sm font-bold text-slate-900">เพิ่มเรทรายสัปดาห์ (ทีละสาขา)</h3>
-            <div class="space-y-2">
-                <div>
-                    <label class="block text-[11px] text-slate-500 mb-1">รอบ Week</label>
-                    <select id="new-rate-week" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs">
-                        <option value="05 Oct - 11 Oct 2026">05 Oct - 11 Oct 2026</option>
-                        <option value="28 Sep - 04 Oct 2026">28 Sep - 04 Oct 2026</option>
-                        <option value="21 Sep - 27 Sep 2026">21 Sep - 27 Sep 2026</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block text-[11px] text-slate-500 mb-1">Region</label><input type="text" id="new-rate-region" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" value="BKKE1"></div>
-                    <div><label class="block text-[11px] text-slate-500 mb-1">DC Code</label><input type="text" id="new-rate-dc" class="w-full bg-white border border-gray-300 rounded p-1.5 text-slate-900 text-xs" placeholder="BGO"></div>
-                </div>
-                <div class="grid grid-cols-3 gap-2">
-                    <div><label class="block text-[9px] text-slate-500 mb-1">Mon</label><select id="new-rate-mon" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
-                    <div><label class="block text-[9px] text-slate-500 mb-1">Tue</label><select id="new-rate-tue" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
-                    <div><label class="block text-[9px] text-slate-500 mb-1">Wed</label><select id="new-rate-wed" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
-                </div>
-                <div class="grid grid-cols-3 gap-2">
-                    <div><label class="block text-[9px] text-slate-500 mb-1">Thu</label><select id="new-rate-thu" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
-                    <div><label class="block text-[9px] text-slate-500 mb-1">Fri</label><select id="new-rate-fri" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
-                    <div><label class="block text-[9px] text-slate-500 mb-1">Sat</label><select id="new-rate-sat" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select></div>
-                </div>
-                <div>
-                    <label class="block text-[9px] text-slate-500 mb-1">Sun</label>
-                    <select id="new-rate-sun" class="w-full bg-white border border-gray-300 rounded p-1 text-[11px]"><option value="Normal">Normal</option><option value="Extra">Extra</option><option value="Special">Special</option></select>
-                </div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeRateModal()" class="px-3 py-1.5 bg-gray-200 text-slate-800 rounded border border-gray-300 hover:bg-gray-300">ยกเลิก</button>
-                <button onclick="saveNewRate()" class="px-3 py-1.5 bg-amber-500 text-slate-950 rounded font-bold hover:bg-amber-600">บันทึกเรท</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Script Engine with LocalStorage -->
     <script>
         let lastUpdatedTime = "-";
@@ -868,6 +830,11 @@
         let recruitersList = JSON.parse(localStorage.getItem('hetai_recruiters')) || ["Mung", "Zhang Cui Xiang", "Sticker", "San"];
         let employees = JSON.parse(localStorage.getItem('hetai_employees')) || [];
         let spreadsheetData = JSON.parse(localStorage.getItem('hetai_spreadsheet')) || [];
+
+        // กำหนดวันที่สร้าง (recruitedDate) ให้พนักงานเก่าที่ยังไม่มี
+        employees.forEach(e => {
+            if(!e.recruitedDate) e.recruitedDate = "28/9/26";
+        });
 
         function saveData() {
             localStorage.setItem('hetai_cost', JSON.stringify(costConfig));
@@ -1013,6 +980,7 @@
             }
         }
 
+        // นับจำนวนพนักงานในสังกัดที่มียอดสะสม >= 500 ต่อคน
         function renderRecruiterManagerTable() {
             const tbody = document.getElementById('recruiter-manager-tbody');
             if(!tbody) return;
@@ -1021,12 +989,16 @@
                 let recEmps = employees.filter(e => e.recruiter === rec);
                 let activeCount = recEmps.filter(e => e.status === 'ทำงานอยู่').length;
                 let resignedCount = recEmps.filter(e => e.status === 'ลาออก').length;
-                let totalPods = spreadsheetData.filter(r => {
-                    let e = employees.find(x => x.kid === r.kid || x.kxth === r.kxth);
-                    return e && e.recruiter === rec;
-                }).reduce((sum, r) => sum + r.pod, 0);
+                
+                // คำนวณว่าพนักงานคนไหนในสังกัดมียอดสะสมรวม >= 500
+                let qualifiedEmpsCount = recEmps.filter(emp => {
+                    let totalEmpPods = spreadsheetData
+                        .filter(r => r.kid === emp.kid || r.kxth === emp.kxth)
+                        .reduce((sum, r) => sum + r.pod, 0);
+                    return totalEmpPods >= 500;
+                }).length;
 
-                let passCondition = totalPods >= 500;
+                let passCondition = qualifiedEmpsCount > 0;
 
                 return `
                     <tr class="hover:bg-gray-50 transition font-mono">
@@ -1036,10 +1008,10 @@
                         <td class="p-2.5 border-r border-gray-200 text-center">${recEmps.length} คน</td>
                         <td class="p-2.5 border-r border-gray-200 text-center text-green-600 font-bold">${activeCount} คน</td>
                         <td class="p-2.5 border-r border-gray-200 text-center text-red-600 font-bold">${resignedCount} คน</td>
-                        <td class="p-2.5 border-r border-gray-200 text-center text-amber-600 font-bold">${totalPods}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-center text-amber-600 font-bold">${qualifiedEmpsCount} คน</td>
                         <td class="p-2.5 text-center">
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold ${passCondition ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">
-                                ${passCondition ? '✅ ผ่านเป้า (≥ 500)' : '⏳ กำลังสะสมยอด'}
+                                ${passCondition ? '✅ ผ่านเงื่อนไข (≥500)' : '⏳ ยังไม่ถึงเป้า'}
                             </span>
                         </td>
                     </tr>
@@ -1073,13 +1045,17 @@
             let pendingEmp = employees.filter(e => e.status === 'รอเริ่มงาน').length;
             let workingToday = spreadsheetData.length;
 
+            // สรรหาได้วันนี้ (อิงจากวันที่ปัจจุบันหรือวันที่จำลอง 28/9/26 หรือตามจริง)
+            let todayStr = "28/9/26";
+            let recruitedToday = employees.filter(e => e.recruitedDate === todayStr).length;
+
             document.getElementById('dash-total-pod').innerText = totalPOD.toLocaleString();
             document.getElementById('dash-total-emp').innerText = `${totalEmp} คน`;
             document.getElementById('dash-active-emp').innerText = `${activeEmp} คน`;
             document.getElementById('dash-resigned-emp').innerText = `${resignedEmp} คน`;
             document.getElementById('dash-pending-emp').innerText = `${pendingEmp} คน`;
             document.getElementById('dash-working-today').innerText = `${workingToday} คน`;
-            document.getElementById('dash-recruited-count').innerText = `${totalEmp} คน`;
+            document.getElementById('dash-recruited-today').innerText = `${recruitedToday} คน`;
 
             let workingTbody = document.getElementById('dashboard-working-tbody');
             workingTbody.innerHTML = spreadsheetData.map(r => {
@@ -1104,25 +1080,27 @@
             let recCardsContainer = document.getElementById('recruiter-performance-cards');
             recCardsContainer.innerHTML = recruitersList.map(rec => {
                 let recEmps = employees.filter(e => e.recruiter === rec);
-                let recPods = spreadsheetData.filter(r => {
-                    let e = employees.find(x => x.kid === r.kid || x.kxth === r.kxth);
-                    return e && e.recruiter === rec;
-                }).reduce((sum, r) => sum + r.pod, 0);
+                let qualifiedCount = recEmps.filter(emp => {
+                    let totalEmpPods = spreadsheetData
+                        .filter(r => r.kid === emp.kid || r.kxth === emp.kxth)
+                        .reduce((sum, r) => sum + r.pod, 0);
+                    return totalEmpPods >= 500;
+                }).length;
 
                 return `
                     <div class="bg-gray-50 border border-gray-200 rounded p-3 space-y-1.5">
                         <div class="font-bold text-slate-800 text-xs flex justify-between">
                             <span>${rec}</span>
-                            <span class="text-[11px] text-amber-600 font-mono">Total POD: ${recPods}</span>
+                            <span class="text-[11px] text-amber-600 font-mono">ผ่านเป้า: ${qualifiedCount} คน</span>
                         </div>
                         <div class="text-[11px] text-slate-500 flex justify-between">
                             <span>พนักงานในสังกัด: <b>${recEmps.length} คน</b></span>
                             <span>Active: <b>${recEmps.filter(e=>e.status==='ทำงานอยู่').length} คน</b></span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-1.5 mt-1 overflow-hidden">
-                            <div class="bg-amber-500 h-1.5 rounded-full" style="width: ${Math.min((recPods/500)*100, 100)}%"></div>
+                            <div class="bg-amber-500 h-1.5 rounded-full" style="width: ${Math.min((qualifiedCount/5)*100, 100)}%"></div>
                         </div>
-                        <div class="text-[9px] text-slate-400 text-right">เป้าหมาย (POD ≥ 500): ${recPods >= 500 ? '✅ ผ่าน' : '⏳ กำลังสะสม'}</div>
+                        <div class="text-[9px] text-slate-400 text-right">เงื่อนไข (POD ≥ 500 ต่อคน): ${qualifiedCount > 0 ? '✅ ผ่าน' : '⏳ กำลังสะสม'}</div>
                     </div>
                 `;
             }).join('');
@@ -1142,7 +1120,6 @@
             });
         }
 
-        // หน้า รายละเอียดการนำจ่ายพัสดุ (ซ่อนคอลัมน์บัญชีแล้ว)
         function renderParcelDetailsTable() {
             let tbody = document.getElementById('parcel-details-tbody');
             if(!tbody) return;
@@ -1218,7 +1195,7 @@
                         renderTable();
                         renderDashboard();
                         renderDailyHistoryTable();
-                        alert(`นำเข้าข้อมูลสำเร็จ ${importedCount} รายการ (กรองรายการซ้ำวันเดิมออก)`);
+                        alert(`นำเข้าข้อมูลสำเร็จ ${importedCount} รายการ`);
                     }
                 } catch(err) {
                     alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์');
@@ -1282,7 +1259,7 @@
             alert('เพิ่มและบันทึกสาขาใหม่เรียบร้อยแล้ว!');
         }
 
-        // --- WEEKLY RATE MANUAL MANAGER ---
+        // --- WEEKLY RATE MANAGER (เพิ่มแถวบนตารางโดยตรง) ---
         function renderWeeklyRateTable() {
             const tbody = document.getElementById('weekly-rate-tbody');
             const currentWeek = document.getElementById('week-selector').value;
@@ -1295,15 +1272,19 @@
                 return `
                     <tr class="hover:bg-gray-50 transition text-center font-mono">
                         <td class="p-2 border-r border-gray-200 text-xs font-sans text-cyan-700 font-bold">${row.week}</td>
-                        <td class="p-2 border-r border-gray-200 font-bold text-slate-900">${row.region}</td>
-                        <td class="p-2 border-r border-gray-200 text-cyan-600 font-bold">${row.dc}</td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.mon}</span></td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.tue}</span></td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.wed}</span></td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.thu}</span></td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.fri}</span></td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.sat}</span></td>
-                        <td class="p-2 border-r border-gray-200"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold">${row.sun}</span></td>
+                        <td class="p-2 border-r border-gray-200 font-bold text-slate-900">
+                            <input type="text" value="${row.region}" onchange="weeklyRatesData[${actualIndex}].region=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 text-center focus:outline-none focus:border-amber-500">
+                        </td>
+                        <td class="p-2 border-r border-gray-200 text-cyan-600 font-bold">
+                            <input type="text" value="${row.dc}" onchange="weeklyRatesData[${actualIndex}].dc=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 text-center focus:outline-none focus:border-amber-500">
+                        </td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].mon=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.mon==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.mon==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.mon==='Special'?'selected':''}>Special</option></select></td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].tue=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.tue==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.tue==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.tue==='Special'?'selected':''}>Special</option></select></td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].wed=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.wed==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.wed==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.wed==='Special'?'selected':''}>Special</option></select></td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].thu=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.thu==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.thu==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.thu==='Special'?'selected':''}>Special</option></select></td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].fri=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.fri==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.fri==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.fri==='Special'?'selected':''}>Special</option></select></td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].sat=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.sat==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.sat==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.sat==='Special'?'selected':''}>Special</option></select></td>
+                        <td class="p-2 border-r border-gray-200"><select onchange="weeklyRatesData[${actualIndex}].sun=this.value" class="bg-white border rounded text-[10px] p-0.5"><option value="Normal" ${row.sun==='Normal'?'selected':''}>Normal</option><option value="Extra" ${row.sun==='Extra'?'selected':''}>Extra</option><option value="Special" ${row.sun==='Special'?'selected':''}>Special</option></select></td>
                         <td class="p-2 text-center">
                             <button onclick="weeklyRatesData.splice(${actualIndex},1); saveData(); renderWeeklyRateTable(); updateTimestamp();" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
                         </td>
@@ -1312,27 +1293,15 @@
             }).join('');
         }
 
-        function openAddRateModal() { document.getElementById('rate-modal').classList.remove('hidden'); }
-        function closeRateModal() { document.getElementById('rate-modal').classList.add('hidden'); }
-
-        function saveNewRate() {
+        function addWeeklyRateRow() {
+            const currentWeek = document.getElementById('week-selector').value;
             weeklyRatesData.push({
-                week: document.getElementById('new-rate-week').value,
-                region: document.getElementById('new-rate-region').value,
-                dc: document.getElementById('new-rate-dc').value.trim(),
-                mon: document.getElementById('new-rate-mon').value,
-                tue: document.getElementById('new-rate-tue').value,
-                wed: document.getElementById('new-rate-wed').value,
-                thu: document.getElementById('new-rate-thu').value,
-                fri: document.getElementById('new-rate-fri').value,
-                sat: document.getElementById('new-rate-sat').value,
-                sun: document.getElementById('new-rate-sun').value
+                week: currentWeek,
+                region: "BKKE1",
+                dc: "BGO",
+                mon: "Normal", tue: "Normal", wed: "Normal", thu: "Normal", fri: "Normal", sat: "Normal", sun: "Normal"
             });
-            saveData();
-            closeRateModal();
             renderWeeklyRateTable();
-            updateTimestamp();
-            alert('เพิ่มเรทประจำสัปดาห์สำเร็จ!');
         }
 
         function saveWeeklyRates() {
@@ -1443,12 +1412,11 @@
 
             let msg = `บันทึกสำเร็จ: เพิ่มใหม่ ${successCount} รายการ`;
             if (duplicateCount > 0) {
-                msg += ` (ข้ามข้อมูลที่ซ้ำวันเดิม ${duplicateCount} รายการ เนื่องจาก 1 คนอนุญาตให้มี 1 รายการต่อวัน)`;
+                msg += ` (ข้ามข้อมูลที่ซ้ำวันเดิม ${duplicateCount} รายการ)`;
             }
             alert(msg);
         }
 
-        // หน้าประวัติการคีย์ (ซ่อนคอลัมน์บัญชีแล้ว)
         function renderDailyHistoryTable() {
             const tbody = document.getElementById('daily-history-tbody');
             if(!tbody) return;
@@ -1469,8 +1437,8 @@
                         <td class="p-2.5 border-r border-gray-200"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${row.rateType}</span></td>
                         <td class="p-2.5 border-r border-gray-200 text-center font-bold text-green-600">${row.pod}</td>
                         <td class="p-2.5 text-center space-x-3">
-                            <button onclick="editDailyRecord(${idx})" class="text-amber-600 hover:text-amber-800 p-1" title="แก้ไข (ดินสอ)"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ (ถังขยะ)"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="editDailyRecord(${idx})" class="text-amber-600 hover:text-amber-800 p-1" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -1506,7 +1474,6 @@
             }
         }
 
-        // หน้าใบวางบิล (แสดงธนาคารและเลขบัญชีปกติ)
         function renderBillingTable() {
             const tbody = document.getElementById('billing-tbody');
             const tfoot = document.getElementById('billing-tfoot');
@@ -1577,7 +1544,6 @@
             `;
         }
 
-        // หน้าจัดการพนักงาน (แสดงและจัดการธนาคารและเลขบัญชีปกติ)
         function renderEmployeeDirectory() {
             const tbody = document.getElementById('employee-directory-tbody');
             if(!tbody) return;
@@ -1644,7 +1610,8 @@
                 bank: document.getElementById('new-emp-bank').value,
                 accNo: document.getElementById('new-emp-acc').value,
                 recruiter: document.getElementById('new-emp-recruiter').value,
-                status: document.getElementById('new-emp-status').value
+                status: document.getElementById('new-emp-status').value,
+                recruitedDate: "28/9/26"
             });
             saveData();
             closeEmpModal();
@@ -1671,10 +1638,28 @@
             alert('เพิ่มและบันทึกผู้สรรหาเรียบร้อยแล้ว');
         }
 
-        function renderTable() {
+        function renderTable(filterText = "") {
             const tbody = document.getElementById('spreadsheet-tbody');
             if(!tbody) return;
-            tbody.innerHTML = spreadsheetData.map(row => {
+
+            let filteredData = spreadsheetData;
+            if(filterText.trim() !== "") {
+                const keyword = filterText.toLowerCase();
+                filteredData = spreadsheetData.filter(row => {
+                    let emp = employees.find(e => e.kid === row.kid || e.kxth === row.kxth) || {};
+                    return (
+                        row.date.toLowerCase().includes(keyword) ||
+                        row.region.toLowerCase().includes(keyword) ||
+                        row.dc.toLowerCase().includes(keyword) ||
+                        row.name.toLowerCase().includes(keyword) ||
+                        (row.kid && row.kid.toLowerCase().includes(keyword)) ||
+                        (row.kxth && row.kxth.toLowerCase().includes(keyword)) ||
+                        (emp.recruiter && emp.recruiter.toLowerCase().includes(keyword))
+                    );
+                });
+            }
+
+            tbody.innerHTML = filteredData.map(row => {
                 const revenue = calculateRevenue(row.position, row.rateType, row.pod);
                 const cost = calculateCost(row.position, row.rateType, row.pod);
                 const profit = revenue - cost;
@@ -1692,6 +1677,11 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        function filterTable() {
+            const query = document.getElementById('table-search').value;
+            renderTable(query);
         }
 
         function saveRevenueSettings() {
@@ -1721,6 +1711,7 @@
             renderDashboard();
             renderBranchDirectory();
             renderDailyHistoryTable();
+            renderTable();
         };
     </script>
 </body>
