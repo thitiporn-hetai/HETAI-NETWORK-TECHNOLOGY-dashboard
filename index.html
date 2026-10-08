@@ -253,7 +253,7 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 2.1: PARCEL DETAILS ==================== -->
+            <!-- ==================== TAB 2.1: PARCEL DETAILS (อิงจากหน้าคีย์รายวัน) ==================== -->
             <div id="tab-parcel-details" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -261,7 +261,7 @@
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-box-open text-yellow-600"></i> รายละเอียดการนำจ่ายพัสดุ (Delivery Report & Export)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">รายงานสรุปข้อมูลดิบทั้งหมด สามารถดาวน์โหลดเป็น Excel ได้ทันที</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">รายงานสรุปข้อมูลดิบทั้งหมดจากหน้าคีย์รายวัน สามารถดาวน์โหลดเป็น Excel ได้ทันที</p>
                         </div>
                         <button onclick="exportToExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-file-excel"></i> ดาวน์โหลดเป็น Excel (.xlsx)
@@ -278,7 +278,7 @@
                                     <th class="p-2.5 border-r border-gray-200">ชื่อ-นามสกุล</th>
                                     <th class="p-2.5 border-r border-gray-200">ประเภทรถ</th>
                                     <th class="p-2.5 border-r border-gray-200">ผู้สรรหา</th>
-                                    <th class="p-2.5 border-r border-gray-200">Rate Type</th>
+                                    <th class="p-2.5 border-r border-gray-200">RATE TYPE</th>
                                     <th class="p-2.5 text-center font-bold">จำนวน POD (ชิ้น)</th>
                                 </tr>
                             </thead>
@@ -296,7 +296,7 @@
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-pen-to-square text-amber-600"></i> บันทึกและคีย์ยอดวิ่งงานรายวัน (Daily Entry)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">อนุญาตให้บันทึกพนักงานแต่ละคนได้เพียง 1 ครั้งต่อวัน และแสดงรายละเอียดด้านล่าง</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">จำกัดให้ 1 คน มีได้เพียง 1 รายการวิ่งงานต่อวัน (ห้ามคีย์ซ้ำวันเดิม)</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
                             <label class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded cursor-pointer transition shadow-sm flex items-center gap-1.5">
@@ -331,7 +331,7 @@
                     </div>
                 </div>
 
-                <!-- ตารางแสดงรายละเอียดที่บันทึกแล้ว (ด้านล่าง พร้อมไอคอนแก้ไขและถังขยะ) -->
+                <!-- ตารางแสดงรายละเอียดที่บันทึกแล้ว (พร้อมไอคอนดินสอแก้ไข และ ถังขยะลบ) -->
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
                         <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
@@ -1143,9 +1143,18 @@
             });
         }
 
+        // หน้า รายละเอียดการนำจ่ายพัสดุ (อิงจากหน้าคีย์รายวัน spreadsheetData)
         function renderParcelDetailsTable() {
             let tbody = document.getElementById('parcel-details-tbody');
+            if(!tbody) return;
+            
+            if(spreadsheetData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">ยังไม่มีข้อมูลการนำจ่ายพัสดุจากหน้าคีย์รายวัน</td></tr>`;
+                return;
+            }
+
             tbody.innerHTML = spreadsheetData.map(r => {
+                let emp = employees.find(e => e.kid === r.kid || e.kxth === r.kxth) || {};
                 let displayCode = `${r.kid || '-'} / ${r.kxth || '-'}`;
                 return `
                     <tr class="hover:bg-gray-50 font-mono">
@@ -1154,7 +1163,7 @@
                         <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${displayCode}</td>
                         <td class="p-2.5 border-r border-gray-200 font-sans font-semibold text-slate-900">${r.name}</td>
                         <td class="p-2.5 border-r border-gray-200">${r.position}</td>
-                        <td class="p-2.5 border-r border-gray-200">${r.recruiter || '-'}</td>
+                        <td class="p-2.5 border-r border-gray-200">${emp.recruiter || '-'}</td>
                         <td class="p-2.5 border-r border-gray-200"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${r.rateType}</span></td>
                         <td class="p-2.5 text-center font-bold text-green-600">${r.pod}</td>
                     </tr>
@@ -1180,6 +1189,7 @@
                     let worksheet = workbook.Sheets[firstSheet];
                     let json = XLSX.utils.sheet_to_json(worksheet);
                     
+                    let importedCount = 0;
                     if(json && json.length > 0) {
                         json.forEach(row => {
                             let kid = String(row['Emp_ID'] || row['KID'] || row['รหัสพนักงาน'] || '').trim();
@@ -1188,9 +1198,9 @@
                             let date = String(row['Date'] || row['วันที่'] || '28/9/26');
                             let dc = emp.dc || 'BGO';
 
-                            // เช็คไม่ให้ซ้ำคนเดิมในวันเดียวกัน
-                            let exists = spreadsheetData.some(item => item.date === date && (item.kid === emp.kid || item.kxth === emp.kxth));
-                            if (!exists) {
+                            // อนุญาตให้ 1 คนมีได้แค่ 1 รายการต่อวัน (เช็คไม่ให้ซ้ำ)
+                            let existingIndex = spreadsheetData.findIndex(item => item.date === date && (item.kid === emp.kid || item.kxth === emp.kxth));
+                            if (existingIndex === -1) {
                                 spreadsheetData.unshift({
                                     id: Date.now() + Math.random(),
                                     date: date,
@@ -1203,13 +1213,14 @@
                                     rateType: getAutoRateType(dc),
                                     pod: pod
                                 });
+                                importedCount++;
                             }
                         });
                         saveData();
                         renderTable();
                         renderDashboard();
                         renderDailyHistoryTable();
-                        alert(`นำเข้าข้อมูลยอดวิ่งสำเร็จ ${json.length} รายการ!`);
+                        alert(`นำเข้าข้อมูลสำเร็จ ${importedCount} รายการ (กรองรายการซ้ำวันเดิมออก)`);
                     }
                 } catch(err) {
                     alert('เกิดข้อผิดพลาดในการอ่านไฟล์ Excel กรุณาตรวจสอบรูปแบบไฟล์');
@@ -1332,7 +1343,7 @@
             alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');
         }
 
-        // --- DAILY BATCH INPUT WITH UNIQUE CHECK & EDIT/DELETE ---
+        // --- DAILY BATCH INPUT WITH UNIQUE CHECK & EDIT (PENCIL) / DELETE (TRASH) ---
         let batchRows = [];
 
         function addBatchRow() {
@@ -1415,13 +1426,10 @@
             let successCount = 0;
 
             batchRows.forEach(row => {
-                // ตรวจสอบว่าพนักงานคนนี้มีประวัติในวัน (date) นี้หรือยัง
+                // อนุญาตให้ 1 คนมีได้แค่ 1 รายการวิ่งงานต่อวัน (เช็คห้ามคีย์ซ้ำวันเดิม)
                 let existingIndex = spreadsheetData.findIndex(item => item.date === row.date && (item.kid === row.kid || item.kxth === row.kxth));
                 
                 if (existingIndex !== -1) {
-                    // ถ้ามีอยู่แล้ว อนุญาตให้อัปเดตข้อมูล POD แทน หรือแจ้งเตือน
-                    spreadsheetData[existingIndex].pod = row.pod;
-                    spreadsheetData[existingIndex].rateType = row.rateType;
                     duplicateCount++;
                 } else {
                     spreadsheetData.unshift({ ...row, id: Date.now() + Math.random() });
@@ -1437,7 +1445,11 @@
             renderDailyHistoryTable();
             addBatchRow();
 
-            alert(`บันทึกสำเร็จ: เพิ่มใหม่ ${successCount} รายการ, อัปเดตซ้ำวันเดิม ${duplicateCount} รายการ`);
+            let msg = `บันทึกสำเร็จ: เพิ่มใหม่ ${successCount} รายการ`;
+            if (duplicateCount > 0) {
+                msg += ` (ข้ามข้อมูลที่ซ้ำวันเดิม ${duplicateCount} รายการ เนื่องจาก 1 คนอนุญาตให้มี 1 รายการต่อวัน)`;
+            }
+            alert(msg);
         }
 
         function renderDailyHistoryTable() {
@@ -1459,9 +1471,9 @@
                         <td class="p-2.5 border-r border-gray-200">${row.position}</td>
                         <td class="p-2.5 border-r border-gray-200"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${row.rateType}</span></td>
                         <td class="p-2.5 border-r border-gray-200 text-center font-bold text-green-600">${row.pod}</td>
-                        <td class="p-2.5 text-center space-x-2">
-                            <button onclick="editDailyRecord(${idx})" class="text-amber-500 hover:text-amber-700 p-1" title="แก้ไข"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ"><i class="fa-solid fa-trash"></i></button>
+                        <td class="p-2.5 text-center space-x-3">
+                            <button onclick="editDailyRecord(${idx})" class="text-amber-600 hover:text-amber-800 p-1" title="แก้ไข (ดินสอ)"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ (ถังขยะ)"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
