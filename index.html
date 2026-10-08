@@ -253,7 +253,7 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 2.1: PARCEL DETAILS (อิงจากหน้าคีย์รายวัน) ==================== -->
+            <!-- ==================== TAB 2.1: PARCEL DETAILS (ซ่อนคอลัมน์บัญชีแล้ว) ==================== -->
             <div id="tab-parcel-details" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -261,7 +261,7 @@
                             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-box-open text-yellow-600"></i> รายละเอียดการนำจ่ายพัสดุ (Delivery Report & Export)
                             </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">รายงานสรุปข้อมูลดิบทั้งหมดจากหน้าคีย์รายวัน สามารถดาวน์โหลดเป็น Excel ได้ทันที</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">รายงานสรุปข้อมูลดิบทั้งหมด สามารถดาวน์โหลดเป็น Excel ได้ทันที</p>
                         </div>
                         <button onclick="exportToExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-file-excel"></i> ดาวน์โหลดเป็น Excel (.xlsx)
@@ -331,7 +331,7 @@
                     </div>
                 </div>
 
-                <!-- ตารางแสดงรายละเอียดที่บันทึกแล้ว (พร้อมไอคอนดินสอแก้ไข และ ถังขยะลบ) -->
+                <!-- ตารางแสดงประวัติ (ซ่อนคอลัมน์บัญชีแล้ว พร้อมดินสอ/ถังขยะ) -->
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
                         <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
@@ -382,17 +382,16 @@
                         </div>
                     </div>
 
-                    <!-- Sub-Tab Content: Employee Directory -->
+                    <!-- Sub-Tab Content: Employee Directory (ยังแสดงธนาคารและเลขบัญชีที่หน้านี้ปกติ) -->
                     <div id="subtab-content-directory" class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-200">Region / DC</th>
-                                    <th class="p-2.5 border-r border-gray-200">คลัง (DC ไทย)</th>
-                                    <th class="p-2.5 border-r border-gray-200 text-blue-600">KID (รหัสเดิม)</th>
-                                    <th class="p-2.5 border-r border-gray-200 text-cyan-600">Kxth7000 (รหัสใหม่)</th>
+                                    <th class="p-2.5 border-r border-gray-200 text-blue-600">KID / 7000</th>
                                     <th class="p-2.5 border-r border-gray-200">ชื่อ-นามสกุล</th>
-                                    <th class="p-2.5 border-r border-gray-200">เบอร์โทรศัพท์</th>
+                                    <th class="p-2.5 border-r border-gray-200 text-indigo-600">ธนาคาร</th>
+                                    <th class="p-2.5 border-r border-gray-200 text-indigo-600">เลขที่บัญชี</th>
                                     <th class="p-2.5 border-r border-gray-200">ประเภทรถ</th>
                                     <th class="p-2.5 border-r border-gray-200">ผู้สรรหา</th>
                                     <th class="p-2.5 border-r border-gray-200 text-center">สถานะ</th>
@@ -522,7 +521,7 @@
                 </div>
             </div>
 
-            <!-- ==================== TAB 5: BILLING STATEMENT ==================== -->
+            <!-- ==================== TAB 5: BILLING STATEMENT (แสดงธนาคารและเลขบัญชีปกติ) ==================== -->
             <div id="tab-billing" class="hidden space-y-4">
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-gray-200">
@@ -531,7 +530,7 @@
                                 <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fa-solid fa-file-invoice-dollar text-cyan-600"></i> ใบวางบิลค่าขนส่ง (หัก 1%)
                                 </h2>
-                                <p class="text-[11px] text-slate-500 mt-0.5">เลือกรอบบิลเพื่อออกเอกสารวางบิลและสรุปยอดจ่ายสุทธิ</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">เลือกรอบบิลเพื่อออกเอกสารวางบิล พร้อมแสดงชื่อธนาคารและเลขบัญชี</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -555,8 +554,8 @@
                                     <th class="p-1.5 border-r border-gray-300" rowspan="2">Station / DC</th>
                                     <th class="p-1.5 border-r border-gray-300" rowspan="2">ประเภท</th>
                                     <th class="p-1.5 border-r border-gray-300" rowspan="2">ชื่อ-นามสกุล</th>
-                                    <th class="p-1.5 border-r border-gray-300" rowspan="2">ธนาคาร</th>
-                                    <th class="p-1.5 border-r border-gray-300" rowspan="2">เลขที่บัญชี</th>
+                                    <th class="p-1.5 border-r border-gray-300 text-blue-700" rowspan="2">ชื่อธนาคาร</th>
+                                    <th class="p-1.5 border-r border-gray-300 text-blue-700" rowspan="2">เลขที่บัญชี</th>
                                     <th class="p-1.5 border-r border-gray-300" rowspan="2">วันทำงาน</th>
                                     <th class="p-1.5 border-r border-gray-300 bg-gray-200 text-slate-900" colspan="2">POD Normal</th>
                                     <th class="p-1.5 border-r border-gray-300 bg-gray-200 text-slate-900" colspan="2">POD Extra</th>
@@ -1143,7 +1142,7 @@
             });
         }
 
-        // หน้า รายละเอียดการนำจ่ายพัสดุ (อิงจากหน้าคีย์รายวัน spreadsheetData)
+        // หน้า รายละเอียดการนำจ่ายพัสดุ (ซ่อนคอลัมน์บัญชีแล้ว)
         function renderParcelDetailsTable() {
             let tbody = document.getElementById('parcel-details-tbody');
             if(!tbody) return;
@@ -1198,7 +1197,6 @@
                             let date = String(row['Date'] || row['วันที่'] || '28/9/26');
                             let dc = emp.dc || 'BGO';
 
-                            // อนุญาตให้ 1 คนมีได้แค่ 1 รายการต่อวัน (เช็คไม่ให้ซ้ำ)
                             let existingIndex = spreadsheetData.findIndex(item => item.date === date && (item.kid === emp.kid || item.kxth === emp.kxth));
                             if (existingIndex === -1) {
                                 spreadsheetData.unshift({
@@ -1343,7 +1341,7 @@
             alert('บันทึกเรทประจำสัปดาห์เรียบร้อยแล้ว!');
         }
 
-        // --- DAILY BATCH INPUT WITH UNIQUE CHECK & EDIT (PENCIL) / DELETE (TRASH) ---
+        // --- DAILY BATCH INPUT ---
         let batchRows = [];
 
         function addBatchRow() {
@@ -1426,9 +1424,7 @@
             let successCount = 0;
 
             batchRows.forEach(row => {
-                // อนุญาตให้ 1 คนมีได้แค่ 1 รายการวิ่งงานต่อวัน (เช็คห้ามคีย์ซ้ำวันเดิม)
                 let existingIndex = spreadsheetData.findIndex(item => item.date === row.date && (item.kid === row.kid || item.kxth === row.kxth));
-                
                 if (existingIndex !== -1) {
                     duplicateCount++;
                 } else {
@@ -1452,6 +1448,7 @@
             alert(msg);
         }
 
+        // หน้าประวัติการคีย์ (ซ่อนคอลัมน์บัญชีแล้ว)
         function renderDailyHistoryTable() {
             const tbody = document.getElementById('daily-history-tbody');
             if(!tbody) return;
@@ -1509,6 +1506,7 @@
             }
         }
 
+        // หน้าใบวางบิล (แสดงธนาคารและเลขบัญชีปกติ)
         function renderBillingTable() {
             const tbody = document.getElementById('billing-tbody');
             const tfoot = document.getElementById('billing-tfoot');
@@ -1545,9 +1543,9 @@
                         <td class="p-1.5 border-r border-gray-300">${emp.dc}</td>
                         <td class="p-1.5 border-r border-gray-300 text-xs">${emp.position}</td>
                         <td class="p-1.5 border-r border-gray-300 text-left font-sans text-slate-900 font-medium">${emp.name}</td>
-                        <td class="p-1.5 border-r border-gray-300">${emp.bank}</td>
-                        <td class="p-1.5 border-r border-gray-300">${emp.accNo}</td>
-                        <td class="p-1.5 border-r border-gray-300">6</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold text-indigo-700">${emp.bank || '-'}</td>
+                        <td class="p-1.5 border-r border-gray-300 font-bold text-slate-800">${emp.accNo || '-'}</td>
+                        <td class="p-1.5 border-r border-gray-300">${empRecords.length}</td>
                         <td class="p-1.5 border-r border-gray-300 font-bold">${nPod || ''}</td>
                         <td class="p-1.5 border-r border-gray-300 text-slate-600">${nPod ? nRate.toFixed(2) : ''}</td>
                         <td class="p-1.5 border-r border-gray-300 font-bold">${ePod || ''}</td>
@@ -1579,6 +1577,7 @@
             `;
         }
 
+        // หน้าจัดการพนักงาน (แสดงและจัดการธนาคารและเลขบัญชีปกติ)
         function renderEmployeeDirectory() {
             const tbody = document.getElementById('employee-directory-tbody');
             if(!tbody) return;
@@ -1591,20 +1590,18 @@
                         <input type="text" value="${e.region}" onchange="employees[${idx}].region=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-16 focus:outline-none focus:border-amber-500"> / 
                         <input type="text" value="${e.dc}" onchange="employees[${idx}].dc=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-12 focus:outline-none focus:border-amber-500">
                     </td>
-                    <td class="p-2.5 border-r border-gray-200">
-                        <input type="text" value="${e.dcThai}" onchange="employees[${idx}].dcThai=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
-                    </td>
                     <td class="p-2.5 border-r border-gray-200 font-mono text-blue-600 font-bold">
-                        <input type="text" value="${e.kid || ''}" onchange="employees[${idx}].kid=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
-                    </td>
-                    <td class="p-2.5 border-r border-gray-200 font-mono text-cyan-600 font-bold">
-                        <input type="text" value="${e.kxth || ''}" onchange="employees[${idx}].kxth=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                        <input type="text" value="${e.kid || ''}" onchange="employees[${idx}].kid=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-20 focus:outline-none focus:border-amber-500"> /
+                        <input type="text" value="${e.kxth || ''}" onchange="employees[${idx}].kxth=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-20 focus:outline-none focus:border-amber-500">
                     </td>
                     <td class="p-2.5 border-r border-gray-200 font-semibold text-slate-900">
                         <input type="text" value="${e.name}" onchange="employees[${idx}].name=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
                     </td>
-                    <td class="p-2.5 border-r border-gray-200 font-mono text-slate-500">
-                        <input type="text" value="${e.mobile || ''}" onchange="employees[${idx}].mobile=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-indigo-700">
+                        <input type="text" value="${e.bank || ''}" onchange="employees[${idx}].bank=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500" placeholder="ธนาคาร">
+                    </td>
+                    <td class="p-2.5 border-r border-gray-200 font-mono text-slate-800 font-bold">
+                        <input type="text" value="${e.accNo || ''}" onchange="employees[${idx}].accNo=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500" placeholder="เลขบัญชี">
                     </td>
                     <td class="p-2.5 border-r border-gray-200 font-mono">
                         <input type="text" value="${e.position}" onchange="employees[${idx}].position=this.value" class="bg-transparent border-b border-dashed border-gray-300 w-full focus:outline-none focus:border-amber-500">
