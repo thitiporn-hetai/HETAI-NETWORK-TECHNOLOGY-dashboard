@@ -35,15 +35,14 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         
         @media print {
-            @page { size: A4 landscape; margin: 10mm; }
-            body { background: white !important; color: #000 !important; font-size: 11px !important; }
+            @page { size: landscape; margin: 10mm; }
+            body { background: white !important; color: #1f2937 !important; font-size: 11px !important; width: 100% !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             aside, header, button, .no-print { display: none !important; }
-            main { padding: 0 !important; width: 100% !important; margin: 0 !important; }
-            #tab-billing { display: block !important; }
-            #tab-billing .bg-white { border: none !important; box-shadow: none !important; padding: 0 !important; }
+            main { padding: 0 !important; width: 100% !important; margin: 0 !important; max-width: none !important; }
+            .bg-white { background-color: #ffffff !important; border: 1px solid #e5e7eb !important; box-shadow: none !important; }
             table { width: 100% !important; border-collapse: collapse !important; font-size: 10px !important; }
-            th, td { border: 1px solid #333 !important; padding: 4px !important; color: #000 !important; }
-            th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; }
+            th, td { border: 1px solid #cbd5e1 !important; padding: 6px !important; color: #1f2937 !important; }
+            th { background-color: #f9fafb !important; }
         }
     </style>
 </head>
@@ -154,13 +153,6 @@
                     </div>
                 </div>
             </nav>
-
-            <div class="p-3 border-t border-gray-800">
-                <button onclick="exportCSV()" class="w-full px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs rounded border border-gray-800 flex items-center justify-center space-x-2 transition">
-                    <i class="fa-solid fa-download"></i>
-                    <span>Export CSV Data</span>
-                </button>
-            </div>
         </aside>
 
         <!-- Main Content Area -->
@@ -178,6 +170,9 @@
                         <button onclick="resetDashboardDateFilter()" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-slate-700 rounded border border-gray-300 text-[11px]">ทั้งหมด</button>
                         <button onclick="refreshDashboardData()" class="text-[11px] bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1 rounded border border-blue-200 transition ml-2">
                             <i class="fa-solid fa-rotate mr-1"></i> รีเฟรช
+                        </button>
+                        <button onclick="window.print()" class="text-[11px] bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded transition shadow-sm ml-2">
+                            <i class="fa-solid fa-file-pdf mr-1 text-red-400"></i> ดาวน์โหลด PDF (พอดีจอ)
                         </button>
                     </div>
                 </div>
@@ -271,7 +266,7 @@
                             </h2>
                             <p class="text-[11px] text-slate-500 mt-0.5">รายงานสรุปข้อมูลดิบทั้งหมด สามารถดาวน์โหลดเป็น Excel ได้ทันที</p>
                         </div>
-                        <button onclick="exportToExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
+                        <button onclick="exportToExcel('parcel-export-table', 'Hetai_Delivery_Report.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-file-excel"></i> ดาวน์โหลดเป็น Excel (.xlsx)
                         </button>
                     </div>
@@ -339,11 +334,16 @@
                 </div>
 
                 <div class="bg-white border border-gray-200 rounded p-5 space-y-3 shadow-sm">
-                    <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
-                        <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
-                    </h3>
+                    <div class="flex items-center justify-between pb-2">
+                        <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
+                        </h3>
+                        <button onclick="exportToExcel('daily-history-table', 'Hetai_Daily_History.xlsx')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-[11px] font-bold rounded transition shadow-sm flex items-center gap-1">
+                            <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                        </button>
+                    </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
+                        <table class="w-full text-left text-xs border-collapse" id="daily-history-table">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-200">วันที่</th>
@@ -352,7 +352,7 @@
                                     <th class="p-2.5 border-r border-gray-200">ประเภทรถ</th>
                                     <th class="p-2.5 border-r border-gray-200">Rate Type</th>
                                     <th class="p-2.5 border-r border-gray-200 text-center font-bold">จำนวน POD</th>
-                                    <th class="p-2.5 text-center">จัดการ (แก้ไข / ลบ)</th>
+                                    <th class="p-2.5 text-center no-print">จัดการ (แก้ไข / ลบ)</th>
                                 </tr>
                             </thead>
                             <tbody id="daily-history-tbody" class="divide-y divide-gray-200"></tbody>
@@ -374,6 +374,9 @@
                             </button>
                         </div>
                         <div id="emp-action-bar" class="flex items-center gap-2 flex-wrap">
+                            <button onclick="exportToExcel('employee-directory-table', 'Hetai_Employees_Directory.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                            </button>
                             <select id="emp-type-filter" onchange="renderEmployeeDirectory()" class="bg-white border border-gray-300 rounded px-2.5 py-1.5 text-xs text-slate-800">
                                 <option value="all">พนักงานทั้งหมด</option>
                                 <option value="พนักงานประจำ">พนักงานประจำ</option>
@@ -389,7 +392,7 @@
                     </div>
 
                     <div id="subtab-content-directory" class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
+                        <table class="w-full text-left text-xs border-collapse" id="employee-directory-table">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-200">Region / DC</th>
@@ -411,6 +414,9 @@
                         <div class="flex justify-between items-center">
                             <p class="text-[11px] text-slate-500">จัดการรายชื่อผู้สรรหา (คลิกที่ชื่อเพื่อแก้ไขได้) และดูภาพรวมพนักงาน Active / ลาออก</p>
                             <div class="flex items-center gap-2">
+                                <button onclick="exportToExcel('recruiter-manager-table', 'Hetai_Recruiters_Report.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1">
+                                    <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                                </button>
                                 <button onclick="openAddRecruiterModal()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded transition shadow-sm">
                                     <i class="fa-solid fa-user-plus mr-1"></i> เพิ่มผู้สรรหาใหม่
                                 </button>
@@ -420,7 +426,7 @@
                             </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs border-collapse">
+                            <table class="w-full text-left text-xs border-collapse" id="recruiter-manager-table">
                                 <thead>
                                     <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
                                         <th class="p-2.5 border-r border-gray-200">ชื่อผู้สรรหา (Recruiter - คลิกเพื่อแก้ไข)</th>
@@ -449,6 +455,9 @@
                             <p class="text-[11px] text-slate-500 mt-0.5">จัดการข้อมูลสาขา คลังสินค้า (DC) ผู้ดูแล พิกัดละติจูด/ลองจิจูด และพื้นที่ปฏิบัติงาน</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
+                            <button onclick="exportToExcel('branch-directory-table', 'Hetai_Branches_Report.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                            </button>
                             <button onclick="openAddBranchModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
                                 <i class="fa-solid fa-plus mr-1"></i> เพิ่มสาขาใหม่
                             </button>
@@ -459,7 +468,7 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
+                        <table class="w-full text-left text-xs border-collapse" id="branch-directory-table">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-200">Region</th>
@@ -488,6 +497,9 @@
                             <p class="text-[11px] text-slate-500 mt-0.5">เลือกสัปดาห์ แก้ไขชื่อรอบสัปดาห์ และกำหนดเรทแต่ละวันได้โดยตรง</p>
                         </div>
                         <div class="flex items-center gap-2 flex-wrap">
+                            <button onclick="exportToExcel('weekly-rate-table', 'Hetai_Weekly_Rates.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                            </button>
                             <select id="week-selector" onchange="renderWeeklyRateTable()" class="bg-white border border-gray-300 rounded px-2.5 py-1.5 text-xs text-cyan-700 font-bold">
                                 <option value="05 Oct - 11 Oct 2026">Rate 05 Oct - 11 Oct 2026</option>
                                 <option value="28 Sep - 04 Oct 2026">Rate 28 Sep - 04 Oct 2026</option>
@@ -503,7 +515,7 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse border border-gray-200">
+                        <table class="w-full text-left text-xs border-collapse border border-gray-200" id="weekly-rate-table">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[9px] text-center">
                                     <th class="p-2 border-r border-gray-200">รอบ Week (แก้ไขชื่อได้)</th>
@@ -536,6 +548,9 @@
                             <p class="text-[11px] text-slate-500 mt-0.5">แสดงเฉพาะรายการที่เกิดขึ้นภายในสัปดาห์/ช่วงวันที่เลือกเท่านั้น พร้อมคำนวณราคาถูกต้องตามต้นทุนพนักงาน</p>
                         </div>
                         <div class="flex items-center gap-2">
+                            <button onclick="exportToExcel('billing-table', 'Hetai_Billing_Statement.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                            </button>
                             <select id="billing-period-selector" onchange="renderBillingTable()" class="bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-cyan-700 font-bold shadow-sm">
                                 <option value="05 Oct - 11 Oct 2026">05 Oct - 11 Oct 2026</option>
                                 <option value="28 Sep - 04 Oct 2026" selected>28 Sep - 04 Oct 2026</option>
@@ -548,7 +563,7 @@
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse border border-gray-300">
+                        <table class="w-full text-left text-xs border-collapse border border-gray-300" id="billing-table">
                             <thead>
                                 <tr class="bg-gray-100 text-slate-900 border-b border-gray-300 uppercase font-mono text-[9px] text-center">
                                     <th class="p-1.5 border-r border-gray-300" rowspan="2">ลำดับ</th>
@@ -692,12 +707,17 @@
                                 <i class="fa-solid fa-search mr-1"></i> ค้นหา
                             </button>
                         </div>
-                        <button onclick="switchTab('daily-input')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
-                            <i class="fa-solid fa-pen-to-square mr-1"></i> ไปหน้าคีย์ยอดวิ่งรายวัน
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="exportToExcel('spreadsheet-table', 'Hetai_Spreadsheet_Report.xlsx')" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                            </button>
+                            <button onclick="switchTab('daily-input')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold rounded transition shadow-sm">
+                                <i class="fa-solid fa-pen-to-square mr-1"></i> ไปหน้าคีย์ยอดวิ่งรายวัน
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs border-collapse">
+                        <table class="w-full text-left text-xs border-collapse" id="spreadsheet-table">
                             <thead>
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[10px]">
                                     <th class="p-2 border-r border-gray-200">Date</th>
@@ -1214,10 +1234,11 @@
             }).join('');
         }
 
-        function exportToExcel() {
-            let table = document.getElementById("parcel-export-table");
-            let wb = XLSX.utils.table_to_book(table, {sheet: "DeliveryReport"});
-            XLSX.writeFile(wb, "Hetai_Delivery_Report.xlsx");
+        function exportToExcel(tableId, filename) {
+            let table = document.getElementById(tableId);
+            if(!table) return;
+            let wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+            XLSX.writeFile(wb, filename);
         }
 
         function importExcelData(event) {
@@ -1517,7 +1538,7 @@
                         <td class="p-2.5 border-r border-gray-200">${row.position}</td>
                         <td class="p-2.5 border-r border-gray-200"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold">${row.rateType}</span></td>
                         <td class="p-2.5 border-r border-gray-200 text-center font-bold text-green-600">${row.pod}</td>
-                        <td class="p-2.5 text-center space-x-3">
+                        <td class="p-2.5 text-center space-x-3 no-print">
                             <button onclick="editDailyRecord(${idx})" class="text-amber-600 hover:text-amber-800 p-1" title="แก้ไข"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="deleteDailyRecord(${idx})" class="text-red-500 hover:text-red-700 p-1" title="ลบ"><i class="fa-solid fa-trash"></i></button>
                         </td>
