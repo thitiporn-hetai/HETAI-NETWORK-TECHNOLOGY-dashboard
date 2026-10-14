@@ -338,9 +338,14 @@
                         <h3 class="font-bold text-slate-900 text-xs flex items-center gap-2">
                             <i class="fa-solid fa-list text-blue-600"></i> รายละเอียดประวัติการคีย์ยอดวิ่งงานรายวัน
                         </h3>
-                        <button onclick="exportToExcel('daily-history-table', 'Hetai_Daily_History.xlsx')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-[11px] font-bold rounded transition shadow-sm flex items-center gap-1">
-                            <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="clearAllDailyRecords()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> ล้างข้อมูลทั้งหมด
+                            </button>
+                            <button onclick="exportToExcel('daily-history-table', 'Hetai_Daily_History.xlsx')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-[11px] font-bold rounded transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> ดาวน์โหลด Excel
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs border-collapse" id="daily-history-table">
@@ -1545,6 +1550,17 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        function clearAllDailyRecords() {
+            if(confirm('⚠️ คำเตือน: คุณต้องการล้างข้อมูลประวัติการบันทึกทั้งหมดใช่หรือไม่? (การกระทำนี้ไม่สามารถย้อนกลับได้)')) {
+                spreadsheetData = [];
+                saveData();
+                renderTable();
+                renderDashboard();
+                renderDailyHistoryTable();
+                alert('ล้างข้อมูลทั้งหมดเรียบร้อยแล้ว');
+            }
         }
 
         function editDailyRecord(index) {
