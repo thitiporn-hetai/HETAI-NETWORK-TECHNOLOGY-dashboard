@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hetai Network & Fleet Operations Dashboard</title>
+    <title>Hetai Network - Branch Quotation Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,11 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        hetaidark: '#f3f4f6',
-                        hetaisidebar: '#111827',
-                        hetaicard: '#ffffff',
-                        hetaiborder: '#e5e7eb',
-                        hetaiaccent: '#eab308'
+                        hetaisidebar: '#111827'
                     }
                 }
             }
@@ -36,6 +32,7 @@
             body { background: white !important; color: black !important; }
             aside, header, button, .no-print { display: none !important; }
             main { padding: 0 !important; width: 100% !important; }
+            input.rate-input, select.vehicle-select { border: none !important; background: transparent !important; text-align: center; appearance: none; }
         }
     </style>
 </head>
@@ -49,7 +46,7 @@
             </div>
             <div class="text-xs">
                 <div class="font-bold text-white tracking-wide">Hetai Network.</div>
-                <div class="text-slate-400 text-[10px]">泰网络 / HT-557970</div>
+                <div class="text-slate-400 text-[10px]">ใบเสนอราคาแต่ละสาขา / HT-557970</div>
             </div>
         </div>
         <div class="flex items-center space-x-3 text-xs">
@@ -64,49 +61,28 @@
         <!-- Sidebar Navigation -->
         <aside class="w-full lg:w-64 bg-hetaisidebar border-r border-gray-800 flex flex-col shrink-0 min-h-[calc(100vh-3.5rem)] text-slate-100">
             <nav class="flex-1 p-2 space-y-1 overflow-y-auto text-xs">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full px-3 py-2.5 rounded bg-slate-800 text-white font-medium flex items-center space-x-3 transition">
-                    <i class="fa-solid fa-house w-4 text-center text-amber-400"></i>
-                    <span>คอนโซล (Dashboard)</span>
+                <button onclick="switchTab('quotation')" id="nav-quotation" class="w-full px-3 py-2.5 rounded bg-slate-800 text-white font-medium flex items-center space-x-3 transition">
+                    <i class="fa-solid fa-file-invoice-dollar w-4 text-center text-amber-400"></i>
+                    <span>ใบเสนอราคาแต่ละสาขา</span>
                 </button>
-                <button onclick="switchTab('daily-input')" id="nav-daily-input" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-3 transition">
-                    <i class="fa-solid fa-pen-to-square w-4 text-center text-yellow-400"></i>
-                    <span class="font-bold text-yellow-400">ดึงข้อมูล & ซิงค์รายวัน</span>
+                <button onclick="switchTab('region-summary')" id="nav-region-summary" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-3 transition">
+                    <i class="fa-solid fa-map-location-dot w-4 text-center text-cyan-400"></i>
+                    <span>สรุปตาม Region</span>
                 </button>
-                <button onclick="switchTab('employees')" id="nav-employees" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-3 transition">
-                    <i class="fa-solid fa-users w-4 text-center text-blue-400"></i>
-                    <span>การจัดการพนักงาน</span>
+                <button onclick="switchTab('daily-data')" id="nav-daily-data" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center space-x-3 transition">
+                    <i class="fa-solid fa-table w-4 text-center text-yellow-400"></i>
+                    <span>ข้อมูลรายวัน (DailyData)</span>
                 </button>
-
-                <!-- Dropdown: การเงิน -->
-                <div class="pt-1">
-                    <button onclick="toggleMenu('finance')" class="w-full px-3 py-2.5 rounded text-slate-300 hover:text-white hover:bg-slate-800 flex items-center justify-between transition">
-                        <div class="flex items-center space-x-3">
-                            <i class="fa-solid fa-wallet w-4 text-center text-cyan-400"></i>
-                            <span class="font-bold">การเงิน</span>
-                        </div>
-                        <i id="finance-chevron" class="fa-solid fa-chevron-down text-[10px] rotate-180 transition-transform"></i>
-                    </button>
-                    <div id="finance-submenu" class="pl-4 pt-1 space-y-1">
-                        <button onclick="switchTab('spreadsheet')" id="nav-spreadsheet" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 font-medium flex items-center space-x-2 transition">
-                            <i class="fa-solid fa-table text-amber-400 text-[10px] w-4 text-center"></i>
-                            <span>Spreadsheet (เมทริกซ์รายวัน)</span>
-                        </button>
-                        <button onclick="switchTab('billing')" id="nav-billing" class="w-full px-3 py-2 rounded text-slate-400 hover:text-white hover:bg-slate-800 flex items-center space-x-2 transition">
-                            <i class="fa-solid fa-file-invoice-dollar text-cyan-400 text-[10px] w-4 text-center"></i>
-                            <span>ใบวางบิลค่าขนส่ง (สรุปรายคน)</span>
-                        </button>
-                    </div>
-                </div>
             </nav>
 
             <div class="p-3 border-t border-gray-800 space-y-2">
                 <button onclick="fetchAllDataFromSheets(true)" class="w-full px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded flex items-center justify-center space-x-2 transition">
                     <i class="fa-solid fa-sync"></i>
-                    <span>ซิงค์ข้อมูลใหม่</span>
+                    <span>ซิงค์ข้อมูลจาก Sheet</span>
                 </button>
-                <button onclick="exportCSV()" class="w-full px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs rounded border border-gray-800 flex items-center justify-center space-x-2 transition">
-                    <i class="fa-solid fa-download"></i>
-                    <span>Export CSV Data</span>
+                <button onclick="resetBranchRates()" class="w-full px-3 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs rounded border border-gray-800 flex items-center justify-center space-x-2 transition">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>รีเซ็ตเรทตามไฟล์สาขา</span>
                 </button>
             </div>
         </aside>
@@ -114,154 +90,165 @@
         <!-- Main Content Area -->
         <main class="flex-1 max-w-full overflow-x-hidden p-4 lg:p-6 space-y-6 bg-gray-100">
 
-            <!-- แถบสถานะข้อมูลที่ดึงได้ -->
-            <div id="data-debug-bar" class="no-print bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-xs flex flex-wrap items-center justify-between gap-2 shadow-sm">
+            <!-- แถบสถานะข้อมูล -->
+            <div class="no-print bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-xs flex flex-wrap items-center justify-between gap-2 shadow-sm">
                 <div class="flex items-center gap-3 text-slate-600">
-                    <span><i class="fa-solid fa-database text-blue-600 mr-1"></i> พนักงานในระบบ: <strong id="count-emp" class="text-slate-900 font-mono">0</strong></span>
+                    <span><i class="fa-solid fa-warehouse text-cyan-600 mr-1"></i> จำนวนสาขา: <strong id="count-dc" class="text-slate-900 font-mono">0</strong></span>
                     <span>|</span>
                     <span><i class="fa-solid fa-calendar-day text-amber-600 mr-1"></i> รายการรายวัน: <strong id="count-daily" class="text-slate-900 font-mono">0</strong></span>
                 </div>
                 <div id="sync-message" class="text-slate-500 font-medium">กำลังรอโหลดข้อมูล...</div>
             </div>
 
-            <!-- ==================== TAB 1: DASHBOARD ==================== -->
-            <div id="tab-dashboard" class="space-y-6">
-                <!-- ตัวกรองสถานีในหน้าคอนโซล -->
-                <div class="no-print bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-slate-700"><i class="fa-solid fa-location-dot text-cyan-600 mr-1"></i> กรองตามสถานี (DC):</span>
-                        <select id="filter-dashboard-dc" onchange="renderDashboardSummaries()" class="bg-gray-50 border border-gray-300 rounded px-3 py-1.5 text-slate-900 font-mono font-bold focus:outline-none focus:border-blue-500">
-                            <option value="ALL">ทุกสถานี</option>
-                        </select>
-                    </div>
-                    <button onclick="document.getElementById('filter-dashboard-dc').value='ALL'; renderDashboardSummaries();" class="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
-                        <i class="fa-solid fa-rotate-right mr-1"></i> แสดงทุกสถานี
-                    </button>
+            <!-- การ์ดสรุปภาพรวม -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 uppercase mb-1">จำนวนสาขา (DC)</div>
+                    <div class="text-2xl font-bold text-blue-600 font-mono" id="stat-dc-count">0</div>
                 </div>
-
-                <!-- การ์ดสรุปหลัก -->
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                        <div class="text-xs text-slate-500 uppercase mb-1">พนักงานรวม</div>
-                        <div class="text-2xl font-bold text-blue-600 font-mono" id="stat-total-people">0</div>
-                    </div>
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                        <div class="text-xs text-slate-500 uppercase mb-1">POD ทั้งหมด</div>
-                        <div class="text-2xl font-bold text-slate-900 font-mono" id="stat-total-pod">0</div>
-                    </div>
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                        <div class="text-xs text-slate-500 uppercase mb-1">Total Cost</div>
-                        <div class="text-2xl font-bold text-amber-600 font-mono" id="stat-total-cost">0</div>
-                    </div>
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                        <div class="text-xs text-slate-500 uppercase mb-1">Total Tax 1%</div>
-                        <div class="text-2xl font-bold text-red-600 font-mono" id="stat-total-tax">0</div>
-                    </div>
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm col-span-2 md:col-span-1">
-                        <div class="text-xs text-slate-500 uppercase mb-1">Net Paid</div>
-                        <div class="text-2xl font-bold text-green-600 font-mono" id="stat-total-net">0</div>
-                    </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 uppercase mb-1">POD ทั้งหมด</div>
+                    <div class="text-2xl font-bold text-slate-900 font-mono" id="stat-total-pod">0</div>
                 </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 uppercase mb-1">ยอดรวมใบเสนอราคา</div>
+                    <div class="text-2xl font-bold text-amber-600 font-mono" id="stat-total-cost">0.00</div>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 uppercase mb-1">หัก ณ ที่จ่าย 1%</div>
+                    <div class="text-2xl font-bold text-red-600 font-mono" id="stat-total-tax">0.00</div>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm col-span-2 md:col-span-1">
+                    <div class="text-xs text-slate-500 uppercase mb-1">ยอดสุทธิ</div>
+                    <div class="text-2xl font-bold text-green-600 font-mono" id="stat-total-net">0.00</div>
+                </div>
+            </div>
 
-                <!-- ตารางสรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตาม Region -->
+            <!-- ==================== TAB 1: ใบเสนอราคาแต่ละสาขา ==================== -->
+            <div id="tab-quotation" class="space-y-6">
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-200 pb-3">
                         <div>
-                            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-map-location-dot text-blue-600"></i> สรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตาม Region
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">แยกสรุปตามกลุ่ม Region (จำนวนคน, วันทำงานรวม, POD รวม, POD เฉลี่ย, ค่าใช้จ่ายรวม, หัก ณ ที่จ่าย 1% และยอดจ่ายสุทธิ)</p>
+                            <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-file-invoice-dollar text-amber-600"></i> ใบเสนอราคาของแต่ละสาขา (Branch Quotation)
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-0.5">ตั้งค่าเรทเริ่มต้นตามไฟล์ 89 สาขา (เลือก 4W/2W หรือพิมพ์แก้เรทต่อสาขาได้โดยตรง)</p>
                         </div>
-                        <button onclick="exportRegionSummaryExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
-                            <i class="fa-solid fa-file-excel"></i> Export สรุปตาม Region
+                        <div class="flex flex-wrap items-center gap-2 no-print">
+                            <button onclick="exportQuotationExcel()" class="px-3.5 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-excel"></i> Export ใบเสนอราคา (Excel)
+                            </button>
+                            <button onclick="window.print()" class="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-print"></i> พิมพ์ / PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ตัวกรองสาขาและ Region -->
+                    <div class="no-print bg-gray-50 p-3 rounded-lg border border-gray-200 flex flex-wrap items-center gap-3 text-xs">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> กรองข้อมูล:</span>
+                        <div class="flex items-center gap-1.5">
+                            <label class="text-slate-500">Region:</label>
+                            <select id="filter-quotation-region" onchange="renderQuotationTable()" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 font-medium">
+                                <option value="ALL">ทุก Region</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <label class="text-slate-500">ค้นหาสาขา (DC):</label>
+                            <input type="text" id="filter-quotation-dc" oninput="renderQuotationTable()" placeholder="เช่น RCD, PSM, LKB" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-36">
+                        </div>
+                        <button onclick="document.getElementById('filter-quotation-region').value='ALL'; document.getElementById('filter-quotation-dc').value=''; renderQuotationTable();" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> ล้างตัวกรอง
                         </button>
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table id="region-summary-table" class="w-full text-center text-xs border-collapse border border-gray-300">
+                        <table id="quotation-table" class="w-full text-center text-xs border-collapse border border-gray-300">
                             <thead>
                                 <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-700 w-12">ลำดับ</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-32 text-amber-300">Region</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24 text-blue-300">จำนวนคน</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-cyan-300">สาขา (DC)</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-amber-300">Region</th>
                                     <th class="p-2.5 border-r border-gray-700 w-24">วันทำงานรวม</th>
                                     <th class="p-2.5 border-r border-gray-700 w-28 text-amber-300">POD รวม</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-28 text-yellow-300">POD เฉลี่ย</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-32 text-blue-300">ค่าใช้จ่ายรวม</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-yellow-300">POD เฉลี่ย</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-slate-200">ประเภทรถ</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-yellow-200">เรท / ชิ้น</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-32 text-blue-300">ยอดรวมใบเสนอราคา</th>
                                     <th class="p-2.5 border-r border-gray-700 w-28 text-red-300">หัก ณ ที่จ่าย 1%</th>
-                                    <th class="p-2.5 w-32 text-green-300 font-bold">ยอดจ่ายสุทธิ</th>
+                                    <th class="p-2.5 w-32 text-green-300 font-bold">ยอดสุทธิ</th>
                                 </tr>
                             </thead>
-                            <tbody id="region-summary-tbody" class="divide-y divide-gray-200"></tbody>
-                            <tfoot id="region-summary-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- ตารางสรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตามสถานี (DC) -->
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
-                        <div>
-                            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-warehouse text-cyan-600"></i> สรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตามสถานี (DC)
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">แยกสรุปตามสถานี (จำนวนคน, วันทำงานรวม, POD รวม, POD เฉลี่ย, ค่าใช้จ่ายรวม, หัก ณ ที่จ่าย 1% และยอดจ่ายสุทธิ)</p>
-                        </div>
-                        <button onclick="exportDCSummaryExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
-                            <i class="fa-solid fa-file-excel"></i> Export สรุปตามสถานี
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table id="dc-summary-table" class="w-full text-center text-xs border-collapse border border-gray-300">
-                            <thead>
-                                <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
-                                    <th class="p-2.5 border-r border-gray-700 w-12">ลำดับ</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-32 text-cyan-300">สถานี</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24 text-blue-300">จำนวนคน</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24">วันทำงานรวม</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-28 text-amber-300">POD รวม</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-28 text-yellow-300">POD เฉลี่ย</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-32 text-blue-300">ค่าใช้จ่ายรวม</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-28 text-red-300">หัก ณ ที่จ่าย 1%</th>
-                                    <th class="p-2.5 w-32 text-green-300 font-bold">ยอดจ่ายสุทธิ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dc-summary-tbody" class="divide-y divide-gray-200"></tbody>
-                            <tfoot id="dc-summary-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
+                            <tbody id="quotation-tbody" class="divide-y divide-gray-200"></tbody>
+                            <tfoot id="quotation-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- ==================== TAB 2: DAILY BATCH INPUT & GOOGLE SHEETS SYNC ==================== -->
-            <div id="tab-daily-input" class="hidden space-y-6">
-                <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-4 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-gray-200">
+            <!-- ==================== TAB 2: สรุปตาม REGION ==================== -->
+            <div id="tab-region-summary" class="hidden space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
                         <div>
-                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-cloud-arrow-down text-blue-600"></i> ซิงค์ข้อมูลจาก Google Sheets (รายวัน / Con DEL)
+                            <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-map-location-dot text-cyan-600"></i> สรุปยอดใบเสนอราคาอิงตาม Region
                             </h2>
-                            <p class="text-xs text-slate-500 mt-1">แสดงรายการวิ่งงานรายวันทั้งหมดที่ดึงมาจากชีต DailyData (คำนวณตรงตามจำนวนชิ้น × เลท)</p>
+                            <p class="text-xs text-slate-500 mt-0.5">คำนวณรวมตาม Region โดยใช้เรทราคาต่อสาขาที่กำหนดไว้ในหน้าใบเสนอราคา</p>
                         </div>
-                        <button onclick="fetchAllDataFromSheets(true)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-2">
-                            <i class="fa-solid fa-sync"></i> ซิงค์ข้อมูลทั้งหมด (พนักงาน + รายวัน)
+                        <button onclick="exportRegionExcel()" class="px-3.5 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
+                            <i class="fa-solid fa-file-excel"></i> Export สรุป Region
                         </button>
                     </div>
 
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 flex flex-wrap items-center gap-4 text-xs">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> กรองข้อมูลรายวัน:</span>
+                    <div class="overflow-x-auto">
+                        <table id="region-table" class="w-full text-center text-xs border-collapse border border-gray-300">
+                            <thead>
+                                <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
+                                    <th class="p-2.5 border-r border-gray-700 w-12">ลำดับ</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-32 text-amber-300">Region</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-cyan-300">จำนวนสาขา</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24">วันทำงานรวม</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-28 text-amber-300">POD รวม</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-28 text-yellow-300">POD เฉลี่ย</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-32 text-blue-300">ยอดรวม</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-28 text-red-300">หัก ณ ที่จ่าย 1%</th>
+                                    <th class="p-2.5 w-32 text-green-300 font-bold">ยอดสุทธิ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="region-tbody" class="divide-y divide-gray-200"></tbody>
+                            <tfoot id="region-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB 3: ข้อมูลรายวัน (DAILYDATA) ==================== -->
+            <div id="tab-daily-data" class="hidden space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
+                        <div>
+                            <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-table text-yellow-500"></i> ข้อมูลรายวันจาก Google Sheets (DailyData)
+                            </h2>
+                            <p class="text-xs text-slate-500 mt-0.5">แสดงรายการข้อมูลรายวันที่ดึงมาเพื่อคำนวณใบเสนอราคาของแต่ละสาขา</p>
                         </div>
-                        <div class="flex items-center space-x-1.5">
+                        <button onclick="fetchAllDataFromSheets(true)" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
+                            <i class="fa-solid fa-sync"></i> ซิงค์ข้อมูลใหม่
+                        </button>
+                    </div>
+
+                    <div class="no-print bg-gray-50 p-3 rounded-lg border border-gray-200 flex flex-wrap items-center gap-3 text-xs">
+                        <span class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> กรองข้อมูล:</span>
+                        <div class="flex items-center gap-1.5">
                             <label class="text-slate-500">วันที่:</label>
-                            <input type="text" id="filter-raw-date" oninput="renderDailyRawTable()" placeholder="เช่น 09/11/2026" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-36 focus:outline-none focus:border-amber-500">
+                            <input type="text" id="filter-daily-date" oninput="renderDailyTable()" placeholder="เช่น 16/11/2026" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-36">
                         </div>
-                        <div class="flex items-center space-x-1.5">
-                            <label class="text-slate-500">รหัส / ชื่อ / Region / สถานี:</label>
-                            <input type="text" id="filter-raw-code" oninput="renderDailyRawTable()" placeholder="เช่น 70000155 หรือ Central" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-44 focus:outline-none focus:border-amber-500">
+                        <div class="flex items-center gap-1.5">
+                            <label class="text-slate-500">สาขา / Region:</label>
+                            <input type="text" id="filter-daily-dc" oninput="renderDailyTable()" placeholder="เช่น RCD หรือ BKKC1" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-40">
                         </div>
-                        <button onclick="document.getElementById('filter-raw-date').value=''; document.getElementById('filter-raw-code').value=''; renderDailyRawTable();" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
+                        <button onclick="document.getElementById('filter-daily-date').value=''; document.getElementById('filter-daily-dc').value=''; renderDailyTable();" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
                             <i class="fa-solid fa-rotate-right mr-1"></i> ล้างตัวกรอง
                         </button>
                     </div>
@@ -272,159 +259,15 @@
                                 <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-700 w-12">ลำดับ</th>
                                     <th class="p-2.5 border-r border-gray-700 w-28">วันที่</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24">รหัสพนักงาน</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-44">ชื่อ-นามสกุล</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24 text-amber-300">Region</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-28">ประเภทรถ</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-16 text-cyan-300">สถานี</th>
-                                    <th class="p-2.5 border-r border-gray-700 text-amber-300 w-24">จำนวนชิ้น</th>
-                                    <th class="p-2.5 border-r border-gray-700 text-yellow-300 w-16">เลท</th>
-                                    <th class="p-2.5 text-green-300 w-28">ยอดเงิน</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-28 text-cyan-300">สาขา (DC)</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-28 text-amber-300">Region</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-28 text-amber-300">POD / ชิ้น</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-yellow-300">เรทสาขา</th>
+                                    <th class="p-2.5 w-32 text-green-300">ยอดเงิน</th>
                                 </tr>
                             </thead>
-                            <tbody id="daily-raw-tbody" class="divide-y divide-gray-200"></tbody>
-                            <tfoot id="daily-raw-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ==================== TAB 3: EMPLOYEE MANAGEMENT ==================== -->
-            <div id="tab-employees" class="hidden space-y-6">
-                <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-4 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-gray-200">
-                        <div>
-                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-users text-blue-600"></i> การจัดการพนักงานและบัญชีธนาคาร
-                            </h2>
-                            <p class="text-xs text-slate-500 mt-1">รายชื่อพนักงาน Region ธนาคาร เลขที่บัญชี เลท และสถานะการทำงาน</p>
-                        </div>
-                        <button onclick="fetchAllDataFromSheets(true)" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
-                            <i class="fa-solid fa-sync"></i> ซิงค์พนักงานจาก Sheet
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-center text-xs border-collapse">
-                            <thead>
-                                <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[11px]">
-                                    <th class="p-3 border-r border-gray-200 w-28">รหัสพนักงาน (KID)</th>
-                                    <th class="p-3 border-r border-gray-200 text-center w-48">ชื่อ-นามสกุล (Name)</th>
-                                    <th class="p-3 border-r border-gray-200 text-amber-600 w-24">Region</th>
-                                    <th class="p-3 border-r border-gray-200 w-28">ประเภทรถ (Position)</th>
-                                    <th class="p-3 border-r border-gray-200 text-cyan-700 w-20">สถานี (DC)</th>
-                                    <th class="p-3 border-r border-gray-200 text-blue-600 w-32">ธนาคาร</th>
-                                    <th class="p-3 border-r border-gray-200 text-blue-600 w-36">เลขที่บัญชี</th>
-                                    <th class="p-3 border-r border-gray-200 text-amber-600 w-24">เลท (Del Fee)</th>
-                                    <th class="p-3 w-20">สถานะ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="employee-directory-tbody" class="divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ==================== TAB 4: SPREADSHEET (เมทริกซ์รายวัน) ==================== -->
-            <div id="tab-spreadsheet" class="hidden space-y-6">
-                <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-4 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-gray-200">
-                        <div>
-                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-table text-amber-500"></i> รายงานผลงานวิ่งงานรายวัน (Matrix View by Date)
-                            </h2>
-                            <p class="text-xs text-slate-500 mt-1">แสดงผลงานแยกตามวันที่ (ชิ้นงาน / ยอดเงิน) คำนวณตรงตามจำนวนชิ้น × เลท พร้อมสรุปยอดรวมแต่ละคน</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="fetchAllDataFromSheets(true)" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-sync"></i> ซิงค์รายวัน
-                            </button>
-                            <button onclick="exportMatrixExcel()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-excel"></i> ส่งออก Excel เมทริกซ์
-                            </button>
-                            <button onclick="window.print()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-print"></i> พิมพ์ / PDF (แนวนอน)
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="no-print bg-gray-50 p-3 rounded-lg border border-gray-200 flex flex-wrap items-center gap-4 text-xs">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> ค้นหารหัส / ชื่อ / สถานี:</span>
-                        </div>
-                        <div class="flex items-center space-x-1.5">
-                            <input type="text" id="filter-matrix-code" oninput="renderMatrixTable()" placeholder="เช่น 70000155 หรือ LKB" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-44 focus:outline-none focus:border-amber-500">
-                        </div>
-                        <button onclick="document.getElementById('filter-matrix-code').value=''; renderMatrixTable();" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> ล้างตัวกรอง
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table id="matrix-table" class="w-full text-center text-[11px] border-collapse border border-gray-300">
-                            <thead id="matrix-thead"></thead>
-                            <tbody id="matrix-tbody" class="divide-y divide-gray-200"></tbody>
-                            <tfoot id="matrix-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ==================== TAB 5: BILLING STATEMENT ==================== -->
-            <div id="tab-billing" class="hidden space-y-6">
-                <div class="bg-white border border-gray-200 rounded-lg p-6 space-y-4 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-gray-200">
-                        <div>
-                            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-file-invoice-dollar text-cyan-600"></i> รายการค่ารับส่งพนักงาน (SF Intra-City Settlement & Payroll - สรุปรายคน)
-                            </h2>
-                            <p class="text-xs text-slate-500 mt-1">รอบการทำงาน: Payroll Week 46 | สรุปรายคน มีเลขที่บัญชี + หัก ณ ที่จ่าย 1% (คำนวณตรงตามจำนวนชิ้น × เลท)</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="exportToExcel()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-excel"></i> ส่งออกเป็น Excel (แนวนอน)
-                            </button>
-                            <button onclick="window.print()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
-                                <i class="fa-solid fa-print"></i> พิมพ์ / PDF (แนวนอน)
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="no-print bg-gray-50 p-3 rounded-lg border border-gray-200 flex flex-wrap items-center gap-4 text-xs">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> ตัวกรองข้อมูล:</span>
-                        </div>
-                        <div class="flex items-center space-x-1.5">
-                            <label class="text-slate-500">รหัส / Region / สถานี:</label>
-                            <input type="text" id="filter-code" oninput="renderBillingTable()" placeholder="เช่น 70000155 หรือ LKB" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-44 focus:outline-none focus:border-amber-500">
-                        </div>
-                        <button onclick="resetFilters()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
-                            <i class="fa-solid fa-rotate-right mr-1"></i> ล้างตัวกรอง
-                        </button>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table id="billing-table-element" class="w-full text-center text-[11px] border-collapse border border-gray-300">
-                            <thead>
-                                <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
-                                    <th class="p-2.5 border-r border-gray-700 w-10">ลำดับ</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24">รหัสพนักงาน</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-20 text-amber-300">Region</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-16 text-cyan-300">สถานี</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24">ประเภทรถ</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-40 text-center">ชื่อ-นามสกุล</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24 text-blue-300">ธนาคาร</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-32 text-blue-300">เลขที่บัญชี</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-16">วันทำงาน</th>
-                                    <th class="p-2.5 border-r border-gray-700 text-amber-300 w-28">รายได้จริง (Con DEL)</th>
-                                    <th class="p-2.5 border-r border-gray-700 text-yellow-300 w-16">เลท</th>
-                                    <th class="p-2.5 border-r border-gray-700 text-blue-300 font-bold w-28">ยอดรวม</th>
-                                    <th class="p-2.5 border-r border-gray-700 text-red-300 w-24">หัก ณ ที่จ่าย 1%</th>
-                                    <th class="p-2.5 text-green-300 font-bold w-28">ยอดจ่ายสุทธิ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="billing-tbody" class="divide-y divide-gray-200"></tbody>
-                            <tfoot id="billing-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
+                            <tbody id="daily-tbody" class="divide-y divide-gray-200"></tbody>
+                            <tfoot id="daily-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
                         </table>
                     </div>
                 </div>
@@ -433,14 +276,152 @@
         </main>
     </div>
 
-    <!-- Script Engine -->
     <script>
-        let lastUpdatedTime = "-";
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwBj98ky2MvDWCzhPzS5YrLoYFcmVIKUIytwUKsRsap3fo5WdNNxl_afJ6Kea5Oj3FfsA/exec";
 
-        let employees = [];
-        let spreadsheetData = [];
+        // เรทราคาเริ่มต้นของแต่ละสาขาจากไฟล์ สำเนาของ 站点价格.xlsx (89 สาขา)
+        const BRANCH_PRICE_MASTER = {
+            "HK2": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "HLP": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "PPL": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "RCD": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "PY2": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "RM6": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "PYR": { region: "BKKC1", rate2W: 8, rate4W: 13 },
+            "PDP": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "R3M": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "RM1": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "SKV": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "SP2": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "VPK": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "YNW": { region: "BKKC2", rate2W: 8, rate4W: 13 },
+            "KB3": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "KKG": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "RCW": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BGO": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BGP": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BAY": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BM3": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "PSM": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "TPR": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BPO": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BP1": { region: "BKKE1", rate2W: 8, rate4W: 13 },
+            "BGN": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "ON2": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "ONT": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "PRW": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "PT2": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "PTN": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "SPS": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "STI": { region: "BKKE2", rate2W: 8, rate4W: 13 },
+            "KGL": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "KH3": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "RST": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "TLT": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "BNR": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "KH6": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "LSW": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "PHT": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "SKK": { region: "BKKN1", rate2W: 8, rate4W: 12 },
+            "LKB": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "NJK": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "NMM": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "PRJ": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "PYS": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "LGP": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "JKB": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "KNY": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "KTN": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "RMT": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "TRG": { region: "BKKN2", rate2W: 8, rate4W: 13 },
+            "BAC": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "BPI": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "NGY": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "NKP": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "ARU": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "BPD": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "PNH": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "TON": { region: "BKKS1", rate2W: 8, rate4W: 13 },
+            "PTS": { region: "BKKS2", rate2W: 8, rate4W: 13 },
+            "BON": { region: "BKKS2", rate2W: 8, rate4W: 13 },
+            "EKC": { region: "BKKS2", rate2W: 8, rate4W: 13 },
+            "PCU": { region: "BKKS2", rate2W: 8, rate4W: 13 },
+            "SMD": { region: "BKKS2", rate2W: 8, rate4W: 13 },
+            "BPW": { region: "BKKS2", rate2W: 8, rate4W: 12 },
+            "BTR": { region: "BKKS2", rate2W: 8, rate4W: 12 },
+            "SAS": { region: "BKKS2", rate2W: 8, rate4W: 12 },
+            "KMD": { region: "BKKS2", rate2W: 8, rate4W: 12 },
+            "OMI": { region: "BKKS2", rate2W: 8, rate4W: 12 },
+            "BNC": { region: "BKKS2", rate2W: 8, rate4W: 12 },
+            "BBT": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "BY2": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "BYI": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "CWN": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "DSP": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "OKD": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "SAI": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "DMG": { region: "BKKW1", rate2W: 8, rate4W: 13 },
+            "PAK": { region: "BKKW1", rate2W: 8, rate4W: 12 },
+            "BKW": { region: "BKKW2", rate2W: 8, rate4W: 12 },
+            "NO3": { region: "BKKW2", rate2W: 8, rate4W: 12 },
+            "NO4": { region: "BKKW2", rate2W: 8, rate4W: 12 },
+            "RM7": { region: "BKKW2", rate2W: 8, rate4W: 12 },
+            "BSU": { region: "BKKW2", rate2W: 8, rate4W: 13 },
+            "JT2": { region: "BKKW2", rate2W: 8, rate4W: 13 },
+            "STS": { region: "BKKW2", rate2W: 8, rate4W: 13 },
+            "JTK": { region: "BKKW2", rate2W: 8, rate4W: 13 }
+        };
+
+        // สถานะประเภทรถและเรทที่ปรับแต่งได้ต่อสาขา
+        let branchConfig = {};
+        let dailyRows = [];
+        let lastUpdatedTime = "-";
         let isSyncing = false;
+
+        function initBranchConfig() {
+            branchConfig = {};
+            Object.entries(BRANCH_PRICE_MASTER).forEach(([dc, info]) => {
+                branchConfig[dc] = {
+                    vehicleType: "4W",
+                    rate: info.rate4W
+                };
+            });
+        }
+
+        function ensureBranchConfig(dcName) {
+            if (!branchConfig[dcName]) {
+                const master = BRANCH_PRICE_MASTER[dcName];
+                branchConfig[dcName] = {
+                    vehicleType: "4W",
+                    rate: master ? master.rate4W : 13
+                };
+            }
+            return branchConfig[dcName];
+        }
+
+        function setVehicleType(dcName, vType) {
+            const master = BRANCH_PRICE_MASTER[dcName];
+            const cfg = ensureBranchConfig(dcName);
+            cfg.vehicleType = vType;
+            if (vType === "2W") {
+                cfg.rate = master ? master.rate2W : 8;
+            } else {
+                cfg.rate = master ? master.rate4W : 13;
+            }
+            renderAllViews();
+        }
+
+        function updateBranchRate(dcName, newRateValue) {
+            const cfg = ensureBranchConfig(dcName);
+            const num = parseNumber(newRateValue, cfg.rate);
+            cfg.rate = num < 0 ? 0 : num;
+            renderAllViews();
+        }
+
+        function resetBranchRates() {
+            initBranchConfig();
+            renderAllViews();
+        }
 
         function setSyncStatus(type, msg) {
             const badge = document.getElementById('sync-status-badge');
@@ -462,7 +443,8 @@
 
         function updateTimestamp() {
             const now = new Date();
-            lastUpdatedTime = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) + ' ' + now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            lastUpdatedTime = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) + ' ' +
+                now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             const el = document.getElementById('global-last-updated');
             if (el) el.innerText = `อัปเดตล่าสุด: ${lastUpdatedTime}`;
         }
@@ -470,9 +452,7 @@
         function formatCleanDate(dateStr) {
             if (!dateStr) return 'ไม่ระบุวันที่';
             const raw = String(dateStr).trim();
-            if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(raw)) {
-                return raw;
-            }
+            if (/^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(raw)) return raw;
             try {
                 const d = new Date(raw);
                 if (!isNaN(d.getTime())) {
@@ -491,398 +471,355 @@
             return isNaN(num) ? fallback : num;
         }
 
-        function calculateFinalCost(rawCost, salaryRate) {
-            return Number(rawCost || 0) * Number(salaryRate || 0);
+        function calculateAvgPod(totalPieces, totalDays) {
+            if (!totalDays || Number(totalDays) <= 0) return 0;
+            return Number(totalPieces || 0) / Number(totalDays);
         }
 
-        function calculateAvgPodPerWorkDay(totalPieces, totalWorkDays) {
-            if (!totalWorkDays || Number(totalWorkDays) <= 0) return 0;
-            return Number(totalPieces || 0) / Number(totalWorkDays);
+        function fetchViaJsonp(url, timeoutMs = 10000) {
+            return new Promise((resolve, reject) => {
+                const cbName = 'hetaiJsonpCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                const script = document.createElement('script');
+                const sep = url.includes('?') ? '&' : '?';
+                script.src = `${url}${sep}callback=${cbName}`;
+
+                const timer = setTimeout(() => {
+                    cleanup();
+                    reject(new Error('หมดเวลาเชื่อมต่อ JSONP'));
+                }, timeoutMs);
+
+                function cleanup() {
+                    clearTimeout(timer);
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+                }
+
+                window[cbName] = function (data) {
+                    cleanup();
+                    resolve(data);
+                };
+
+                script.onerror = function () {
+                    cleanup();
+                    reject(new Error('โหลดสคริปต์ JSONP ไม่สำเร็จ'));
+                };
+
+                document.body.appendChild(script);
+            });
+        }
+
+        async function loadSheetEndpoint(endpointType) {
+            const url = `${WEB_APP_URL}?type=${endpointType}&t=${Date.now()}`;
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.json();
+            } catch (fetchErr) {
+                return await fetchViaJsonp(url);
+            }
+        }
+
+        function applyLoadedDailyData(rawJson) {
+            const list = Array.isArray(rawJson) ? rawJson : (Array.isArray(rawJson?.data) ? rawJson.data : []);
+            dailyRows = list
+                .map(item => {
+                    const dcRaw = String(item.dc || item.station || item.DC || 'ไม่ระบุสาขา').trim() || 'ไม่ระบุสาขา';
+                    const master = BRANCH_PRICE_MASTER[dcRaw];
+                    const regRaw = String(item.region || item.Region || item.hr || item.HR || (master ? master.region : 'ไม่ระบุ Region')).trim() || 'ไม่ระบุ Region';
+                    const pieces = parseNumber(
+                        item.rawCost ?? item.conDel ?? item.con_del ?? item.pieces ?? item.del ?? item.cost,
+                        0
+                    );
+                    ensureBranchConfig(dcRaw);
+                    return {
+                        date: formatCleanDate(item.date),
+                        dc: dcRaw,
+                        region: regRaw,
+                        pieces: pieces
+                    };
+                })
+                .filter(row => row.dc !== '' || row.pieces > 0);
+
+            document.getElementById('count-daily').innerText = dailyRows.length.toLocaleString();
+            populateRegionFilter();
+            renderAllViews();
+            updateTimestamp();
+            setSyncStatus('ok', `ซิงค์สำเร็จ: รายการรายวัน ${dailyRows.length.toLocaleString()} รายการ`);
         }
 
         async function fetchAllDataFromSheets(showAlertOnError = false) {
             if (isSyncing) return;
-            if (!WEB_APP_URL || WEB_APP_URL.includes("ใส่_Web_App_URL")) {
-                alert('กรุณากรอก Web App URL ก่อนครับ!');
-                return;
-            }
-
             isSyncing = true;
-            setSyncStatus('loading', 'กำลังดึงข้อมูล Employees และ DailyData จาก Google Sheets...');
+            setSyncStatus('loading', 'กำลังดึงข้อมูล DailyData จาก Google Sheets...');
 
             try {
-                const [empResRaw, dailyResRaw] = await Promise.all([
-                    fetch(`${WEB_APP_URL}?type=employees&t=${Date.now()}`).then(res => res.json()),
-                    fetch(`${WEB_APP_URL}?type=daily&t=${Date.now()}`).then(res => res.json())
-                ]);
-
-                const empArray = Array.isArray(empResRaw) ? empResRaw : (Array.isArray(empResRaw?.data) ? empResRaw.data : []);
-                if (empArray.length > 0) {
-                    employees = empArray.map(empRow => ({
-                        code: String(empRow.code || empRow.kid || empRow.id || '').trim(),
-                        name: String(empRow.name || '').trim(),
-                        position: String(empRow.position || empRow.type || '4W Driver').trim(),
-                        dc: String(empRow.dc || empRow.station || empRow.DC || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี',
-                        region: String(empRow.region || empRow.Region || empRow.hr || empRow.HR || 'ไม่ระบุ Region').trim() || 'ไม่ระบุ Region',
-                        salary: parseNumber(empRow.salary ?? empRow.rate ?? empRow.delFee, 13),
-                        bank: String(empRow.bank || '-').trim(),
-                        accNo: String(empRow.accNo ?? empRow.accountNo ?? empRow.acc_no ?? '-').trim(),
-                        status: String(empRow.status || 'ทำงานอยู่').trim()
-                    })).filter(emp => emp.code !== '');
-                }
-
-                const dailyArray = Array.isArray(dailyResRaw) ? dailyResRaw : (Array.isArray(dailyResRaw?.data) ? dailyResRaw.data : []);
-                if (dailyArray.length > 0) {
-                    spreadsheetData = dailyArray.map(dailyRow => {
-                        const code = String(dailyRow.code || dailyRow.kid || '').trim();
-                        const matchedEmp = employees.find(emp => emp.code === code) || {};
-                        const pieces = parseNumber(
-                            dailyRow.rawCost ?? dailyRow.conDel ?? dailyRow.con_del ?? dailyRow.pieces ?? dailyRow.del ?? dailyRow.cost,
-                            0
-                        );
-                        return {
-                            date: formatCleanDate(dailyRow.date),
-                            code: code,
-                            name: String(dailyRow.name || matchedEmp.name || 'ไม่ระบุชื่อ').trim(),
-                            region: String(dailyRow.region || dailyRow.Region || matchedEmp.region || dailyRow.hr || dailyRow.HR || 'ไม่ระบุ Region').trim() || 'ไม่ระบุ Region',
-                            position: String(dailyRow.position || matchedEmp.position || '4W Driver').trim(),
-                            dc: String(dailyRow.dc || dailyRow.station || dailyRow.DC || matchedEmp.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี',
-                            rawCost: pieces
-                        };
-                    }).filter(item => item.code !== '');
-                }
-
-                document.getElementById('count-emp').innerText = employees.length.toLocaleString();
-                document.getElementById('count-daily').innerText = spreadsheetData.length.toLocaleString();
-
-                populateDCFilter();
-                renderEmployeeDirectory();
-                renderDailyRawTable();
-                renderMatrixTable();
-                renderBillingTable();
-                renderDashboardSummaries();
-                updateTimestamp();
-
-                if (spreadsheetData.length === 0) {
-                    setSyncStatus('error', `ดึงรายชื่อพนักงานได้ ${employees.length} คน แต่ไม่พบข้อมูลใน DailyData`);
-                    if (showAlertOnError) {
-                        alert('ดึงรายชื่อพนักงานได้แล้ว แต่ไม่พบข้อมูลรายวัน (DailyData)');
-                    }
-                } else {
-                    setSyncStatus('ok', `ซิงค์สำเร็จ: พนักงาน ${employees.length} | รายวัน ${spreadsheetData.length}`);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                setSyncStatus('error', `เกิดข้อผิดพลาดในการเชื่อมต่อ: ${error.message}`);
+                const rawJson = await loadSheetEndpoint('daily');
+                applyLoadedDailyData(rawJson);
+            } catch (err) {
+                console.error('Sync error:', err);
+                setSyncStatus('error', `เกิดข้อผิดพลาดในการเชื่อมต่อ: ${err.message}`);
                 if (showAlertOnError) {
-                    alert('ไม่สามารถดึงข้อมูลจาก Google Sheets ได้: ' + error.message);
+                    alert('ไม่สามารถดึงข้อมูลจาก Google Sheets ได้: ' + err.message);
                 }
             } finally {
                 isSyncing = false;
             }
         }
 
-        function populateDCFilter() {
-            const select = document.getElementById('filter-dashboard-dc');
+        function populateRegionFilter() {
+            const select = document.getElementById('filter-quotation-region');
             if (!select) return;
             const currentVal = select.value || 'ALL';
-            const dcSet = new Set();
-
-            spreadsheetData.forEach(row => {
-                const empInfo = employees.find(emp => emp.code === row.code) || {};
-                const dcName = String(row.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
-                dcSet.add(dcName);
-            });
-
-            const sortedDCs = [...dcSet].sort();
-            select.innerHTML = `<option value="ALL">ทุกสถานี</option>` + sortedDCs.map(dc => `<option value="${dc}">${dc}</option>`).join('');
+            const regions = [...new Set(dailyRows.map(r => r.region))].sort();
+            select.innerHTML = `<option value="ALL">ทุก Region</option>` +
+                regions.map(reg => `<option value="${reg}">${reg}</option>`).join('');
             if ([...select.options].some(opt => opt.value === currentVal)) {
                 select.value = currentVal;
             }
         }
 
-        function getFilteredDailyForDashboard() {
-            const selectedDC = document.getElementById('filter-dashboard-dc')?.value || 'ALL';
-            if (selectedDC === 'ALL') return spreadsheetData;
-            return spreadsheetData.filter(row => {
-                const empInfo = employees.find(emp => emp.code === row.code) || {};
-                const dcName = String(row.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
-                return dcName === selectedDC;
-            });
-        }
+        function getBranchQuotationList() {
+            const selectedRegion = document.getElementById('filter-quotation-region')?.value || 'ALL';
+            const dcQuery = (document.getElementById('filter-quotation-dc')?.value || '').trim().toLowerCase();
 
-        function getRegionSummaryData(dataRows = getFilteredDailyForDashboard()) {
-            const regionMap = {};
-
-            dataRows.forEach(row => {
-                const empInfo = employees.find(emp => emp.code === row.code) || {};
-                const regionName = String(row.region || empInfo.region || 'ไม่ระบุ Region').trim() || 'ไม่ระบุ Region';
-                const rate = Number(empInfo.salary ?? 13);
-                const cost = calculateFinalCost(row.rawCost, rate);
-
-                if (!regionMap[regionName]) {
-                    regionMap[regionName] = {
-                        region: regionName,
-                        empCodes: new Set(),
-                        days: 0,
-                        pieces: 0,
-                        totalCost: 0
-                    };
-                }
-
-                if (row.code) regionMap[regionName].empCodes.add(row.code);
-                regionMap[regionName].days += 1;
-                regionMap[regionName].pieces += Number(row.rawCost || 0);
-                regionMap[regionName].totalCost += cost;
-            });
-
-            return Object.values(regionMap)
-                .map(item => {
-                    const avgPod = calculateAvgPodPerWorkDay(item.pieces, item.days);
-                    const tax1Percent = item.totalCost * 0.01;
-                    const netPaid = item.totalCost - tax1Percent;
-                    return {
-                        region: item.region,
-                        peopleCount: item.empCodes.size,
-                        days: item.days,
-                        pieces: item.pieces,
-                        avgPod: avgPod,
-                        totalCost: item.totalCost,
-                        tax1Percent: tax1Percent,
-                        netPaid: netPaid
-                    };
-                })
-                .sort((a, b) => b.totalCost - a.totalCost);
-        }
-
-        function getDCSummaryData(dataRows = getFilteredDailyForDashboard()) {
             const dcMap = {};
-
-            dataRows.forEach(row => {
-                const empInfo = employees.find(emp => emp.code === row.code) || {};
-                const dcName = String(row.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
-                const rate = Number(empInfo.salary ?? 13);
-                const cost = calculateFinalCost(row.rawCost, rate);
+            dailyRows.forEach(row => {
+                const dcName = row.dc || 'ไม่ระบุสาขา';
+                const master = BRANCH_PRICE_MASTER[dcName];
+                const regName = row.region || (master ? master.region : 'ไม่ระบุ Region');
 
                 if (!dcMap[dcName]) {
                     dcMap[dcName] = {
                         dc: dcName,
-                        empCodes: new Set(),
+                        region: regName,
                         days: 0,
-                        pieces: 0,
-                        totalCost: 0
+                        pieces: 0
                     };
                 }
-
-                if (row.code) dcMap[dcName].empCodes.add(row.code);
                 dcMap[dcName].days += 1;
-                dcMap[dcName].pieces += Number(row.rawCost || 0);
-                dcMap[dcName].totalCost += cost;
+                dcMap[dcName].pieces += Number(row.pieces || 0);
             });
 
             return Object.values(dcMap)
+                .filter(item => {
+                    const matchRegion = selectedRegion === 'ALL' || item.region === selectedRegion;
+                    const matchDC = dcQuery === '' || item.dc.toLowerCase().includes(dcQuery) || item.region.toLowerCase().includes(dcQuery);
+                    return matchRegion && matchDC;
+                })
                 .map(item => {
-                    const avgPod = calculateAvgPodPerWorkDay(item.pieces, item.days);
-                    const tax1Percent = item.totalCost * 0.01;
-                    const netPaid = item.totalCost - tax1Percent;
+                    const cfg = ensureBranchConfig(item.dc);
+                    const rate = Number(cfg.rate ?? 13);
+                    const avgPod = calculateAvgPod(item.pieces, item.days);
+                    const totalAmount = item.pieces * rate;
+                    const tax1Percent = totalAmount * 0.01;
+                    const netAmount = totalAmount - tax1Percent;
+
                     return {
                         dc: item.dc,
-                        peopleCount: item.empCodes.size,
+                        region: item.region,
                         days: item.days,
                         pieces: item.pieces,
                         avgPod: avgPod,
-                        totalCost: item.totalCost,
+                        vehicleType: cfg.vehicleType,
+                        rate: rate,
+                        totalAmount: totalAmount,
                         tax1Percent: tax1Percent,
-                        netPaid: netPaid
+                        netAmount: netAmount
                     };
                 })
-                .sort((a, b) => b.totalCost - a.totalCost);
+                .sort((a, b) => b.totalAmount - a.totalAmount);
         }
 
-        function renderDashboardSummaries() {
-            const dataRows = getFilteredDailyForDashboard();
-            const regionList = getRegionSummaryData(dataRows);
-            const dcList = getDCSummaryData(dataRows);
+        function getRegionQuotationList() {
+            const branchList = getBranchQuotationList();
+            const regMap = {};
 
-            const uniqueActivePeople = new Set(dataRows.map(row => row.code).filter(Boolean)).size;
-            const totalDaysAll = dataRows.length;
-            const totalPiecesAll = dataRows.reduce((sum, row) => sum + Number(row.rawCost || 0), 0);
-            const totalAvgPodAll = calculateAvgPodPerWorkDay(totalPiecesAll, totalDaysAll);
-            const totalCostAll = regionList.reduce((sum, item) => sum + item.totalCost, 0);
-            const totalTaxAll = totalCostAll * 0.01;
-            const totalNetAll = totalCostAll - totalTaxAll;
-
-            document.getElementById('stat-total-people').innerText = uniqueActivePeople.toLocaleString();
-            document.getElementById('stat-total-pod').innerText = totalPiecesAll.toLocaleString();
-            document.getElementById('stat-total-cost').innerText = totalCostAll.toLocaleString();
-            document.getElementById('stat-total-tax').innerText = totalTaxAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('stat-total-net').innerText = totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            const regionTbody = document.getElementById('region-summary-tbody');
-            const regionTfoot = document.getElementById('region-summary-tfoot');
-            if (regionTbody && regionTfoot) {
-                if (regionList.length === 0) {
-                    regionTbody.innerHTML = `<tr><td colspan="9" class="p-6 text-slate-400">ยังไม่มีข้อมูลสรุปตาม Region</td></tr>`;
-                    regionTfoot.innerHTML = '';
-                } else {
-                    regionTbody.innerHTML = regionList.map((item, idx) => `
-                        <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
-                            <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
-                            <td class="p-2.5 border-r border-gray-200 font-sans font-bold text-slate-900">${item.region}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${item.peopleCount.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-slate-700">${item.days.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-amber-700 font-bold">${item.pieces.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-yellow-700 font-bold">${item.avgPod.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-blue-700 font-bold">${item.totalCost.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-red-600">${item.tax1Percent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 text-green-600 font-bold bg-green-50/50">${item.netPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        </tr>
-                    `).join('');
-
-                    regionTfoot.innerHTML = `
-                        <tr class="font-mono bg-gray-100">
-                            <td colspan="2" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">GRAND TOTAL</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${uniqueActivePeople.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 font-bold">${totalDaysAll.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-amber-700 font-bold">${totalPiecesAll.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-yellow-800 font-bold">${totalAvgPodAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${totalCostAll.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-red-600 font-bold">${totalTaxAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 text-center text-green-600 font-bold">${totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        </tr>
-                    `;
+            branchList.forEach(br => {
+                if (!regMap[br.region]) {
+                    regMap[br.region] = {
+                        region: br.region,
+                        dcCount: 0,
+                        days: 0,
+                        pieces: 0,
+                        totalAmount: 0
+                    };
                 }
-            }
-
-            const dcTbody = document.getElementById('dc-summary-tbody');
-            const dcTfoot = document.getElementById('dc-summary-tfoot');
-            if (dcTbody && dcTfoot) {
-                if (dcList.length === 0) {
-                    dcTbody.innerHTML = `<tr><td colspan="9" class="p-6 text-slate-400">ยังไม่มีข้อมูลสรุปตามสถานี</td></tr>`;
-                    dcTfoot.innerHTML = '';
-                } else {
-                    dcTbody.innerHTML = dcList.map((item, idx) => `
-                        <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
-                            <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
-                            <td class="p-2.5 border-r border-gray-200 font-sans font-bold text-cyan-700">${item.dc}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${item.peopleCount.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-slate-700">${item.days.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-amber-700 font-bold">${item.pieces.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-yellow-700 font-bold">${item.avgPod.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-blue-700 font-bold">${item.totalCost.toLocaleString()}</td>
-                            <td class="p-2.5 border-r border-gray-200 text-red-600">${item.tax1Percent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 text-green-600 font-bold bg-green-50/50">${item.netPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        </tr>
-                    `).join('');
-
-                    dcTfoot.innerHTML = `
-                        <tr class="font-mono bg-gray-100">
-                            <td colspan="2" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">GRAND TOTAL</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${uniqueActivePeople.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 font-bold">${totalDaysAll.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-amber-700 font-bold">${totalPiecesAll.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-yellow-800 font-bold">${totalAvgPodAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${totalCostAll.toLocaleString()}</td>
-                            <td class="p-2.5 text-center border-r border-gray-300 text-red-600 font-bold">${totalTaxAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                            <td class="p-2.5 text-center text-green-600 font-bold">${totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        </tr>
-                    `;
-                }
-            }
-        }
-
-        function exportRegionSummaryExcel() {
-            const regionList = getRegionSummaryData();
-            const rows = regionList.map((item, idx) => ({
-                "ลำดับ": idx + 1,
-                "Region": item.region,
-                "จำนวนคน": item.peopleCount,
-                "วันทำงานรวม": item.days,
-                "POD รวม": item.pieces,
-                "POD เฉลี่ย": Number(item.avgPod.toFixed(2)),
-                "ค่าใช้จ่ายรวม": item.totalCost,
-                "หัก ณ ที่จ่าย 1%": Number(item.tax1Percent.toFixed(2)),
-                "ยอดจ่ายสุทธิ": Number(item.netPaid.toFixed(2))
-            }));
-            const ws = XLSX.utils.json_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Summary by Region");
-            XLSX.writeFile(wb, "Hetai_Summary_By_Region.xlsx");
-        }
-
-        function exportDCSummaryExcel() {
-            const dcList = getDCSummaryData();
-            const rows = dcList.map((item, idx) => ({
-                "ลำดับ": idx + 1,
-                "สถานี": item.dc,
-                "จำนวนคน": item.peopleCount,
-                "วันทำงานรวม": item.days,
-                "POD รวม": item.pieces,
-                "POD เฉลี่ย": Number(item.avgPod.toFixed(2)),
-                "ค่าใช้จ่ายรวม": item.totalCost,
-                "หัก ณ ที่จ่าย 1%": Number(item.tax1Percent.toFixed(2)),
-                "ยอดจ่ายสุทธิ": Number(item.netPaid.toFixed(2))
-            }));
-            const ws = XLSX.utils.json_to_sheet(rows);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Summary by Station");
-            XLSX.writeFile(wb, "Hetai_Summary_By_Station.xlsx");
-        }
-
-        function toggleMenu(menuId) {
-            const submenu = document.getElementById(`${menuId}-submenu`);
-            const chevron = document.getElementById(`${menuId}-chevron`);
-            if (submenu) submenu.classList.toggle('hidden');
-            if (chevron) chevron.classList.toggle('rotate-180');
-        }
-
-        function switchTab(tabId) {
-            ['dashboard', 'daily-input', 'employees', 'billing', 'spreadsheet'].forEach(t => {
-                const el = document.getElementById(`tab-${t}`);
-                if (el) el.classList.add('hidden');
-                const btn = document.getElementById(`nav-${t}`);
-                if (btn) {
-                    btn.classList.remove('bg-slate-800', 'text-white');
-                    btn.classList.add('text-slate-300');
-                }
+                regMap[br.region].dcCount += 1;
+                regMap[br.region].days += br.days;
+                regMap[br.region].pieces += br.pieces;
+                regMap[br.region].totalAmount += br.totalAmount;
             });
 
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            if (targetTab) targetTab.classList.remove('hidden');
-
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-slate-300');
-                activeBtn.classList.add('bg-slate-800', 'text-white');
-            }
-
-            if (tabId === 'dashboard') renderDashboardSummaries();
-            if (tabId === 'daily-input') renderDailyRawTable();
-            if (tabId === 'spreadsheet') renderMatrixTable();
-            if (tabId === 'employees') renderEmployeeDirectory();
-            if (tabId === 'billing') renderBillingTable();
+            return Object.values(regMap)
+                .map(item => {
+                    const avgPod = calculateAvgPod(item.pieces, item.days);
+                    const tax1Percent = item.totalAmount * 0.01;
+                    const netAmount = item.totalAmount - tax1Percent;
+                    return {
+                        region: item.region,
+                        dcCount: item.dcCount,
+                        days: item.days,
+                        pieces: item.pieces,
+                        avgPod: avgPod,
+                        totalAmount: item.totalAmount,
+                        tax1Percent: tax1Percent,
+                        netAmount: netAmount
+                    };
+                })
+                .sort((a, b) => b.totalAmount - a.totalAmount);
         }
 
-        function renderDailyRawTable() {
-            const tbody = document.getElementById('daily-raw-tbody');
-            const tfoot = document.getElementById('daily-raw-tfoot');
+        function renderTopCards(branchList) {
+            const totalPieces = branchList.reduce((sum, item) => sum + item.pieces, 0);
+            const totalCost = branchList.reduce((sum, item) => sum + item.totalAmount, 0);
+            const totalTax = totalCost * 0.01;
+            const totalNet = totalCost - totalTax;
+
+            document.getElementById('count-dc').innerText = branchList.length.toLocaleString();
+            document.getElementById('stat-dc-count').innerText = branchList.length.toLocaleString();
+            document.getElementById('stat-total-pod').innerText = totalPieces.toLocaleString();
+            document.getElementById('stat-total-cost').innerText = totalCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('stat-total-tax').innerText = totalTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('stat-total-net').innerText = totalNet.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function renderQuotationTable() {
+            const branchList = getBranchQuotationList();
+            renderTopCards(branchList);
+
+            const tbody = document.getElementById('quotation-tbody');
+            const tfoot = document.getElementById('quotation-tfoot');
             if (!tbody || !tfoot) return;
 
-            const dateFilter = (document.getElementById('filter-raw-date')?.value || '').trim().toLowerCase();
-            const codeFilter = (document.getElementById('filter-raw-code')?.value || '').trim().toLowerCase();
+            if (branchList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-slate-400">ไม่พบข้อมูลสาขาสำหรับสร้างใบเสนอราคา</td></tr>`;
+                tfoot.innerHTML = '';
+                return;
+            }
 
-            const filtered = spreadsheetData.filter(row => {
+            let sumDays = 0, sumPieces = 0, sumAmount = 0, sumTax = 0, sumNet = 0;
+
+            tbody.innerHTML = branchList.map((item, idx) => {
+                sumDays += item.days;
+                sumPieces += item.pieces;
+                sumAmount += item.totalAmount;
+                sumTax += item.tax1Percent;
+                sumNet += item.netAmount;
+
+                const safeDcAttr = item.dc.replace(/"/g, '&quot;');
+
+                return `
+                    <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
+                        <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
+                        <td class="p-2.5 border-r border-gray-200 font-sans font-bold text-cyan-700">${item.dc}</td>
+                        <td class="p-2.5 border-r border-gray-200 font-sans font-semibold text-amber-700">${item.region}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-slate-700">${item.days.toLocaleString()}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-amber-700 font-bold">${item.pieces.toLocaleString()}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-yellow-700 font-bold">${item.avgPod.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="p-2 border-r border-gray-200">
+                            <select onchange="setVehicleType('${safeDcAttr}', this.value)" class="vehicle-select bg-gray-50 border border-gray-300 rounded px-1.5 py-1 text-xs font-bold text-slate-800">
+                                <option value="4W" ${item.vehicleType === '4W' ? 'selected' : ''}>4W</option>
+                                <option value="2W" ${item.vehicleType === '2W' ? 'selected' : ''}>2W</option>
+                            </select>
+                        </td>
+                        <td class="p-2 border-r border-gray-200">
+                            <input type="number" step="0.01" min="0" value="${item.rate}"
+                                onchange="updateBranchRate('${safeDcAttr}', this.value)"
+                                class="rate-input w-20 bg-yellow-50 border border-yellow-300 rounded px-1.5 py-1 text-center font-mono font-bold text-slate-900 focus:outline-none focus:border-amber-500">
+                        </td>
+                        <td class="p-2.5 border-r border-gray-200 text-blue-700 font-bold">${item.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-red-600">${item.tax1Percent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="p-2.5 text-green-600 font-bold bg-green-50/50">${item.netAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const grandAvgPod = calculateAvgPod(sumPieces, sumDays);
+
+            tfoot.innerHTML = `
+                <tr class="font-mono bg-gray-100">
+                    <td colspan="3" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">GRAND TOTAL (${branchList.length} สาขา)</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 font-bold">${sumDays.toLocaleString()}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-amber-700 font-bold">${sumPieces.toLocaleString()}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-yellow-800 font-bold">${grandAvgPod.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300">-</td>
+                    <td class="p-2.5 text-center border-r border-gray-300">-</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${sumAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-red-600 font-bold">${sumTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2.5 text-center text-green-600 font-bold">${sumNet.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                </tr>
+            `;
+        }
+
+        function renderRegionTable() {
+            const regionList = getRegionQuotationList();
+            const tbody = document.getElementById('region-tbody');
+            const tfoot = document.getElementById('region-tfoot');
+            if (!tbody || !tfoot) return;
+
+            if (regionList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-slate-400">ยังไม่มีข้อมูลสรุปตาม Region</td></tr>`;
+                tfoot.innerHTML = '';
+                return;
+            }
+
+            let sumDc = 0, sumDays = 0, sumPieces = 0, sumAmount = 0, sumTax = 0, sumNet = 0;
+
+            tbody.innerHTML = regionList.map((item, idx) => {
+                sumDc += item.dcCount;
+                sumDays += item.days;
+                sumPieces += item.pieces;
+                sumAmount += item.totalAmount;
+                sumTax += item.tax1Percent;
+                sumNet += item.netAmount;
+
+                return `
+                    <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
+                        <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
+                        <td class="p-2.5 border-r border-gray-200 font-sans font-bold text-slate-900">${item.region}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-cyan-700 font-bold">${item.dcCount.toLocaleString()}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-slate-700">${item.days.toLocaleString()}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-amber-700 font-bold">${item.pieces.toLocaleString()}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-yellow-700 font-bold">${item.avgPod.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-blue-700 font-bold">${item.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="p-2.5 border-r border-gray-200 text-red-600">${item.tax1Percent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td class="p-2.5 text-green-600 font-bold bg-green-50/50">${item.netAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const grandAvgPod = calculateAvgPod(sumPieces, sumDays);
+
+            tfoot.innerHTML = `
+                <tr class="font-mono bg-gray-100">
+                    <td colspan="2" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">GRAND TOTAL</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-cyan-700 font-bold">${sumDc.toLocaleString()}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 font-bold">${sumDays.toLocaleString()}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-amber-700 font-bold">${sumPieces.toLocaleString()}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-yellow-800 font-bold">${grandAvgPod.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${sumAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2.5 text-center border-r border-gray-300 text-red-600 font-bold">${sumTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td class="p-2.5 text-center text-green-600 font-bold">${sumNet.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                </tr>
+            `;
+        }
+
+        function renderDailyTable() {
+            const tbody = document.getElementById('daily-tbody');
+            const tfoot = document.getElementById('daily-tfoot');
+            if (!tbody || !tfoot) return;
+
+            const dateFilter = (document.getElementById('filter-daily-date')?.value || '').trim().toLowerCase();
+            const dcFilter = (document.getElementById('filter-daily-dc')?.value || '').trim().toLowerCase();
+
+            const filtered = dailyRows.filter(row => {
                 const matchDate = dateFilter === '' || row.date.toLowerCase().includes(dateFilter);
-                const matchCode = codeFilter === '' ||
-                    row.code.toLowerCase().includes(codeFilter) ||
-                    row.name.toLowerCase().includes(codeFilter) ||
-                    row.region.toLowerCase().includes(codeFilter) ||
-                    row.dc.toLowerCase().includes(codeFilter);
-                return matchDate && matchCode;
+                const matchDc = dcFilter === '' || row.dc.toLowerCase().includes(dcFilter) || row.region.toLowerCase().includes(dcFilter);
+                return matchDate && matchDc;
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-slate-400">ไม่พบข้อมูลรายการรายวัน</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-slate-400">ไม่พบข้อมูลรายวัน</td></tr>`;
                 tfoot.innerHTML = '';
                 return;
             }
@@ -890,380 +827,105 @@
             let sumPieces = 0, sumMoney = 0;
 
             tbody.innerHTML = filtered.map((row, idx) => {
-                const empInfo = employees.find(emp => emp.code === row.code) || { salary: 13 };
-                const rate = Number(empInfo.salary || 13);
-                const money = calculateFinalCost(row.rawCost, rate);
-
-                sumPieces += row.rawCost;
+                const cfg = ensureBranchConfig(row.dc);
+                const rate = Number(cfg.rate ?? 13);
+                const money = row.pieces * rate;
+                sumPieces += row.pieces;
                 sumMoney += money;
 
                 return `
                     <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
                         <td class="p-2 border-r border-gray-200">${idx + 1}</td>
-                        <td class="p-2 border-r border-gray-200 text-slate-600 font-bold">${row.date}</td>
-                        <td class="p-2 border-r border-gray-200 text-blue-600 font-bold">${row.code}</td>
-                        <td class="p-2 border-r border-gray-200 font-sans text-slate-900 font-medium">${row.name}</td>
-                        <td class="p-2 border-r border-gray-200 font-sans text-amber-700 font-semibold">${row.region}</td>
-                        <td class="p-2 border-r border-gray-200 text-xs">${row.position}</td>
-                        <td class="p-2 border-r border-gray-200 text-cyan-700 font-bold">${row.dc}</td>
-                        <td class="p-2 border-r border-gray-200 text-amber-700 font-bold">${row.rawCost.toLocaleString()}</td>
-                        <td class="p-2 border-r border-gray-200 text-yellow-600 font-bold">${rate}</td>
-                        <td class="p-2 text-green-600 font-bold bg-green-50/50">${money.toLocaleString()}</td>
+                        <td class="p-2 border-r border-gray-200 text-slate-700 font-bold">${row.date}</td>
+                        <td class="p-2 border-r border-gray-200 font-sans font-bold text-cyan-700">${row.dc}</td>
+                        <td class="p-2 border-r border-gray-200 font-sans font-semibold text-amber-700">${row.region}</td>
+                        <td class="p-2 border-r border-gray-200 text-amber-700 font-bold">${row.pieces.toLocaleString()}</td>
+                        <td class="p-2 border-r border-gray-200 text-yellow-700 font-bold">${rate}</td>
+                        <td class="p-2 text-green-600 font-bold bg-green-50/50">${money.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                     </tr>
                 `;
             }).join('');
 
             tfoot.innerHTML = `
                 <tr class="font-mono bg-gray-100">
-                    <td colspan="7" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">TOTAL (${filtered.length.toLocaleString()})</td>
+                    <td colspan="4" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">TOTAL (${filtered.length.toLocaleString()} รายการ)</td>
                     <td class="p-2.5 text-center border-r border-gray-300 text-amber-700 font-bold">${sumPieces.toLocaleString()}</td>
                     <td class="p-2.5 text-center border-r border-gray-300">-</td>
-                    <td class="p-2.5 text-center text-green-600 font-bold">${sumMoney.toLocaleString()}</td>
+                    <td class="p-2.5 text-center text-green-600 font-bold">${sumMoney.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                 </tr>
             `;
         }
 
-        function renderEmployeeDirectory() {
-            const tbody = document.getElementById('employee-directory-tbody');
-            if (!tbody) return;
-
-            if (employees.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-slate-400">ยังไม่มีข้อมูลพนักงาน</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = employees.map(emp => `
-                <tr class="hover:bg-gray-50 transition text-center">
-                    <td class="p-3 border-r border-gray-200 font-mono text-blue-600 font-bold">${emp.code}</td>
-                    <td class="p-3 border-r border-gray-200 font-semibold text-slate-900 text-center">${emp.name}</td>
-                    <td class="p-3 border-r border-gray-200 font-semibold text-amber-700">${emp.region || 'ไม่ระบุ Region'}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono">${emp.position}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono text-cyan-700 font-bold">${emp.dc || 'ไม่ระบุสถานี'}</td>
-                    <td class="p-3 border-r border-gray-200 font-medium text-slate-800">${emp.bank || '-'}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono text-blue-600">${emp.accNo || '-'}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono font-bold text-amber-600">${Number(emp.salary || 13).toLocaleString()}</td>
-                    <td class="p-3">${emp.status}</td>
-                </tr>
-            `).join('');
+        function renderAllViews() {
+            renderQuotationTable();
+            renderRegionTable();
+            renderDailyTable();
         }
 
-        function renderMatrixTable() {
-            const thead = document.getElementById('matrix-thead');
-            const tbody = document.getElementById('matrix-tbody');
-            const tfoot = document.getElementById('matrix-tfoot');
-            if (!thead || !tbody || !tfoot) return;
-
-            const datesSet = [...new Set(spreadsheetData.map(row => row.date))].filter(d => d && d !== 'ไม่ระบุวันที่').sort();
-
-            const empMap = {};
-            spreadsheetData.forEach(row => {
-                if (!empMap[row.code]) {
-                    const empInfo = employees.find(emp => emp.code === row.code) || {
-                        name: row.name,
-                        position: row.position,
-                        dc: row.dc,
-                        salary: 13
-                    };
-                    empMap[row.code] = {
-                        code: row.code,
-                        name: row.name || empInfo.name,
-                        position: row.position || empInfo.position,
-                        dc: row.dc || empInfo.dc,
-                        salaryRate: Number(empInfo.salary || 13),
-                        daily: {}
-                    };
+        function switchTab(tabId) {
+            ['quotation', 'region-summary', 'daily-data'].forEach(id => {
+                const tabEl = document.getElementById(`tab-${id}`);
+                const navEl = document.getElementById(`nav-${id}`);
+                if (tabEl) tabEl.classList.add('hidden');
+                if (navEl) {
+                    navEl.classList.remove('bg-slate-800', 'text-white');
+                    navEl.classList.add('text-slate-300');
                 }
-                const singleCost = calculateFinalCost(row.rawCost, empMap[row.code].salaryRate);
-                if (!empMap[row.code].daily[row.date]) {
-                    empMap[row.code].daily[row.date] = { pieces: 0, cost: 0 };
-                }
-                empMap[row.code].daily[row.date].pieces += row.rawCost;
-                empMap[row.code].daily[row.date].cost += singleCost;
             });
 
-            let employeesList = Object.values(empMap);
-            const codeFilter = (document.getElementById('filter-matrix-code')?.value || '').trim().toLowerCase();
-            if (codeFilter !== '') {
-                employeesList = employeesList.filter(emp =>
-                    emp.code.toLowerCase().includes(codeFilter) ||
-                    emp.name.toLowerCase().includes(codeFilter) ||
-                    emp.dc.toLowerCase().includes(codeFilter)
-                );
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-300');
+                activeNav.classList.add('bg-slate-800', 'text-white');
             }
-
-            let headerHTML = `
-                <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-12">ลำดับ</th>
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-24">รหัสพนักงาน</th>
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-44 text-center">ชื่อ-นามสกุล</th>
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-24">ประเภทรถ</th>
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-16">สถานี</th>
-            `;
-            datesSet.forEach(date => {
-                headerHTML += `<th colspan="2" class="p-1.5 border-r border-gray-700 text-amber-300">${date}</th>`;
-            });
-            headerHTML += `
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-16 bg-slate-800">วันทำงาน</th>
-                    <th rowspan="2" class="p-2 border-r border-gray-700 w-24 bg-slate-800">Total POD</th>
-                    <th rowspan="2" class="p-2 text-green-300 w-28 bg-slate-800">Total Cost</th>
-                </tr>
-                <tr class="bg-slate-900 text-slate-300 font-mono text-[9px]">
-            `;
-            datesSet.forEach(() => {
-                headerHTML += `<th class="p-1 border-r border-gray-700 text-amber-200">ชิ้น</th><th class="p-1 border-r border-gray-700 text-blue-200">Cost</th>`;
-            });
-            headerHTML += `</tr>`;
-            thead.innerHTML = headerHTML;
-
-            if (employeesList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="${8 + datesSet.length * 2}" class="p-6 text-slate-400">ไม่พบข้อมูลยอดวิ่งรายวัน</td></tr>`;
-                tfoot.innerHTML = '';
-                return;
-            }
-
-            let bodyHTML = '';
-            let grandTotalDays = 0, grandTotalPieces = 0, grandTotalCost = 0;
-            const dateTotals = {};
-            datesSet.forEach(d => { dateTotals[d] = { pieces: 0, cost: 0 }; });
-
-            employeesList.forEach((emp, idx) => {
-                let empDays = 0, empPieces = 0, empCost = 0;
-                let rowHTML = `
-                    <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
-                        <td class="p-2 border-r border-gray-200">${idx + 1}</td>
-                        <td class="p-2 border-r border-gray-200 text-blue-600 font-bold">${emp.code}</td>
-                        <td class="p-2 border-r border-gray-200 font-sans text-slate-900 font-medium text-center">${emp.name}</td>
-                        <td class="p-2 border-r border-gray-200 text-xs">${emp.position}</td>
-                        <td class="p-2 border-r border-gray-200 text-cyan-700 font-bold">${emp.dc}</td>
-                `;
-
-                datesSet.forEach(date => {
-                    const dayData = emp.daily[date];
-                    if (dayData && dayData.pieces > 0) {
-                        empDays += 1;
-                        empPieces += dayData.pieces;
-                        empCost += dayData.cost;
-                        dateTotals[date].pieces += dayData.pieces;
-                        dateTotals[date].cost += dayData.cost;
-                        rowHTML += `
-                            <td class="p-1.5 border-r border-gray-200 text-amber-700 font-bold">${dayData.pieces.toLocaleString()}</td>
-                            <td class="p-1.5 border-r border-gray-200 text-blue-700">${dayData.cost.toLocaleString()}</td>
-                        `;
-                    } else {
-                        rowHTML += `
-                            <td class="p-1.5 border-r border-gray-200 text-gray-300">-</td>
-                            <td class="p-1.5 border-r border-gray-200 text-gray-300">-</td>
-                        `;
-                    }
-                });
-
-                grandTotalDays += empDays;
-                grandTotalPieces += empPieces;
-                grandTotalCost += empCost;
-
-                rowHTML += `
-                        <td class="p-2 border-r border-gray-200 font-bold bg-gray-50">${empDays}</td>
-                        <td class="p-2 border-r border-gray-200 text-amber-700 font-bold bg-gray-50">${empPieces.toLocaleString()}</td>
-                        <td class="p-2 text-green-600 font-bold bg-green-50/50">${empCost.toLocaleString()}</td>
-                    </tr>
-                `;
-                bodyHTML += rowHTML;
-            });
-
-            tbody.innerHTML = bodyHTML;
-
-            let footHTML = `
-                <tr class="font-mono bg-gray-200 text-slate-900">
-                    <td colspan="5" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">Grand Total</td>
-            `;
-            datesSet.forEach(date => {
-                footHTML += `
-                    <td class="p-1.5 border-r border-gray-300 text-amber-800 font-bold">${dateTotals[date].pieces.toLocaleString()}</td>
-                    <td class="p-1.5 border-r border-gray-300 text-blue-800 font-bold">${dateTotals[date].cost.toLocaleString()}</td>
-                `;
-            });
-            footHTML += `
-                    <td class="p-2.5 border-r border-gray-300 font-bold">${grandTotalDays}</td>
-                    <td class="p-2.5 border-r border-gray-300 text-amber-800 font-bold">${grandTotalPieces.toLocaleString()}</td>
-                    <td class="p-2.5 text-green-700 font-bold">${grandTotalCost.toLocaleString()}</td>
-                </tr>
-            `;
-            tfoot.innerHTML = footHTML;
         }
 
-        function exportMatrixExcel() {
-            const ws = XLSX.utils.table_to_sheet(document.getElementById('matrix-table'));
+        function exportQuotationExcel() {
+            const list = getBranchQuotationList();
+            const rows = list.map((item, idx) => ({
+                "ลำดับ": idx + 1,
+                "สาขา (DC)": item.dc,
+                "Region": item.region,
+                "วันทำงานรวม": item.days,
+                "POD รวม": item.pieces,
+                "POD เฉลี่ย": Number(item.avgPod.toFixed(2)),
+                "ประเภทรถ": item.vehicleType,
+                "เรท / ชิ้น": item.rate,
+                "ยอดรวมใบเสนอราคา": Number(item.totalAmount.toFixed(2)),
+                "หัก ณ ที่จ่าย 1%": Number(item.tax1Percent.toFixed(2)),
+                "ยอดสุทธิ": Number(item.netAmount.toFixed(2))
+            }));
+            const ws = XLSX.utils.json_to_sheet(rows);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Matrix Daily Report");
-            XLSX.writeFile(wb, "Hetai_Matrix_Daily_Report.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Branch Quotation");
+            XLSX.writeFile(wb, "Hetai_Branch_Quotation.xlsx");
         }
 
-        function resetFilters() {
-            document.getElementById('filter-code').value = '';
-            renderBillingTable();
-        }
-
-        function getAggregatedBillingData() {
-            const codeFilter = (document.getElementById('filter-code')?.value || '').trim().toLowerCase();
-            const map = {};
-
-            spreadsheetData.forEach(row => {
-                const code = row.code;
-                if (!code) return;
-
-                if (!map[code]) {
-                    const empInfo = employees.find(emp => emp.code === code) || {
-                        dc: row.dc || 'ไม่ระบุสถานี',
-                        region: row.region || 'ไม่ระบุ Region',
-                        salary: 13,
-                        position: row.position || '4W Driver',
-                        name: row.name || 'ไม่ระบุ',
-                        bank: '-',
-                        accNo: '-'
-                    };
-                    map[code] = {
-                        code: code,
-                        name: row.name || empInfo.name,
-                        region: row.region || empInfo.region || 'ไม่ระบุ Region',
-                        position: row.position || empInfo.position,
-                        dc: row.dc || empInfo.dc || 'ไม่ระบุสถานี',
-                        bank: empInfo.bank || '-',
-                        accNo: empInfo.accNo || '-',
-                        salaryRate: Number(empInfo.salary || 13),
-                        days: 0,
-                        totalPieces: 0,
-                        totalFinalCost: 0
-                    };
-                }
-
-                map[code].days += 1;
-                map[code].totalPieces += row.rawCost;
-                const singleCost = calculateFinalCost(row.rawCost, map[code].salaryRate);
-                map[code].totalFinalCost += singleCost;
-            });
-
-            let aggregatedList = Object.values(map);
-
-            if (codeFilter !== '') {
-                aggregatedList = aggregatedList.filter(item =>
-                    item.code.toLowerCase().includes(codeFilter) ||
-                    item.name.toLowerCase().includes(codeFilter) ||
-                    item.region.toLowerCase().includes(codeFilter) ||
-                    item.dc.toLowerCase().includes(codeFilter)
-                );
-            }
-
-            return aggregatedList;
-        }
-
-        function renderBillingTable() {
-            const tbody = document.getElementById('billing-tbody');
-            const tfoot = document.getElementById('billing-tfoot');
-            if (!tbody || !tfoot) return;
-
-            const aggregatedList = getAggregatedBillingData();
-
-            if (aggregatedList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="14" class="p-6 text-slate-400">ไม่มีข้อมูลสำหรับสรุปใบวางบิล</td></tr>`;
-                tfoot.innerHTML = '';
-                return;
-            }
-
-            let sumDays = 0, sumPieces = 0, sumFinal = 0, sumTax = 0, sumNet = 0;
-
-            tbody.innerHTML = aggregatedList.map((item, idx) => {
-                const tax1Percent = item.totalFinalCost * 0.01;
-                const netPaid = item.totalFinalCost - tax1Percent;
-
-                sumDays += item.days;
-                sumPieces += item.totalPieces;
-                sumFinal += item.totalFinalCost;
-                sumTax += tax1Percent;
-                sumNet += netPaid;
-
-                return `
-                    <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
-                        <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${item.code}</td>
-                        <td class="p-2.5 border-r border-gray-200 font-sans text-amber-700 font-semibold">${item.region}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-cyan-700 font-bold">${item.dc}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-xs">${item.position}</td>
-                        <td class="p-2.5 border-r border-gray-200 font-sans text-slate-900 font-medium text-center">${item.name}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-slate-700">${item.bank}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-blue-600">${item.accNo}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-slate-700 font-bold">${item.days}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-amber-700 font-bold">${item.totalPieces.toLocaleString()}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-yellow-600 font-bold">${item.salaryRate}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-blue-700 font-bold">${item.totalFinalCost.toLocaleString()}</td>
-                        <td class="p-2.5 border-r border-gray-200 text-red-600">${tax1Percent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                        <td class="p-2.5 text-green-600 font-bold bg-green-50/50">${netPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            tfoot.innerHTML = `
-                <tr class="font-mono bg-gray-100">
-                    <td colspan="8" class="p-3 text-right uppercase font-bold border-r border-gray-300">GRAND TOTAL (ยอดรวมทั้งหมด)</td>
-                    <td class="p-3 text-center border-r border-gray-300 font-bold">${sumDays}</td>
-                    <td class="p-3 text-center border-r border-gray-300 text-amber-700 font-bold">${sumPieces.toLocaleString()}</td>
-                    <td class="p-3 text-center border-r border-gray-300">-</td>
-                    <td class="p-3 text-center border-r border-gray-300 text-blue-700 font-bold">${sumFinal.toLocaleString()}</td>
-                    <td class="p-3 text-center border-r border-gray-300 text-red-600 font-bold">${sumTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td class="p-3 text-center text-green-600 font-bold">${sumNet.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                </tr>
-            `;
-        }
-
-        function exportToExcel() {
-            const aggregatedList = getAggregatedBillingData();
-            const excelRows = aggregatedList.map((item, idx) => {
-                const tax1Percent = item.totalFinalCost * 0.01;
-                const netPaid = item.totalFinalCost - tax1Percent;
-                return {
-                    "ลำดับ": idx + 1,
-                    "รหัสพนักงาน": item.code,
-                    "Region": item.region,
-                    "สถานี": item.dc,
-                    "ประเภทรถ": item.position,
-                    "ชื่อ-นามสกุล": item.name,
-                    "ธนาคาร": item.bank,
-                    "เลขที่บัญชี": item.accNo,
-                    "วันทำงาน": item.days,
-                    "รายได้จริง (Con DEL)": item.totalPieces,
-                    "เลท": item.salaryRate,
-                    "ยอดรวม": item.totalFinalCost,
-                    "หัก ณ ที่จ่าย 1%": Number(tax1Percent.toFixed(2)),
-                    "ยอดจ่ายสุทธิ": Number(netPaid.toFixed(2))
-                };
-            });
-
-            const ws = XLSX.utils.json_to_sheet(excelRows);
+        function exportRegionExcel() {
+            const list = getRegionQuotationList();
+            const rows = list.map((item, idx) => ({
+                "ลำดับ": idx + 1,
+                "Region": item.region,
+                "จำนวนสาขา": item.dcCount,
+                "วันทำงานรวม": item.days,
+                "POD รวม": item.pieces,
+                "POD เฉลี่ย": Number(item.avgPod.toFixed(2)),
+                "ยอดรวม": Number(item.totalAmount.toFixed(2)),
+                "หัก ณ ที่จ่าย 1%": Number(item.tax1Percent.toFixed(2)),
+                "ยอดสุทธิ": Number(item.netAmount.toFixed(2))
+            }));
+            const ws = XLSX.utils.json_to_sheet(rows);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Billing Summary");
-            XLSX.writeFile(wb, "Hetai_Billing_Summary_Full.xlsx");
-        }
-
-        function exportCSV() {
-            const aggregatedList = getAggregatedBillingData();
-            const headers = ["ลำดับ", "รหัสพนักงาน", "Region", "สถานี", "ประเภทรถ", "ชื่อ-นามสกุล", "ธนาคาร", "เลขที่บัญชี", "วันทำงาน", "Con DEL", "เลท", "ยอดรวม", "หัก ณ ที่จ่าย 1%", "ยอดจ่ายสุทธิ"];
-            const rows = aggregatedList.map((item, idx) => {
-                const tax1 = (item.totalFinalCost * 0.01).toFixed(2);
-                const net = (item.totalFinalCost * 0.99).toFixed(2);
-                return [idx + 1, item.code, `"${item.region}"`, `"${item.dc}"`, item.position, `"${item.name}"`, item.bank, `"${item.accNo}"`, item.days, item.totalPieces, item.salaryRate, item.totalFinalCost, tax1, net].join(',');
-            });
-            const csvContent = "\uFEFF" + [headers.join(','), ...rows].join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "Hetai_Billing_Summary.csv";
-            a.click();
-            URL.revokeObjectURL(url);
+            XLSX.utils.book_append_sheet(wb, ws, "Region Quotation Summary");
+            XLSX.writeFile(wb, "Hetai_Region_Quotation_Summary.xlsx");
         }
 
         window.onload = function () {
+            initBranchConfig();
             updateTimestamp();
-            switchTab('dashboard');
+            switchTab('quotation');
             fetchAllDataFromSheets(false);
         };
     </script>
