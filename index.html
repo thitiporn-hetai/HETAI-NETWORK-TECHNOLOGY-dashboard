@@ -163,26 +163,26 @@
                     </div>
                 </div>
 
-                <!-- ตารางสรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตาม HR -->
+                <!-- ตารางสรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตาม Region -->
                 <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
                         <div>
                             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-user-tie text-blue-600"></i> สรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตาม HR
+                                <i class="fa-solid fa-map-location-dot text-blue-600"></i> สรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตาม Region
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">แยกสรุปตามกลุ่ม HR (จำนวนคน, วันทำงาน, POD รวม, POD เฉลี่ย, ค่าใช้จ่ายรวม, หัก ณ ที่จ่าย 1% และยอดจ่ายสุทธิ)</p>
+                            <p class="text-xs text-slate-500 mt-0.5">แยกสรุปตามกลุ่ม Region (จำนวนคน, วันทำงานรวม, POD รวม, POD เฉลี่ย, ค่าใช้จ่ายรวม, หัก ณ ที่จ่าย 1% และยอดจ่ายสุทธิ)</p>
                         </div>
-                        <button onclick="exportHRSummaryExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
-                            <i class="fa-solid fa-file-excel"></i> Export สรุปตาม HR
+                        <button onclick="exportRegionSummaryExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
+                            <i class="fa-solid fa-file-excel"></i> Export สรุปตาม Region
                         </button>
                     </div>
 
                     <div class="overflow-x-auto">
-                        <table id="hr-summary-table" class="w-full text-center text-xs border-collapse border border-gray-300">
+                        <table id="region-summary-table" class="w-full text-center text-xs border-collapse border border-gray-300">
                             <thead>
                                 <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-700 w-12">ลำดับ</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-32 text-amber-300">HR</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-32 text-amber-300">Region</th>
                                     <th class="p-2.5 border-r border-gray-700 w-24 text-blue-300">จำนวนคน</th>
                                     <th class="p-2.5 border-r border-gray-700 w-24">วันทำงานรวม</th>
                                     <th class="p-2.5 border-r border-gray-700 w-28 text-amber-300">POD รวม</th>
@@ -192,8 +192,8 @@
                                     <th class="p-2.5 w-32 text-green-300 font-bold">ยอดจ่ายสุทธิ</th>
                                 </tr>
                             </thead>
-                            <tbody id="hr-summary-tbody" class="divide-y divide-gray-200"></tbody>
-                            <tfoot id="hr-summary-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
+                            <tbody id="region-summary-tbody" class="divide-y divide-gray-200"></tbody>
+                            <tfoot id="region-summary-tfoot" class="bg-gray-100 font-bold text-slate-900 font-mono"></tfoot>
                         </table>
                     </div>
                 </div>
@@ -205,7 +205,7 @@
                             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
                                 <i class="fa-solid fa-warehouse text-cyan-600"></i> สรุปจำนวนคน ชิ้นงาน POD และค่าใช้จ่าย อิงตามสถานี (DC)
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">แยกสรุปตามสถานี (จำนวนคน, วันทำงาน, POD รวม, POD เฉลี่ย, ค่าใช้จ่ายรวม, หัก ณ ที่จ่าย 1% และยอดจ่ายสุทธิ)</p>
+                            <p class="text-xs text-slate-500 mt-0.5">แยกสรุปตามสถานี (จำนวนคน, วันทำงานรวม, POD รวม, POD เฉลี่ย, ค่าใช้จ่ายรวม, หัก ณ ที่จ่าย 1% และยอดจ่ายสุทธิ)</p>
                         </div>
                         <button onclick="exportDCSummaryExcel()" class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5 self-start sm:self-auto">
                             <i class="fa-solid fa-file-excel"></i> Export สรุปตามสถานี
@@ -258,8 +258,8 @@
                             <input type="text" id="filter-raw-date" oninput="renderDailyRawTable()" placeholder="เช่น 09/11/2026" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-36 focus:outline-none focus:border-amber-500">
                         </div>
                         <div class="flex items-center space-x-1.5">
-                            <label class="text-slate-500">รหัส / ชื่อ / HR / สถานี:</label>
-                            <input type="text" id="filter-raw-code" oninput="renderDailyRawTable()" placeholder="เช่น 70000155 หรือ Sticker" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-44 focus:outline-none focus:border-amber-500">
+                            <label class="text-slate-500">รหัส / ชื่อ / Region / สถานี:</label>
+                            <input type="text" id="filter-raw-code" oninput="renderDailyRawTable()" placeholder="เช่น 70000155 หรือ Central" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-44 focus:outline-none focus:border-amber-500">
                         </div>
                         <button onclick="document.getElementById('filter-raw-date').value=''; document.getElementById('filter-raw-code').value=''; renderDailyRawTable();" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
                             <i class="fa-solid fa-rotate-right mr-1"></i> ล้างตัวกรอง
@@ -274,7 +274,7 @@
                                     <th class="p-2.5 border-r border-gray-700 w-28">วันที่</th>
                                     <th class="p-2.5 border-r border-gray-700 w-24">รหัสพนักงาน</th>
                                     <th class="p-2.5 border-r border-gray-700 w-44">ชื่อ-นามสกุล</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-24 text-amber-300">HR</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-24 text-amber-300">Region</th>
                                     <th class="p-2.5 border-r border-gray-700 w-28">ประเภทรถ</th>
                                     <th class="p-2.5 border-r border-gray-700 w-16 text-cyan-300">สถานี</th>
                                     <th class="p-2.5 border-r border-gray-700 text-amber-300 w-24">จำนวนชิ้น</th>
@@ -297,7 +297,7 @@
                             <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-users text-blue-600"></i> การจัดการพนักงานและบัญชีธนาคาร
                             </h2>
-                            <p class="text-xs text-slate-500 mt-1">รายชื่อพนักงาน HR ธนาคาร เลขที่บัญชี เลท และสถานะการทำงาน</p>
+                            <p class="text-xs text-slate-500 mt-1">รายชื่อพนักงาน Region ธนาคาร เลขที่บัญชี เลท และสถานะการทำงาน</p>
                         </div>
                         <button onclick="fetchAllDataFromSheets(true)" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded transition shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-sync"></i> ซิงค์พนักงานจาก Sheet
@@ -310,7 +310,7 @@
                                 <tr class="bg-gray-50 text-slate-600 border-b border-gray-200 uppercase font-mono text-[11px]">
                                     <th class="p-3 border-r border-gray-200 w-28">รหัสพนักงาน (KID)</th>
                                     <th class="p-3 border-r border-gray-200 text-center w-48">ชื่อ-นามสกุล (Name)</th>
-                                    <th class="p-3 border-r border-gray-200 text-amber-600 w-24">HR</th>
+                                    <th class="p-3 border-r border-gray-200 text-amber-600 w-24">Region</th>
                                     <th class="p-3 border-r border-gray-200 w-28">ประเภทรถ (Position)</th>
                                     <th class="p-3 border-r border-gray-200 text-cyan-700 w-20">สถานี (DC)</th>
                                     <th class="p-3 border-r border-gray-200 text-blue-600 w-32">ธนาคาร</th>
@@ -395,7 +395,7 @@
                             <span class="font-bold text-slate-700"><i class="fa-solid fa-filter text-amber-500 mr-1"></i> ตัวกรองข้อมูล:</span>
                         </div>
                         <div class="flex items-center space-x-1.5">
-                            <label class="text-slate-500">รหัส / HR / สถานี:</label>
+                            <label class="text-slate-500">รหัส / Region / สถานี:</label>
                             <input type="text" id="filter-code" oninput="renderBillingTable()" placeholder="เช่น 70000155 หรือ LKB" class="bg-white border border-gray-300 rounded px-2.5 py-1 text-slate-900 w-44 focus:outline-none focus:border-amber-500">
                         </div>
                         <button onclick="resetFilters()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-slate-700 rounded transition font-medium">
@@ -409,7 +409,7 @@
                                 <tr class="bg-[#111827] text-white uppercase font-mono text-[10px]">
                                     <th class="p-2.5 border-r border-gray-700 w-10">ลำดับ</th>
                                     <th class="p-2.5 border-r border-gray-700 w-24">รหัสพนักงาน</th>
-                                    <th class="p-2.5 border-r border-gray-700 w-20 text-amber-300">HR</th>
+                                    <th class="p-2.5 border-r border-gray-700 w-20 text-amber-300">Region</th>
                                     <th class="p-2.5 border-r border-gray-700 w-16 text-cyan-300">สถานี</th>
                                     <th class="p-2.5 border-r border-gray-700 w-24">ประเภทรถ</th>
                                     <th class="p-2.5 border-r border-gray-700 w-40 text-center">ชื่อ-นามสกุล</th>
@@ -436,7 +436,7 @@
     <!-- Script Engine -->
     <script>
         let lastUpdatedTime = "-";
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxU4FUOIJnG6eb3Hj0cwLnlKRCsS_15UUesTjRqLxCVPS2aHZ1vThhEfz444SUacRTifw/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwBj98ky2MvDWCzhPzS5YrLoYFcmVIKUIytwUKsRsap3fo5WdNNxl_afJ6Kea5Oj3FfsA/exec";
 
         let employees = [];
         let spreadsheetData = [];
@@ -463,7 +463,8 @@
         function updateTimestamp() {
             const now = new Date();
             lastUpdatedTime = now.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }) + ' ' + now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('global-last-updated').innerText = `อัปเดตล่าสุด: ${lastUpdatedTime}`;
+            const el = document.getElementById('global-last-updated');
+            if (el) el.innerText = `อัปเดตล่าสุด: ${lastUpdatedTime}`;
         }
 
         function formatCleanDate(dateStr) {
@@ -511,43 +512,45 @@
 
             try {
                 const [empResRaw, dailyResRaw] = await Promise.all([
-                    fetch(`${WEB_APP_URL}?type=employees&t=${Date.now()}`).then(r => r.json()),
-                    fetch(`${WEB_APP_URL}?type=daily&t=${Date.now()}`).then(r => r.json()).catch(() => null)
+                    fetch(`${WEB_APP_URL}?type=employees&t=${Date.now()}`).then(res => res.json()),
+                    fetch(`${WEB_APP_URL}?type=daily&t=${Date.now()}`).then(res => res.json())
                 ]);
 
                 const empArray = Array.isArray(empResRaw) ? empResRaw : (Array.isArray(empResRaw?.data) ? empResRaw.data : []);
                 if (empArray.length > 0) {
-                    employees = empArray.map(row => ({
-                        code: String(row.code || row.kid || row.id || '').trim(),
-                        name: String(row.name || '').trim(),
-                        position: String(row.position || row.type || '4W Driver').trim(),
-                        dc: String(row.dc || row.station || row.DC || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี',
-                        hr: String(row.hr || row.HR || 'ไม่ระบุ HR').trim() || 'ไม่ระบุ HR',
-                        salary: parseNumber(row.salary ?? row.rate ?? row.delFee, 13),
-                        bank: String(row.bank || '-').trim(),
-                        accNo: String(row.accNo ?? row.accountNo ?? row.acc_no ?? '-').trim(),
-                        status: String(row.status || 'ทำงานอยู่').trim()
-                    })).filter(e => e.code !== '');
+                    employees = empArray.map(empRow => ({
+                        code: String(empRow.code || empRow.kid || empRow.id || '').trim(),
+                        name: String(empRow.name || '').trim(),
+                        position: String(empRow.position || empRow.type || '4W Driver').trim(),
+                        dc: String(empRow.dc || empRow.station || empRow.DC || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี',
+                        region: String(empRow.region || empRow.Region || empRow.hr || empRow.HR || 'ไม่ระบุ Region').trim() || 'ไม่ระบุ Region',
+                        salary: parseNumber(empRow.salary ?? empRow.rate ?? empRow.delFee, 13),
+                        bank: String(empRow.bank || '-').trim(),
+                        accNo: String(empRow.accNo ?? empRow.accountNo ?? empRow.acc_no ?? '-').trim(),
+                        status: String(empRow.status || 'ทำงานอยู่').trim()
+                    })).filter(emp => emp.code !== '');
                 }
 
                 const dailyArray = Array.isArray(dailyResRaw) ? dailyResRaw : (Array.isArray(dailyResRaw?.data) ? dailyResRaw.data : []);
-                spreadsheetData = dailyArray.map(row => {
-                    const code = String(row.code || row.kid || '').trim();
-                    const matchedEmp = employees.find(e => e.code === code) || {};
-                    const pieces = parseNumber(
-                        row.rawCost ?? row.conDel ?? row.con_del ?? row.pieces ?? row.del ?? row.cost,
-                        0
-                    );
-                    return {
-                        date: formatCleanDate(row.date),
-                        code: code,
-                        name: String(row.name || matchedEmp.name || 'ไม่ระบุชื่อ').trim(),
-                        hr: String(row.hr || row.HR || matchedEmp.hr || 'ไม่ระบุ HR').trim() || 'ไม่ระบุ HR',
-                        position: String(row.position || matchedEmp.position || '4W Driver').trim(),
-                        dc: String(row.dc || row.station || row.DC || matchedEmp.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี',
-                        rawCost: pieces
-                    };
-                }).filter(r => r.code !== '');
+                if (dailyArray.length > 0) {
+                    spreadsheetData = dailyArray.map(dailyRow => {
+                        const code = String(dailyRow.code || dailyRow.kid || '').trim();
+                        const matchedEmp = employees.find(emp => emp.code === code) || {};
+                        const pieces = parseNumber(
+                            dailyRow.rawCost ?? dailyRow.conDel ?? dailyRow.con_del ?? dailyRow.pieces ?? dailyRow.del ?? dailyRow.cost,
+                            0
+                        );
+                        return {
+                            date: formatCleanDate(dailyRow.date),
+                            code: code,
+                            name: String(dailyRow.name || matchedEmp.name || 'ไม่ระบุชื่อ').trim(),
+                            region: String(dailyRow.region || dailyRow.Region || matchedEmp.region || dailyRow.hr || dailyRow.HR || 'ไม่ระบุ Region').trim() || 'ไม่ระบุ Region',
+                            position: String(dailyRow.position || matchedEmp.position || '4W Driver').trim(),
+                            dc: String(dailyRow.dc || dailyRow.station || dailyRow.DC || matchedEmp.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี',
+                            rawCost: pieces
+                        };
+                    }).filter(item => item.code !== '');
+                }
 
                 document.getElementById('count-emp').innerText = employees.length.toLocaleString();
                 document.getElementById('count-daily').innerText = spreadsheetData.length.toLocaleString();
@@ -561,7 +564,7 @@
                 updateTimestamp();
 
                 if (spreadsheetData.length === 0) {
-                    setSyncStatus('error', 'ดึงรายชื่อพนักงานได้แล้ว แต่ไม่พบข้อมูลใน DailyData');
+                    setSyncStatus('error', `ดึงรายชื่อพนักงานได้ ${employees.length} คน แต่ไม่พบข้อมูลใน DailyData`);
                     if (showAlertOnError) {
                         alert('ดึงรายชื่อพนักงานได้แล้ว แต่ไม่พบข้อมูลรายวัน (DailyData)');
                     }
@@ -584,14 +587,16 @@
             if (!select) return;
             const currentVal = select.value || 'ALL';
             const dcSet = new Set();
-            spreadsheetData.forEach(r => {
-                const empInfo = employees.find(e => e.code === r.code) || {};
-                const dcName = String(r.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
+
+            spreadsheetData.forEach(row => {
+                const empInfo = employees.find(emp => emp.code === row.code) || {};
+                const dcName = String(row.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
                 dcSet.add(dcName);
             });
+
             const sortedDCs = [...dcSet].sort();
             select.innerHTML = `<option value="ALL">ทุกสถานี</option>` + sortedDCs.map(dc => `<option value="${dc}">${dc}</option>`).join('');
-            if ([...select.options].some(o => o.value === currentVal)) {
+            if ([...select.options].some(opt => opt.value === currentVal)) {
                 select.value = currentVal;
             }
         }
@@ -599,25 +604,25 @@
         function getFilteredDailyForDashboard() {
             const selectedDC = document.getElementById('filter-dashboard-dc')?.value || 'ALL';
             if (selectedDC === 'ALL') return spreadsheetData;
-            return spreadsheetData.filter(r => {
-                const empInfo = employees.find(e => e.code === r.code) || {};
-                const dcName = String(r.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
+            return spreadsheetData.filter(row => {
+                const empInfo = employees.find(emp => emp.code === row.code) || {};
+                const dcName = String(row.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
                 return dcName === selectedDC;
             });
         }
 
-        function getHRSummaryData(dataRows = getFilteredDailyForDashboard()) {
-            const hrMap = {};
+        function getRegionSummaryData(dataRows = getFilteredDailyForDashboard()) {
+            const regionMap = {};
 
             dataRows.forEach(row => {
-                const empInfo = employees.find(e => e.code === row.code) || {};
-                const hrName = String(row.hr || empInfo.hr || 'ไม่ระบุ HR').trim() || 'ไม่ระบุ HR';
+                const empInfo = employees.find(emp => emp.code === row.code) || {};
+                const regionName = String(row.region || empInfo.region || 'ไม่ระบุ Region').trim() || 'ไม่ระบุ Region';
                 const rate = Number(empInfo.salary ?? 13);
                 const cost = calculateFinalCost(row.rawCost, rate);
 
-                if (!hrMap[hrName]) {
-                    hrMap[hrName] = {
-                        hr: hrName,
+                if (!regionMap[regionName]) {
+                    regionMap[regionName] = {
+                        region: regionName,
                         empCodes: new Set(),
                         days: 0,
                         pieces: 0,
@@ -625,19 +630,19 @@
                     };
                 }
 
-                if (row.code) hrMap[hrName].empCodes.add(row.code);
-                hrMap[hrName].days += 1;
-                hrMap[hrName].pieces += Number(row.rawCost || 0);
-                hrMap[hrName].totalCost += cost;
+                if (row.code) regionMap[regionName].empCodes.add(row.code);
+                regionMap[regionName].days += 1;
+                regionMap[regionName].pieces += Number(row.rawCost || 0);
+                regionMap[regionName].totalCost += cost;
             });
 
-            return Object.values(hrMap)
+            return Object.values(regionMap)
                 .map(item => {
                     const avgPod = calculateAvgPodPerWorkDay(item.pieces, item.days);
                     const tax1Percent = item.totalCost * 0.01;
                     const netPaid = item.totalCost - tax1Percent;
                     return {
-                        hr: item.hr,
+                        region: item.region,
                         peopleCount: item.empCodes.size,
                         days: item.days,
                         pieces: item.pieces,
@@ -654,7 +659,7 @@
             const dcMap = {};
 
             dataRows.forEach(row => {
-                const empInfo = employees.find(e => e.code === row.code) || {};
+                const empInfo = employees.find(emp => emp.code === row.code) || {};
                 const dcName = String(row.dc || empInfo.dc || 'ไม่ระบุสถานี').trim() || 'ไม่ระบุสถานี';
                 const rate = Number(empInfo.salary ?? 13);
                 const cost = calculateFinalCost(row.rawCost, rate);
@@ -696,14 +701,14 @@
 
         function renderDashboardSummaries() {
             const dataRows = getFilteredDailyForDashboard();
-            const hrList = getHRSummaryData(dataRows);
+            const regionList = getRegionSummaryData(dataRows);
             const dcList = getDCSummaryData(dataRows);
 
-            const uniqueActivePeople = new Set(dataRows.map(r => r.code).filter(Boolean)).size;
+            const uniqueActivePeople = new Set(dataRows.map(row => row.code).filter(Boolean)).size;
             const totalDaysAll = dataRows.length;
-            const totalPiecesAll = dataRows.reduce((sum, r) => sum + Number(r.rawCost || 0), 0);
+            const totalPiecesAll = dataRows.reduce((sum, row) => sum + Number(row.rawCost || 0), 0);
             const totalAvgPodAll = calculateAvgPodPerWorkDay(totalPiecesAll, totalDaysAll);
-            const totalCostAll = hrList.reduce((sum, h) => sum + h.totalCost, 0);
+            const totalCostAll = regionList.reduce((sum, item) => sum + item.totalCost, 0);
             const totalTaxAll = totalCostAll * 0.01;
             const totalNetAll = totalCostAll - totalTaxAll;
 
@@ -713,17 +718,17 @@
             document.getElementById('stat-total-tax').innerText = totalTaxAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById('stat-total-net').innerText = totalNetAll.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-            const hrTbody = document.getElementById('hr-summary-tbody');
-            const hrTfoot = document.getElementById('hr-summary-tfoot');
-            if (hrTbody && hrTfoot) {
-                if (hrList.length === 0) {
-                    hrTbody.innerHTML = `<tr><td colspan="9" class="p-6 text-slate-400">ยังไม่มีข้อมูลสรุปตาม HR</td></tr>`;
-                    hrTfoot.innerHTML = '';
+            const regionTbody = document.getElementById('region-summary-tbody');
+            const regionTfoot = document.getElementById('region-summary-tfoot');
+            if (regionTbody && regionTfoot) {
+                if (regionList.length === 0) {
+                    regionTbody.innerHTML = `<tr><td colspan="9" class="p-6 text-slate-400">ยังไม่มีข้อมูลสรุปตาม Region</td></tr>`;
+                    regionTfoot.innerHTML = '';
                 } else {
-                    hrTbody.innerHTML = hrList.map((item, idx) => `
+                    regionTbody.innerHTML = regionList.map((item, idx) => `
                         <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
                             <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
-                            <td class="p-2.5 border-r border-gray-200 font-sans font-bold text-slate-900">${item.hr}</td>
+                            <td class="p-2.5 border-r border-gray-200 font-sans font-bold text-slate-900">${item.region}</td>
                             <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${item.peopleCount.toLocaleString()}</td>
                             <td class="p-2.5 border-r border-gray-200 text-slate-700">${item.days.toLocaleString()}</td>
                             <td class="p-2.5 border-r border-gray-200 text-amber-700 font-bold">${item.pieces.toLocaleString()}</td>
@@ -734,7 +739,7 @@
                         </tr>
                     `).join('');
 
-                    hrTfoot.innerHTML = `
+                    regionTfoot.innerHTML = `
                         <tr class="font-mono bg-gray-100">
                             <td colspan="2" class="p-2.5 text-right uppercase font-bold border-r border-gray-300">GRAND TOTAL</td>
                             <td class="p-2.5 text-center border-r border-gray-300 text-blue-700 font-bold">${uniqueActivePeople.toLocaleString()}</td>
@@ -786,11 +791,11 @@
             }
         }
 
-        function exportHRSummaryExcel() {
-            const hrList = getHRSummaryData();
-            const rows = hrList.map((item, idx) => ({
+        function exportRegionSummaryExcel() {
+            const regionList = getRegionSummaryData();
+            const rows = regionList.map((item, idx) => ({
                 "ลำดับ": idx + 1,
-                "HR": item.hr,
+                "Region": item.region,
                 "จำนวนคน": item.peopleCount,
                 "วันทำงานรวม": item.days,
                 "POD รวม": item.pieces,
@@ -801,8 +806,8 @@
             }));
             const ws = XLSX.utils.json_to_sheet(rows);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Summary by HR");
-            XLSX.writeFile(wb, "Hetai_Summary_By_HR.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Summary by Region");
+            XLSX.writeFile(wb, "Hetai_Summary_By_Region.xlsx");
         }
 
         function exportDCSummaryExcel() {
@@ -868,7 +873,11 @@
 
             const filtered = spreadsheetData.filter(row => {
                 const matchDate = dateFilter === '' || row.date.toLowerCase().includes(dateFilter);
-                const matchCode = codeFilter === '' || row.code.toLowerCase().includes(codeFilter) || row.name.toLowerCase().includes(codeFilter) || row.hr.toLowerCase().includes(codeFilter) || row.dc.toLowerCase().includes(codeFilter);
+                const matchCode = codeFilter === '' ||
+                    row.code.toLowerCase().includes(codeFilter) ||
+                    row.name.toLowerCase().includes(codeFilter) ||
+                    row.region.toLowerCase().includes(codeFilter) ||
+                    row.dc.toLowerCase().includes(codeFilter);
                 return matchDate && matchCode;
             });
 
@@ -881,7 +890,7 @@
             let sumPieces = 0, sumMoney = 0;
 
             tbody.innerHTML = filtered.map((row, idx) => {
-                const empInfo = employees.find(e => e.code === row.code) || { salary: 13 };
+                const empInfo = employees.find(emp => emp.code === row.code) || { salary: 13 };
                 const rate = Number(empInfo.salary || 13);
                 const money = calculateFinalCost(row.rawCost, rate);
 
@@ -894,7 +903,7 @@
                         <td class="p-2 border-r border-gray-200 text-slate-600 font-bold">${row.date}</td>
                         <td class="p-2 border-r border-gray-200 text-blue-600 font-bold">${row.code}</td>
                         <td class="p-2 border-r border-gray-200 font-sans text-slate-900 font-medium">${row.name}</td>
-                        <td class="p-2 border-r border-gray-200 font-sans text-amber-700 font-semibold">${row.hr}</td>
+                        <td class="p-2 border-r border-gray-200 font-sans text-amber-700 font-semibold">${row.region}</td>
                         <td class="p-2 border-r border-gray-200 text-xs">${row.position}</td>
                         <td class="p-2 border-r border-gray-200 text-cyan-700 font-bold">${row.dc}</td>
                         <td class="p-2 border-r border-gray-200 text-amber-700 font-bold">${row.rawCost.toLocaleString()}</td>
@@ -923,17 +932,17 @@
                 return;
             }
 
-            tbody.innerHTML = employees.map(e => `
+            tbody.innerHTML = employees.map(emp => `
                 <tr class="hover:bg-gray-50 transition text-center">
-                    <td class="p-3 border-r border-gray-200 font-mono text-blue-600 font-bold">${e.code}</td>
-                    <td class="p-3 border-r border-gray-200 font-semibold text-slate-900 text-center">${e.name}</td>
-                    <td class="p-3 border-r border-gray-200 font-semibold text-amber-700">${e.hr || 'ไม่ระบุ HR'}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono">${e.position}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono text-cyan-700 font-bold">${e.dc || 'ไม่ระบุสถานี'}</td>
-                    <td class="p-3 border-r border-gray-200 font-medium text-slate-800">${e.bank || '-'}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono text-blue-600">${e.accNo || '-'}</td>
-                    <td class="p-3 border-r border-gray-200 font-mono font-bold text-amber-600">${Number(e.salary || 13).toLocaleString()}</td>
-                    <td class="p-3">${e.status}</td>
+                    <td class="p-3 border-r border-gray-200 font-mono text-blue-600 font-bold">${emp.code}</td>
+                    <td class="p-3 border-r border-gray-200 font-semibold text-slate-900 text-center">${emp.name}</td>
+                    <td class="p-3 border-r border-gray-200 font-semibold text-amber-700">${emp.region || 'ไม่ระบุ Region'}</td>
+                    <td class="p-3 border-r border-gray-200 font-mono">${emp.position}</td>
+                    <td class="p-3 border-r border-gray-200 font-mono text-cyan-700 font-bold">${emp.dc || 'ไม่ระบุสถานี'}</td>
+                    <td class="p-3 border-r border-gray-200 font-medium text-slate-800">${emp.bank || '-'}</td>
+                    <td class="p-3 border-r border-gray-200 font-mono text-blue-600">${emp.accNo || '-'}</td>
+                    <td class="p-3 border-r border-gray-200 font-mono font-bold text-amber-600">${Number(emp.salary || 13).toLocaleString()}</td>
+                    <td class="p-3">${emp.status}</td>
                 </tr>
             `).join('');
         }
@@ -944,33 +953,42 @@
             const tfoot = document.getElementById('matrix-tfoot');
             if (!thead || !tbody || !tfoot) return;
 
-            const datesSet = [...new Set(spreadsheetData.map(r => r.date))].filter(d => d && d !== 'ไม่ระบุวันที่').sort();
+            const datesSet = [...new Set(spreadsheetData.map(row => row.date))].filter(d => d && d !== 'ไม่ระบุวันที่').sort();
 
             const empMap = {};
-            spreadsheetData.forEach(r => {
-                if (!empMap[r.code]) {
-                    const empInfo = employees.find(e => e.code === r.code) || { name: r.name, position: r.position, dc: r.dc, salary: 13 };
-                    empMap[r.code] = {
-                        code: r.code,
-                        name: r.name || empInfo.name,
-                        position: r.position || empInfo.position,
-                        dc: r.dc || empInfo.dc,
+            spreadsheetData.forEach(row => {
+                if (!empMap[row.code]) {
+                    const empInfo = employees.find(emp => emp.code === row.code) || {
+                        name: row.name,
+                        position: row.position,
+                        dc: row.dc,
+                        salary: 13
+                    };
+                    empMap[row.code] = {
+                        code: row.code,
+                        name: row.name || empInfo.name,
+                        position: row.position || empInfo.position,
+                        dc: row.dc || empInfo.dc,
                         salaryRate: Number(empInfo.salary || 13),
                         daily: {}
                     };
                 }
-                const singleCost = calculateFinalCost(r.rawCost, empMap[r.code].salaryRate);
-                if (!empMap[r.code].daily[r.date]) {
-                    empMap[r.code].daily[r.date] = { pieces: 0, cost: 0 };
+                const singleCost = calculateFinalCost(row.rawCost, empMap[row.code].salaryRate);
+                if (!empMap[row.code].daily[row.date]) {
+                    empMap[row.code].daily[row.date] = { pieces: 0, cost: 0 };
                 }
-                empMap[r.code].daily[r.date].pieces += r.rawCost;
-                empMap[r.code].daily[r.date].cost += singleCost;
+                empMap[row.code].daily[row.date].pieces += row.rawCost;
+                empMap[row.code].daily[row.date].cost += singleCost;
             });
 
             let employeesList = Object.values(empMap);
             const codeFilter = (document.getElementById('filter-matrix-code')?.value || '').trim().toLowerCase();
             if (codeFilter !== '') {
-                employeesList = employeesList.filter(e => e.code.toLowerCase().includes(codeFilter) || e.name.toLowerCase().includes(codeFilter) || e.dc.toLowerCase().includes(codeFilter));
+                employeesList = employeesList.filter(emp =>
+                    emp.code.toLowerCase().includes(codeFilter) ||
+                    emp.name.toLowerCase().includes(codeFilter) ||
+                    emp.dc.toLowerCase().includes(codeFilter)
+                );
             }
 
             let headerHTML = `
@@ -1006,7 +1024,7 @@
             let bodyHTML = '';
             let grandTotalDays = 0, grandTotalPieces = 0, grandTotalCost = 0;
             const dateTotals = {};
-            datesSet.forEach(d => dateTotals[d] = { pieces: 0, cost: 0 });
+            datesSet.forEach(d => { dateTotals[d] = { pieces: 0, cost: 0 }; });
 
             employeesList.forEach((emp, idx) => {
                 let empDays = 0, empPieces = 0, empCost = 0;
@@ -1094,11 +1112,19 @@
                 if (!code) return;
 
                 if (!map[code]) {
-                    const empInfo = employees.find(e => e.code === code) || { dc: row.dc || 'ไม่ระบุสถานี', hr: row.hr || 'ไม่ระบุ HR', salary: 13, position: row.position || '4W Driver', name: row.name || 'ไม่ระบุ', bank: '-', accNo: '-' };
+                    const empInfo = employees.find(emp => emp.code === code) || {
+                        dc: row.dc || 'ไม่ระบุสถานี',
+                        region: row.region || 'ไม่ระบุ Region',
+                        salary: 13,
+                        position: row.position || '4W Driver',
+                        name: row.name || 'ไม่ระบุ',
+                        bank: '-',
+                        accNo: '-'
+                    };
                     map[code] = {
                         code: code,
                         name: row.name || empInfo.name,
-                        hr: row.hr || empInfo.hr || 'ไม่ระบุ HR',
+                        region: row.region || empInfo.region || 'ไม่ระบุ Region',
                         position: row.position || empInfo.position,
                         dc: row.dc || empInfo.dc || 'ไม่ระบุสถานี',
                         bank: empInfo.bank || '-',
@@ -1122,7 +1148,7 @@
                 aggregatedList = aggregatedList.filter(item =>
                     item.code.toLowerCase().includes(codeFilter) ||
                     item.name.toLowerCase().includes(codeFilter) ||
-                    item.hr.toLowerCase().includes(codeFilter) ||
+                    item.region.toLowerCase().includes(codeFilter) ||
                     item.dc.toLowerCase().includes(codeFilter)
                 );
             }
@@ -1159,7 +1185,7 @@
                     <tr class="hover:bg-gray-50 transition text-center font-mono bg-white">
                         <td class="p-2.5 border-r border-gray-200">${idx + 1}</td>
                         <td class="p-2.5 border-r border-gray-200 text-blue-600 font-bold">${item.code}</td>
-                        <td class="p-2.5 border-r border-gray-200 font-sans text-amber-700 font-semibold">${item.hr}</td>
+                        <td class="p-2.5 border-r border-gray-200 font-sans text-amber-700 font-semibold">${item.region}</td>
                         <td class="p-2.5 border-r border-gray-200 text-cyan-700 font-bold">${item.dc}</td>
                         <td class="p-2.5 border-r border-gray-200 text-xs">${item.position}</td>
                         <td class="p-2.5 border-r border-gray-200 font-sans text-slate-900 font-medium text-center">${item.name}</td>
@@ -1190,13 +1216,13 @@
 
         function exportToExcel() {
             const aggregatedList = getAggregatedBillingData();
-            let excelRows = aggregatedList.map((item, idx) => {
+            const excelRows = aggregatedList.map((item, idx) => {
                 const tax1Percent = item.totalFinalCost * 0.01;
                 const netPaid = item.totalFinalCost - tax1Percent;
                 return {
                     "ลำดับ": idx + 1,
                     "รหัสพนักงาน": item.code,
-                    "HR": item.hr,
+                    "Region": item.region,
                     "สถานี": item.dc,
                     "ประเภทรถ": item.position,
                     "ชื่อ-นามสกุล": item.name,
@@ -1219,11 +1245,11 @@
 
         function exportCSV() {
             const aggregatedList = getAggregatedBillingData();
-            const headers = ["ลำดับ", "รหัสพนักงาน", "HR", "สถานี", "ประเภทรถ", "ชื่อ-นามสกุล", "ธนาคาร", "เลขที่บัญชี", "วันทำงาน", "Con DEL", "เลท", "ยอดรวม", "หัก ณ ที่จ่าย 1%", "ยอดจ่ายสุทธิ"];
+            const headers = ["ลำดับ", "รหัสพนักงาน", "Region", "สถานี", "ประเภทรถ", "ชื่อ-นามสกุล", "ธนาคาร", "เลขที่บัญชี", "วันทำงาน", "Con DEL", "เลท", "ยอดรวม", "หัก ณ ที่จ่าย 1%", "ยอดจ่ายสุทธิ"];
             const rows = aggregatedList.map((item, idx) => {
                 const tax1 = (item.totalFinalCost * 0.01).toFixed(2);
                 const net = (item.totalFinalCost * 0.99).toFixed(2);
-                return [idx + 1, item.code, `"${item.hr}"`, `"${item.dc}"`, item.position, `"${item.name}"`, item.bank, `"${item.accNo}"`, item.days, item.totalPieces, item.salaryRate, item.totalFinalCost, tax1, net].join(',');
+                return [idx + 1, item.code, `"${item.region}"`, `"${item.dc}"`, item.position, `"${item.name}"`, item.bank, `"${item.accNo}"`, item.days, item.totalPieces, item.salaryRate, item.totalFinalCost, tax1, net].join(',');
             });
             const csvContent = "\uFEFF" + [headers.join(','), ...rows].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
